@@ -1,6 +1,6 @@
 package me.beastman3226.BusinessCore.util;
 
-import me.beastman3226.BusinessCore.Business.Business;
+import me.beastman3226.BusinessCore.business.Business;
 
 /**
  *
