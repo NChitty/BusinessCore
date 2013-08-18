@@ -57,6 +57,7 @@ public class Job {
     }
 
     public void complete() {
+        this.worker.addCompletedJob();
         this.completed = true;
     }
 
