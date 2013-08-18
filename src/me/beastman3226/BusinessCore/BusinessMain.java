@@ -1,7 +1,7 @@
 package me.beastman3226.BusinessCore;
 
-import me.beastman3226.BusinessCore.Configuration.ConfigManager;
-import me.beastman3226.BusinessCore.Configuration.Configuration;
+import me.beastman3226.BusinessCore.config.ConfigManager;
+import me.beastman3226.BusinessCore.config.Configuration;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;

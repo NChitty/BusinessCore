@@ -1,4 +1,4 @@
-package me.beastman3226.BusinessCore.Configuration;
+package me.beastman3226.BusinessCore.config;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
