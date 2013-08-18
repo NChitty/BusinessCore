@@ -1,4 +1,4 @@
-package me.beastman3226.BusinessCore.Jobs;
+package me.beastman3226.BusinessCore.job;
 
 import me.beastman3226.BusinessCore.player.Employee;
 import org.bukkit.Bukkit;
