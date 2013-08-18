@@ -1,6 +1,8 @@
 package me.beastman3226.BusinessCore.Jobs;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -27,8 +29,32 @@ public class Job {
     public String getDescription() {
         return this.description;
     }
+
     public double getPayment() {
         return this.payment;
     }
-    
+
+    public String getIssuer() {
+        return this.issuer;
+    }
+
+    public Player getIssuerAsPlayer() {
+        return Bukkit.getPlayer(issuer);
+    }
+
+    public Location getLocation() {
+        return this.loc;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public boolean isCompleted() {
+        return this.completed;
+    }
+
+    public void complete() {
+        this.completed = true;
+    }
 }
