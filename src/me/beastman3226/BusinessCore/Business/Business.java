@@ -111,4 +111,16 @@ public class Business {
 		return businessList[i];
 	}
 
+    public int getNumberOfEmployees() {
+        int number = 0;
+        while(number < this.employeeList.length) {
+            if(this.employeeList[number] == null) {
+                number--;
+                break;
+            }
+            number++;
+        }
+        return number;
+    }
+
 }
