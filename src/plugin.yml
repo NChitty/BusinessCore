@@ -1,0 +1,26 @@
+name: BusinessCore
+version: 0.0.1
+author: beastman3226
+main: me.beastman3226.BusinessCore.BusinessMain
+depend: [Vault]
+commands:
+  business:
+    description: This controls the business portion of the plugin
+  job:
+    description: This controls job commands
+  retire:
+    description: Retires a player
+  unretire:
+    description: Unretires a player
+  check:
+    description: Checks if a player is retired
+permissions:
+  bw.business:
+    description: Gives permission to business side
+    default: true
+  business.admin:
+    description: Allows player to use admin commands
+    default: op
+  business.owner.delete:
+    description: Gives permission to delete own business
+    default: false
