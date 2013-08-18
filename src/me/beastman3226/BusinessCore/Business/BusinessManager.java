@@ -1,4 +1,4 @@
-package me.beastman3226.BusinessCore.Business;
+package me.beastman3226.BusinessCore.business;
 
 /**
  *
