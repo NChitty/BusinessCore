@@ -24,4 +24,11 @@ public class Job {
         this.id = id;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+    public double getPayment() {
+        return this.payment;
+    }
+    
 }
