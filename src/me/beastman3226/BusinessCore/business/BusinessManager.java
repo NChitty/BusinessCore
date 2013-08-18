@@ -19,4 +19,8 @@ public class BusinessManager {
         }
         return  b;
     }
+
+    public static boolean deleteBusiness() {
+        return false;
+    }
 }
