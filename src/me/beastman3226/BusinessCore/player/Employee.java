@@ -1,7 +1,8 @@
 package me.beastman3226.BusinessCore.player;
 
-import me.beastman3226.BusinessCore.Business.Business;
-import me.beastman3226.BusinessCore.Jobs.Job;
+import java.util.ArrayList;
+import me.beastman3226.BusinessCore.business.Business;
+import me.beastman3226.BusinessCore.job.Job;
 import org.bukkit.entity.Player;
 
 /**
@@ -11,11 +12,13 @@ import org.bukkit.entity.Player;
 public class Employee {
 
     private final Business b;
-    private int completedJobs;
-    private int scoutedJobs;
+    private int completedJobs = 0;
+    private int scoutedJobs = 0;
     private final Player employee;
     private final String name;
     private Job activeJob;
+
+    public static ArrayList<Employee> employeeList = new ArrayList<>();
 
     public Employee(Player player, Business b) {
         this.b = b;
@@ -31,12 +34,20 @@ public class Employee {
         this.completedJobs = this.completedJobs + 1;
     }
 
+    public void setCompletedJobs(int amount) {
+        this.completedJobs = amount;
+    }
+
     public int getScoutedJobs() {
         return this.scoutedJobs;
     }
 
     public void addScoutedJob() {
         this.scoutedJobs = this.scoutedJobs + 1;
+    }
+
+    public void setScoutedJobs(int amount) {
+        this.scoutedJobs = amount;
     }
 
     public Business getBusiness() {
@@ -57,5 +68,9 @@ public class Employee {
 
     public void setActiveJob(Job j) {
         this.activeJob = j;
+    }
+
+    public static Employee getEmployee(String name) {
+        return employeeList.get(employeeList.indexOf(name));
     }
 }
