@@ -1,5 +1,6 @@
 package me.beastman3226.BusinessCore.Jobs;
 
+import me.beastman3226.BusinessCore.player.Employee;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ public class Job {
     private final String issuer;
     private final int id;
     private boolean completed = false;
+    private Employee worker;
     public static Job[] jobList = new Job[600];
 
     public Job(String description, double payment, Location loc, String issuer, int id) {
@@ -56,5 +58,13 @@ public class Job {
 
     public void complete() {
         this.completed = true;
+    }
+
+    public void setWorker(Employee emp) {
+        this.worker = emp;
+    }
+
+    public Employee getWorker() {
+        return this.worker;
     }
 }
