@@ -1,6 +1,8 @@
 package me.beastman3226.BusinessCore.Business;
 
 import me.beastman3226.BusinessCore.Jobs.Job;
+import me.beastman3226.BusinessCore.player.Employee;
+import org.bukkit.Bukkit;
 
 public class Business {
 
@@ -58,7 +60,9 @@ public class Business {
 	}
 
 	public void addEmployee(String employeeName) {
-		this.employeeList[this.getFreeIndex("employeelist")] = employeeName;
+            this.employeeList[this.getFreeIndex("employeelist")] = employeeName;
+            Employee emp = new Employee(Bukkit.getPlayer(employeeName), this);
+
 	}
 
 	public Job[] getJobList() {
