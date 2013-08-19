@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -34,7 +38,7 @@ public class ConfigManager {
     * @param filePath - Path to file
     * @return  New Config
     */
-    public Configuration getNewConfig(String filePath, String[] header) {
+    public Configuration getNewConfig(String filePath, String[] header) throws FileNotFoundException {
 
         File file = this.getConfigFile(filePath);
 
@@ -47,7 +51,7 @@ public class ConfigManager {
 
         }
 
-        Configuration config = new Configuration(this.getConfigContent(filePath), file, this.getCommentsNum(file), plugin);
+        Configuration config = new Configuration(new FileInputStream(filePath), file, this.getCommentsNum(file), plugin);
         return config;
 
     }
@@ -58,7 +62,13 @@ public class ConfigManager {
     * @return - New SimpleConfig
     */
     public Configuration getNewConfig(String filePath) {
-        return this.getNewConfig(filePath, null);
+        Configuration n = null;
+        try {
+            n = this.getNewConfig(filePath, null);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ConfigManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n;
     }
 
     /*
