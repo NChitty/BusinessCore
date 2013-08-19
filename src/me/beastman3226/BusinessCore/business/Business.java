@@ -101,4 +101,33 @@ public class Business {
     }
 
 
+    @Override
+    public String toString() {
+        String object = "";
+        int i = 0;
+        while(i < 6) {
+            i++;
+            switch(i) {
+                case 1: {
+
+                }
+                case 2: {
+
+                }
+                case 3: {
+
+                }
+                case 4: {
+
+                }
+                case 5: {
+
+                }
+                case 6: {
+                    
+                }
+            }
+        }
+        return object;
+    }
 }

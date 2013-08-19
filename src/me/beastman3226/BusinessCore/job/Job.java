@@ -18,6 +18,7 @@ public class Job {
     private final int id;
     private boolean completed = false;
     private Employee worker;
+    private String businessName;
     public static Job[] jobList = new Job[600];
 
     public Job(String description, double payment, Location loc, String issuer, int id) {
@@ -26,6 +27,15 @@ public class Job {
         this.loc = loc;
         this.issuer = issuer;
         this.id = id;
+    }
+
+    /**
+     * This constructor creates a new job object from a string representation
+     * of the object
+     * @param stringRep The string representation
+     */
+    private Job(String stringRep) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public String getDescription() {
@@ -63,9 +73,59 @@ public class Job {
 
     public void setWorker(Employee emp) {
         this.worker = emp;
+        businessName = emp.getBusiness().getName();
     }
 
     public Employee getWorker() {
         return this.worker;
+    }
+
+    @Override
+    public String toString() {
+        String object = "";
+        int i = 0;
+        while(i < 8) {
+            i++;
+            String field = null;
+            switch(i) {
+                case 1: {
+                    field = this.getDescription();
+                    object = object + field;
+                }
+                case 2: {
+                    field = this.getPayment() + "";
+                    object = object + "," + field;
+                }
+                case 3: {
+                    field = this.getLocation().getX()+ "|" + this.getLocation().getBlockY()+ "|" + this.getLocation().getBlockZ();
+                    object = object + "," + field;
+                }
+                case 4: {
+                    field = this.getIssuer();
+                    object = object + "," + field;
+                }
+                case 5: {
+                    field = this.getId() + "";
+                    object = object + "," + field;
+                }
+                case 6: {
+                    field = this.isCompleted() + "";
+                    object = object + "," + field;
+                }
+                case 7: {
+                    field = this.getWorker().getEmployeeName();
+                    object = object + "," + field;
+                }
+                case 8: {
+                    field = this.businessName;
+                    object = object + "," + field;
+                }
+            }
+        }
+        return object;
+    }
+
+    public static Job fromString(String stringRep) {
+        return new Job(stringRep);
     }
 }

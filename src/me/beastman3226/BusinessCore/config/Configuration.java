@@ -140,4 +140,12 @@ public class Configuration {
     public List<String> getStringList(String path) {
         return this.config.getStringList(path);
     }
+
+    public FileConfiguration getConfig() {
+        return this.config;
+    }
+
+    public File getFile() {
+        return this.file;
+    }
 }
