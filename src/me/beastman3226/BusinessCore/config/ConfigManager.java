@@ -38,7 +38,7 @@ public class ConfigManager {
     * @param filePath - Path to file
     * @return  New Config
     */
-    public Configuration getNewConfig(String filePath, String[] header) throws FileNotFoundException {
+    public Configuration getNewConfig(String filePath, String[] header) {
 
         File file = this.getConfigFile(filePath);
 
@@ -50,8 +50,12 @@ public class ConfigManager {
             }
 
         }
-
-        Configuration config = new Configuration(new FileInputStream(filePath), file, this.getCommentsNum(file), plugin);
+        Configuration config = null;
+        try {
+            config = new Configuration(new FileInputStream(filePath), file, this.getCommentsNum(file), plugin);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ConfigManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return config;
 
     }
@@ -62,13 +66,7 @@ public class ConfigManager {
     * @return - New SimpleConfig
     */
     public Configuration getNewConfig(String filePath) {
-        Configuration n = null;
-        try {
-            n = this.getNewConfig(filePath, null);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ConfigManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n;
+        return this.getNewConfig(filePath, null);
     }
 
     /*
