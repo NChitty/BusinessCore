@@ -1,5 +1,6 @@
 package me.beastman3226.BusinessCore.business;
 
+import java.util.ArrayList;
 import java.util.Vector;
 import me.beastman3226.BusinessCore.job.Job;
 import me.beastman3226.BusinessCore.player.Employee;
@@ -21,6 +22,31 @@ public class Business {
 		this.name = name;
 		this.ownerName = ownerName;
 	}
+
+        public Business(String represent) {
+            String[] fields = represent.split(",");
+            int i = 0;
+            this.index = Integer.parseInt(fields[0]);
+            this.name = fields[2];
+            this.ownerName = fields[3];
+            for(String field : fields) {
+                i++;
+                switch(i) {
+                    case 2: {
+                        this.worth = Double.parseDouble(field);
+                    }
+                    case 5: {
+                        String[] jobs = field.split("|");
+                        ArrayList<Job> jobList = new ArrayList();
+                        for(String jobId : jobs) {
+                            int id = Integer.parseInt(jobId);
+                            jobList.add(Job.jobList[id]);
+                        }
+                        this.jobList.addAll(jobList);
+                    }
+                }
+            }
+        }
 
 	public int getIndex() {
 		return index;
@@ -107,24 +133,32 @@ public class Business {
         int i = 0;
         while(i < 6) {
             i++;
+            String field = null;
             switch(i) {
                 case 1: {
-
+                    field = this.getIndex() + "";
+                    object = object + field;
                 }
                 case 2: {
-
+                    field = this.getWorth() + "";
+                    object = object + "," + field;
                 }
                 case 3: {
-
+                    field = this.getName();
+                    object = object + "," + field;
                 }
                 case 4: {
-
+                    field = this.getOwnerName();
+                    object = object + "," + field;
+                    field = null;
                 }
                 case 5: {
-
-                }
-                case 6: {
-                    
+                    for(Object e : this.getJobList().toArray()) {
+                        if(e != null) {
+                            Job j = (Job) e;
+                            field = field + "|" + j.getId();
+                        }
+                    }
                 }
             }
         }
