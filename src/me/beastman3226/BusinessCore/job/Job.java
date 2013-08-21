@@ -35,7 +35,18 @@ public class Job {
      * @param stringRep The string representation
      */
     private Job(String stringRep) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        String[] fields = stringRep.split(",");
+        this.description = fields[0];
+        this.payment = Double.parseDouble(fields[1]);
+        String[] coords = fields[2].split("|");
+        this.loc = new Location(Bukkit.getServer().getWorlds().get(0), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]));
+        this.issuer = fields[3];
+        this.id = Integer.parseInt(fields[4]);
+        if(!fields[5].equals("no_employee_yet")) {
+        } else {
+            Employee e = Employee.getEmployee(fields[6]);
+            this.setWorker(e);
+        }
     }
 
     public String getDescription() {
@@ -80,6 +91,19 @@ public class Job {
         return this.worker;
     }
 
+    public Job getJob(int id) {
+        Job j = null;
+        for(Job jo : Job.jobList) {
+            if(jo != null) {
+                if(jo.getId() == id) {
+                    j = jo;
+                    break;
+                }
+            }
+        }
+        return j;
+    }
+
     @Override
     public String toString() {
         String object = "";
@@ -113,8 +137,13 @@ public class Job {
                     object = object + "," + field;
                 }
                 case 7: {
-                    field = this.getWorker().getEmployeeName();
-                    object = object + "," + field;
+                    if(this.getWorker() != null) {
+                        field = this.getWorker().getEmployeeName();
+                        object = object + "," + field;
+                    } else {
+                        field = "no_employee_yet";
+                        object = object + "," + field;
+                    }
                 }
                 case 8: {
                     field = this.businessName;
