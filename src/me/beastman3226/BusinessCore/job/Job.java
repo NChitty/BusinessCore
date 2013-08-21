@@ -91,7 +91,7 @@ public class Job {
         return this.worker;
     }
 
-    public Job getJob(int id) {
+    public static Job getJob(int id) {
         Job j = null;
         for(Job jo : Job.jobList) {
             if(jo != null) {
