@@ -1,6 +1,7 @@
 package me.beastman3226.BusinessCore.job;
 
 import me.beastman3226.BusinessCore.player.Employee;
+import me.beastman3226.BusinessCore.util.MyPersist;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -45,7 +46,11 @@ public class Job {
         if(!fields[5].equals("no_employee_yet")) {
         } else {
             Employee e = Employee.getEmployee(fields[6]);
-            this.setWorker(e);
+            if(e == null) {
+                this.worker = MyPersist.loadEmployee(fields[5], this);
+            } else {
+                this.setWorker(e);
+            }
         }
     }
 

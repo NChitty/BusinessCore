@@ -1,11 +1,9 @@
 package me.beastman3226.BusinessCore.player;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.job.Job;
+import me.beastman3226.BusinessCore.util.MyPersist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -37,14 +35,19 @@ public class Employee {
      */
     private Employee(String stringRep) {
         String[] fields = stringRep.split(",");
+        this.employee = Bukkit.getPlayer(fields[3]);
+        this.name = employee.getName();
         if(Boolean.parseBoolean(fields[6])) {
             hasJob=true;
-            activeJob = Job.getJob(Integer.parseInt(fields[4]));
+            if(Job.getJob(Integer.parseInt(fields[4])) != null) {
+                activeJob = Job.getJob(Integer.parseInt(fields[4]));
+            } else {
+                activeJob = MyPersist.loadJob(fields[4], this);
+            }
         }
         this.completedJobs = Integer.parseInt(fields[1]);
         this.scoutedJobs = Integer.parseInt(fields[2]);
-        this.employee = Bukkit.getPlayer(fields[3]);
-        this.name = employee.getName();
+
         employeeList.add(this);
     }
 

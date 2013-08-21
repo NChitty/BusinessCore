@@ -14,6 +14,8 @@ import me.beastman3226.BusinessCore.player.Employee;
  */
 public class MyPersist {
 
+    private static BusinessMain main;
+
     public static void saving(BusinessMain plugin) {
         /*
          * Business saving
@@ -40,14 +42,35 @@ public class MyPersist {
     }
 
     public static void loading(BusinessMain plugin) {
-        Map<String, Object> Configvalues = plugin.eConfig.getConfig().getValues(true);
-        Collection<Object> value = Configvalues.values();
-        for(Object values : value) {
+        main = plugin;
+        Map<String, Object> eConfigvalues = plugin.eConfig.getConfig().getValues(true);
+        Collection<Object> value1 = eConfigvalues.values();
+        for(Object values : value1) {
            String stringRep = values.toString();
            Employee.fromString(stringRep);
         }
+        Map<String, Object> jConfigvalues = plugin.jConfig.getConfig().getValues(true);
+        Collection<Object> value2 = jConfigvalues.values();
+        for(Object values : value2) {
+            Job.fromString(values.toString());
+        }
+        Map<String, Object> bConfigvalues = plugin.bConfig.getConfig().getValues(true);
+        Collection<Object> value3 = bConfigvalues.values();
+        for(Object value : value3) {
+            Business business = new Business(value.toString());
+        }
     }
 
-    public
+    public static Employee loadEmployee(String string, Job j) {
+        Employee emp = Employee.fromString((String) main.eConfig.get(string));
+        emp.setActiveJob(j);
+        return emp;
+    }
+
+    public static Job loadJob(String string, Employee aThis) {
+        Job job = Job.fromString((String) main.jConfig.get(string));
+        job.setWorker(aThis);
+        return job;
+    }
 
 }
