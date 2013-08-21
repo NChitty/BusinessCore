@@ -41,7 +41,7 @@ public class MyPersist {
         }
     }
 
-    public static void loading(BusinessMain plugin) {
+    public static void loading(BusinessMain plugin) throws NullPointerException {
         main = plugin;
         Map<String, Object> eConfigvalues = plugin.eConfig.getConfig().getValues(true);
         Collection<Object> value1 = eConfigvalues.values();

@@ -27,17 +27,22 @@ public class BusinessMain extends JavaPlugin {
     @Override
     public void onEnable() {
         this.setupEconomy();
-        MyPersist.loading(this);
+        try {
+            MyPersist.loading(this);
+        } catch (NullPointerException npe) {
+            this.getLogger().info("No configurations found, ignoring");
+        }
+        this.getCommand("business").setExecutor(new me.beastman3226.BusinessCore.business.CommandHandler(this));
         bConfig.getFile().delete();
-        jConfig.getFile().delete();
-        eConfig.getFile().delete();
+            jConfig.getFile().delete();
+            eConfig.getFile().delete();
     }
 
     @Override
     public void onDisable() {
-        bConfig = manager.getNewConfig(folder + File.separator + "business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-        jConfig = manager.getNewConfig(folder + File.separator + "job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-        eConfig = manager.getNewConfig(folder + File.separator + "employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+        bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+        jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+        eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
         MyPersist.saving(this);
     }
 

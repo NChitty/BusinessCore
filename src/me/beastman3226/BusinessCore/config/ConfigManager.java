@@ -44,7 +44,6 @@ public class ConfigManager {
 
         if(!file.exists()) {
             this.prepareFile(filePath);
-
             if(header != null && header.length != 0) {
                 this.setHeader(file, header);
             }
