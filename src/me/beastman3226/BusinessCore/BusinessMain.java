@@ -1,6 +1,10 @@
 package me.beastman3226.BusinessCore;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import me.beastman3226.BusinessCore.business.BusinessManager;
 import me.beastman3226.BusinessCore.config.ConfigManager;
 import me.beastman3226.BusinessCore.config.Configuration;
 import me.beastman3226.BusinessCore.util.MyPersist;
@@ -21,29 +25,39 @@ public class BusinessMain extends JavaPlugin {
     public Configuration jConfig;
     public Configuration eConfig;
 
-    public static final File folder = new File("plugins" + File.separator +"BusinessCore");
-
 
     @Override
     public void onEnable() {
         this.setupEconomy();
+
+        MyPersist.loading(this);
         try {
-            MyPersist.loading(this);
-        } catch (NullPointerException npe) {
-            this.getLogger().info("No configurations found, ignoring");
+            bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
         }
         this.getCommand("business").setExecutor(new me.beastman3226.BusinessCore.business.CommandHandler(this));
-        bConfig.getFile().delete();
+        if(bConfig.getFile().exists() || jConfig.getFile().exists() || eConfig.getFile().exists()) {
+            bConfig.getFile().delete();
             jConfig.getFile().delete();
             eConfig.getFile().delete();
+        } else {
+            this.getLogger().info("No files found, all good.");
+        }
     }
 
     @Override
     public void onDisable() {
-        bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-        jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-        eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-        MyPersist.saving(this);
+        try {
+            bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            MyPersist.saving(this);
+        } catch (FileNotFoundException ex) {
+            getLogger().log(Level.SEVERE, ex.getLocalizedMessage());
+        }
     }
 
 

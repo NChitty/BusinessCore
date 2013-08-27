@@ -24,14 +24,17 @@ public class CommandHandler implements CommandExecutor {
         if(sender instanceof Player) {
             if(cmd.getName().toLowerCase().equals("business")) {
                 if(args.length == 0) {
-                    sender.sendMessage(MessageUtility.B_HELP);
+                    sender.sendMessage(MessageUtility.B_HELP.split("\r\n"));
                 } else if (args.length == 1) {
                     switch (args[0].toLowerCase()) {
                         case "help":
-                            sender.sendMessage(MessageUtility.B_HELP);
+                            sender.sendMessage(MessageUtility.B_HELP.split("\r\n"));
                             return true;
                         case "delete":
                             BusinessManager.deleteBusiness(sender.getName(), main);
+                            return true;
+                        case "list":
+                            sender.sendMessage(BusinessManager.listBusinesses());
                             return true;
                     }
                 } else if (args.length > 1) {
@@ -42,6 +45,7 @@ public class CommandHandler implements CommandExecutor {
                                 name = name + args[i];
                             }
                             Business b = BusinessManager.createBusiness(name, sender.getName());
+                            b.setWorth(0.0);
                             main.getServer().broadcastMessage(ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": " + ChatColor.GOLD + b.getName() + ChatColor.WHITE + " has been created!");
                             return true;
                         }

@@ -27,25 +27,16 @@ public class Business {
             String[] fields = represent.split(",");
             int i = 0;
             this.index = Integer.parseInt(fields[0]);
+            this.worth = Double.parseDouble(fields[1]);
             this.name = fields[2];
             this.ownerName = fields[3];
-            for(String field : fields) {
-                i++;
-                switch(i) {
-                    case 2: {
-                        this.worth = Double.parseDouble(field);
-                    }
-                    case 5: {
-                        String[] jobs = field.split("|");
-                        ArrayList<Job> jobList = new ArrayList();
-                        for(String jobId : jobs) {
-                            int id = Integer.parseInt(jobId);
-                            jobList.add(Job.jobList[id]);
-                        }
-                        this.jobList.addAll(jobList);
-                    }
+            if(fields.length == 5) {
+                String[] jobs = fields[4].split("|");
+                for(String job : jobs) {
+                    this.addJob(Job.getJob(Integer.parseInt(job)));
                 }
             }
+
         }
 
 	public int getIndex() {
@@ -138,19 +129,23 @@ public class Business {
                 case 1: {
                     field = this.getIndex() + "";
                     object = object + field;
+                    break;
                 }
                 case 2: {
                     field = this.getWorth() + "";
                     object = object + "," + field;
+                    break;
                 }
                 case 3: {
                     field = this.getName();
                     object = object + "," + field;
+                    break;
                 }
                 case 4: {
                     field = this.getOwnerName();
                     object = object + "," + field;
                     field = null;
+                    break;
                 }
                 case 5: {
                     for(Object e : this.getJobList().toArray()) {
@@ -159,6 +154,7 @@ public class Business {
                             field = field + "|" + j.getId();
                         }
                     }
+                    break;
                 }
             }
         }

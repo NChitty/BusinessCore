@@ -20,44 +20,56 @@ public class MyPersist {
         /*
          * Business saving
          */
-        for(Business b : Business.businessList) {
-            if(b != null) {
+        for (Business b : Business.businessList) {
+            if (b != null) {
+                plugin.bConfig.createSection(b.getName());
                 plugin.bConfig.set(b.getName(), b.toString());
+                plugin.getLogger().info("Saving business: " + b.getName());
+                plugin.getLogger().info("Business string: " + b.toString());
             }
         }
         /*
          * Employee Saving
          */
-        for(Employee e : Employee.employeeList) {
+        for (Employee e : Employee.employeeList) {
             plugin.eConfig.set(e.getEmployeeName(), e.toString());
         }
         /*
          * Job saving
          */
-        for(Job j : Job.jobList) {
-            if(j != null) {
+        for (Job j : Job.jobList) {
+            if (j != null) {
                 plugin.jConfig.set(j.getId() + "", j.toString());
             }
         }
+        plugin.bConfig.saveConfig();
+        plugin.eConfig.saveConfig();
+        plugin.jConfig.saveConfig();
     }
 
-    public static void loading(BusinessMain plugin) throws NullPointerException {
+    public static void loading(BusinessMain plugin) {
         main = plugin;
-        Map<String, Object> eConfigvalues = plugin.eConfig.getConfig().getValues(true);
-        Collection<Object> value1 = eConfigvalues.values();
-        for(Object values : value1) {
-           String stringRep = values.toString();
-           Employee.fromString(stringRep);
+        if (main.eConfig != null) {
+            Map<String, Object> eConfigvalues = plugin.eConfig.getConfig().getValues(true);
+            Collection<Object> value1 = eConfigvalues.values();
+            for (Object values : value1) {
+                String stringRep = values.toString();
+                Employee.fromString(stringRep);
+            }
         }
-        Map<String, Object> jConfigvalues = plugin.jConfig.getConfig().getValues(true);
-        Collection<Object> value2 = jConfigvalues.values();
-        for(Object values : value2) {
-            Job.fromString(values.toString());
+        if (main.jConfig != null) {
+            Map<String, Object> jConfigvalues = plugin.jConfig.getConfig().getValues(true);
+            Collection<Object> value2 = jConfigvalues.values();
+            for (Object values : value2) {
+                Job.fromString(values.toString());
+            }
         }
-        Map<String, Object> bConfigvalues = plugin.bConfig.getConfig().getValues(true);
-        Collection<Object> value3 = bConfigvalues.values();
-        for(Object value : value3) {
-            Business business = new Business(value.toString());
+        if (main.bConfig != null) {
+            Map<String, Object> bConfigvalues = plugin.bConfig.getConfig().getValues(true);
+            Collection<Object> value3 = bConfigvalues.values();
+            for (Object value : value3) {
+                Business business = new Business(value.toString());
+            }
         }
     }
 
@@ -72,5 +84,4 @@ public class MyPersist {
         job.setWorker(aThis);
         return job;
     }
-
 }
