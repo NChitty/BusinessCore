@@ -9,7 +9,9 @@ import org.bukkit.ChatColor;
  */
 public class MessageUtility {
 
-    public static String PREFIX_ERROR = ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ":";
+    public static String PREFIX_ERROR = ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": ";
+    public static String PREFIX_INFO = ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": ";
+    public static String PREFIX_OTHER = ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": ";
     public static String B_HELP = ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": These are arguments for the command business" + "\r\n"
             + "help: Returns this screen." + "\r\n"
             + "create: Creates a business. Correct format is: /business create <name of business>" + "\r\n"
@@ -18,10 +20,5 @@ public class MessageUtility {
             + "deposit: Deposit the amount specified, subtracts that number from your server account" + "\r\n"
             + "withdrawal: Withdraws the amount specified from your business" + "\r\n"
             + "force-pay: Gives all the employees smaller paycheck depending on the last pay cycle";
-
-    public static String getTop(Business[] business) {
-        String list = "";
-        return list;
-    }
 
 }
