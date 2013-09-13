@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -34,20 +38,31 @@ public class ConfigManager {
     * @param filePath - Path to file
     * @return  New Config
     */
-    public Configuration getNewConfig(String filePath, String[] header) {
+    public Configuration getNewConfig(String filePath, String[] header) throws FileNotFoundException {
 
         File file = this.getConfigFile(filePath);
 
-        if(!file.exists()) {
+        if(file == null || !file.exists()) {
             this.prepareFile(filePath);
-
             if(header != null && header.length != 0) {
                 this.setHeader(file, header);
             }
 
         }
+        if(file == null || !file.exists()) {
+            file = new File(plugin.getDataFolder() + File.separator + filePath);
+        }
 
-        Configuration config = new Configuration(this.getConfigContent(filePath), file, this.getCommentsNum(file), plugin);
+        Configuration config = null;
+        try {
+            config = new Configuration(new FileInputStream(file), file, this.getCommentsNum(file), plugin);
+        } catch (FileNotFoundException ex) {
+            plugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage());
+        } finally {
+            if(config == null) {
+                config = new Configuration(new FileInputStream(file), file, this.getCommentsNum(file), plugin);
+            }
+        }
         return config;
 
     }
@@ -57,7 +72,7 @@ public class ConfigManager {
     * @param filePath - Path to file
     * @return - New SimpleConfig
     */
-    public Configuration getNewConfig(String filePath) {
+    public Configuration getNewConfig(String filePath) throws FileNotFoundException {
         return this.getNewConfig(filePath, null);
     }
 

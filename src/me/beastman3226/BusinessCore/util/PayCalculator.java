@@ -11,10 +11,11 @@ public class PayCalculator {
 
     public static double calculate(Business b, String employee) {
         double pay = b.getNumberOfEmployees()/b.getWorth();
-        if(Employee.getEmployee(b.getEmployeeList()[b.getIndexOf(employee)]).getCompletedJobs() > 0) {
-            pay = pay * (Employee.getEmployee(b.getEmployeeList()[b.getIndexOf(employee)]).getCompletedJobs() * .1);
-        } else if (Employee.getEmployee(b.getEmployeeList()[b.getIndexOf(employee)]).getCompletedJobs() == 0) {
-            pay = pay - (pay*.5);
+        Employee  e = Employee.getEmployee(b.getEmployeeList().get(b.getEmployeeList().indexOf(employee)));
+        if(e.getCompletedJobs() > 0) {
+            pay = pay * (e.getCompletedJobs() * .1);
+        } else if (e.getCompletedJobs() == 0) {
+            pay = pay - (pay*.45);
         }
         return pay;
     }
