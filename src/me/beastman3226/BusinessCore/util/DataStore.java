@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class DataStore extends Data {
 
-    private static Statement s;
+
 
     private static void createBusinessTable(String tableName) {
         try {

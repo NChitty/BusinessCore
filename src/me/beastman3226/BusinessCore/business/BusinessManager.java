@@ -1,5 +1,9 @@
 package me.beastman3226.BusinessCore.business;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.util.DataStore;
 
@@ -37,5 +41,16 @@ public class BusinessManager {
         }
         businessList = bList.split(",");
         return businessList;
+    }
+
+    public static void populateBusinesses(ResultSet executeQuery) {
+        try {
+            while(executeQuery.next() == true) {
+               Business b = createBusiness(executeQuery.getString("BusinessName"), executeQuery.getString("BusinessOwner"));
+               b.setWorth(executeQuery.getDouble("BusinessWorth"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
