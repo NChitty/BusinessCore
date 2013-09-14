@@ -3,6 +3,7 @@ package me.beastman3226.BusinessCore.player;
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.job.Job;
+import me.beastman3226.BusinessCore.util.DataUpdate;
 import org.bukkit.entity.Player;
 
 /**
@@ -33,10 +34,12 @@ public class Employee {
 
     public void addCompletedJob() {
         this.completedJobs = this.completedJobs + 1;
+        DataUpdate.updateEmployee(this.getEmployeeName(), completedJobs);
     }
 
     public void setCompletedJobs(int amount) {
         this.completedJobs = amount;
+        DataUpdate.updateEmployee(this.getEmployeeName(), completedJobs);
     }
 
     public int getScoutedJobs() {
@@ -45,10 +48,12 @@ public class Employee {
 
     public void addScoutedJob() {
         this.scoutedJobs = this.scoutedJobs + 1;
+        DataUpdate.updateEmployeeScouted(this.getEmployeeName(), scoutedJobs);
     }
 
     public void setScoutedJobs(int amount) {
         this.scoutedJobs = amount;
+        DataUpdate.updateEmployeeScouted(this.getEmployeeName(), scoutedJobs);
     }
 
     public Business getBusiness() {
@@ -70,6 +75,7 @@ public class Employee {
     public void setActiveJob(Job j) {
         this.activeJob = j;
         this.hasJob = true;
+        DataUpdate.updateEmployeeJob(this.getEmployeeName(), j.getId());
     }
 
     public static Employee getEmployee(String name) {

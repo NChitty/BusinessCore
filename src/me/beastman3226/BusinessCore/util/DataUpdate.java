@@ -60,4 +60,43 @@ public class DataUpdate extends Data {
         }
     }
 
+    public static void updateEmployee(String employeeName, int completedJobs) {
+        try {
+            if(s == null) {
+                s = Data.c.createStatement();
+            }
+            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+                    + "SET CompletedJobs="+completedJobs + MessageUtility.newLine
+                    + "WHERE EmployeeName="+employeeName);
+        } catch (SQLException ex) {
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void updateEmployeeScouted(String employeeName, int scoutedJobs) {
+        try {
+            if(s == null) {
+                s = Data.c.createStatement();
+            }
+            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+                    + "SET Scouted="+scoutedJobs + MessageUtility.newLine
+                    + "WHERE EmployeeName="+employeeName);
+        } catch (SQLException ex) {
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void updateEmployeeJob(String employeeName, int id) {
+        try {
+            if(s == null) {
+                s = Data.c.createStatement();
+            }
+            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+                    + "SET ActiveJobId="+id + MessageUtility.newLine
+                    + "WHERE EmployeeName="+employeeName);
+        } catch (SQLException ex) {
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

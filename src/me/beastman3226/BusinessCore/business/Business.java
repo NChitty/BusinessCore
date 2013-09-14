@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import me.beastman3226.BusinessCore.job.Job;
 import me.beastman3226.BusinessCore.player.Employee;
+import me.beastman3226.BusinessCore.util.DataUpdate;
 import org.bukkit.Bukkit;
 
 public class Business {
@@ -53,10 +54,12 @@ public class Business {
 
 	public void setWorth(double worth) {
 		this.worth = worth;
+                DataUpdate.setBusinessWorth(this.ownerName, worth);
 	}
 
 	public boolean addToWorth(double amount) {
 		this.worth = this.worth + amount;
+                DataUpdate.setBusinessWorth(this.ownerName, worth);
 		return true;
 	}
 
@@ -65,6 +68,7 @@ public class Business {
 			return false;
 		} else {
 			this.worth = worth - amount;
+                        DataUpdate.setBusinessWorth(this.ownerName, worth);
 		}
 		return false;
 	}
