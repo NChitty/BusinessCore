@@ -38,8 +38,8 @@ public class CommandHandler implements CommandExecutor {
                             BusinessCreate.execute(sender, subtractArg(args));
                             return true;
                         }
-                        case "" : {
-                            BusinessDelete.execute(sender, subtractArg(args));
+                        case "delete" : {
+                            BusinessDelete.execute(sender, subtractArg(args), main);
                             return true;
                         }
                         case "deposit" : {
@@ -55,13 +55,15 @@ public class CommandHandler implements CommandExecutor {
                             return true;
                         }
                         case "force-pay" : {
-                            BusinessEmployee.executePay(sender, subtractArg(args));
+                            BusinessEmployee.executePay(sender, subtractArg(args), main);
                         }
                     }
                 } else {
                     sender.sendMessage(MessageUtility.B_HELP);
                 }
             }
+        } else {
+            sender.sendMessage("I cannot let you do that.");
         }
         return false;
     }
