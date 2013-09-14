@@ -1,13 +1,13 @@
 package me.beastman3226.BusinessCore;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.BusinessCore.business.BusinessManager;
 import me.beastman3226.BusinessCore.config.ConfigManager;
 import me.beastman3226.BusinessCore.config.Configuration;
-import me.beastman3226.BusinessCore.util.MyPersist;
+import me.beastman3226.BusinessCore.util.Data;
+import me.beastman3226.BusinessCore.util.DataStore;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,43 +21,48 @@ public class BusinessMain extends JavaPlugin {
 
     public Economy econ;
     public final ConfigManager manager = new ConfigManager(this);
-    public Configuration bConfig;
-    public Configuration jConfig;
-    public Configuration eConfig;
-
+    public Configuration config;
+    public Configuration flatfile;
 
     @Override
     public void onEnable() {
         this.setupEconomy();
-
-        MyPersist.loading(this);
         try {
-            bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-            jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-            eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
+            config = manager.getNewConfig("config.yml");
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.getCommand("business").setExecutor(new me.beastman3226.BusinessCore.business.CommandHandler(this));
-        if(bConfig.getFile().exists() || jConfig.getFile().exists() || eConfig.getFile().exists()) {
-            bConfig.getFile().delete();
-            jConfig.getFile().delete();
-            eConfig.getFile().delete();
+        HashMap<String, Object> defaults = new HashMap<>();
+        defaults.put("db.enabled", true);
+        defaults.put("db.ip", "localhost");
+        defaults.put("db.port", "3306");
+        defaults.put("db.name", "BusinessCore");
+        defaults.put("db.user", "user");
+        defaults.put("db.pass", "password");
+        defaults.put("db.business.tableName", "business");
+        defaults.put("db.employee.tableName", "employee");
+        defaults.put("db.jobs.tableName", "jobs");
+
+        config.getConfig().addDefaults(defaults);
+        if(!config.contains("db.enabled")) {
+            config.getConfig().setDefaults(config.getConfig().getDefaults());
+        }
+        if(config.getBoolean("db.enabled")) {
+            Data.startup(this, config.getString("db.ip"), config.getString("db.port"), config.getString("db.name"), config.getString("db.user"), config.getString("db.pass"));
+            DataStore.createTables(config.getString("db.business.tableName"), config.getString("db.employee.tableName"), config.getString("db.employee.tableName"));
         } else {
-            this.getLogger().info("No files found, all good.");
+            getLogger().info("Not using MySQL, using flatfile");
+            try {
+                flatfile = manager.getNewConfig("storage.prop");
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
     }
 
     @Override
     public void onDisable() {
-        try {
-            bConfig = manager.getNewConfig("business.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-            jConfig = manager.getNewConfig("job.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-            eConfig = manager.getNewConfig("employee.yml", new String[]{"This file gets deleted on startup", "If it still there please delete it"});
-            MyPersist.saving(this);
-        } catch (FileNotFoundException ex) {
-            getLogger().log(Level.SEVERE, ex.getLocalizedMessage());
-        }
     }
 
 

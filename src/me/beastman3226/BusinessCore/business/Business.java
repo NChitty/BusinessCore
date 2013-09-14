@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 
 public class Business {
 
-	public static Business[] businessList = new Business[50];
+	public static ArrayList<Business> businessList = new ArrayList();
 
 	private final int index;
 	private double worth;
@@ -102,13 +102,12 @@ public class Business {
 
 	public static Business getBusiness(String owner) {
 		int i = 0;
-		while(!businessList[i].ownerName.equals(owner)) {
-			if(businessList[i].ownerName.equals(owner)) {
-				break;
-			}
-			i++;
-		}
-		return businessList[i];
+		for(Business b : businessList) {
+                    if(b.ownerName.equals(owner)) {
+                        return b;
+                    }
+                }
+		return null;
 	}
 
     public int getNumberOfEmployees() {

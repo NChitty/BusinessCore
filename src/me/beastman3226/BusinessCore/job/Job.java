@@ -1,7 +1,6 @@
 package me.beastman3226.BusinessCore.job;
 
 import me.beastman3226.BusinessCore.player.Employee;
-import me.beastman3226.BusinessCore.util.MyPersist;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -12,13 +11,13 @@ import org.bukkit.entity.Player;
  */
 public class Job {
 
-    private final String description;
-    private final double payment;
-    private final Location loc;
-    private final String issuer;
-    private final int id;
+    private final String description; //done
+    private final double payment; //done
+    private final Location loc; //done
+    private final String issuer; //done
+    private final int id; //done
     private boolean completed = false;
-    private Employee worker;
+    private Employee worker; //done
     private String businessName;
     public static Job[] jobList = new Job[600];
 
@@ -30,29 +29,6 @@ public class Job {
         this.id = id;
     }
 
-    /**
-     * This constructor creates a new job object from a string representation
-     * of the object
-     * @param stringRep The string representation
-     */
-    private Job(String stringRep) {
-        String[] fields = stringRep.split(",");
-        this.description = fields[0];
-        this.payment = Double.parseDouble(fields[1]);
-        String[] coords = fields[2].split("|");
-        this.loc = new Location(Bukkit.getServer().getWorlds().get(0), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]));
-        this.issuer = fields[3];
-        this.id = Integer.parseInt(fields[4]);
-        if(!fields[5].equals("no_employee_yet")) {
-        } else {
-            Employee e = Employee.getEmployee(fields[6]);
-            if(e == null) {
-                this.worker = MyPersist.loadEmployee(fields[5], this);
-            } else {
-                this.setWorker(e);
-            }
-        }
-    }
 
     public String getDescription() {
         return this.description;
@@ -159,7 +135,4 @@ public class Job {
         return object;
     }
 
-    public static Job fromString(String stringRep) {
-        return new Job(stringRep);
-    }
 }

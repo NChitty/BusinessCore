@@ -3,8 +3,6 @@ package me.beastman3226.BusinessCore.player;
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.job.Job;
-import me.beastman3226.BusinessCore.util.MyPersist;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -27,28 +25,6 @@ public class Employee {
         this.b = b;
         this.employee = player;
         this.name = player.getName();
-    }
-    /**
-     * This constructor creates a new job object from a string representation
-     * of the object
-     * @param stringRep The string representation
-     */
-    private Employee(String stringRep) {
-        String[] fields = stringRep.split(",");
-        this.employee = Bukkit.getPlayer(fields[3]);
-        this.name = employee.getName();
-        if(Boolean.parseBoolean(fields[6])) {
-            hasJob=true;
-            if(Job.getJob(Integer.parseInt(fields[4])) != null) {
-                activeJob = Job.getJob(Integer.parseInt(fields[4]));
-            } else {
-                activeJob = MyPersist.loadJob(fields[4], this);
-            }
-        }
-        this.completedJobs = Integer.parseInt(fields[1]);
-        this.scoutedJobs = Integer.parseInt(fields[2]);
-
-        employeeList.add(this);
     }
 
     public int getCompletedJobs() {
@@ -98,36 +74,5 @@ public class Employee {
 
     public static Employee getEmployee(String name) {
         return employeeList.get(employeeList.indexOf(name));
-    }
-
-    @Override
-    public String toString() {
-        String object = "";
-        int i = 0;
-        while(i < 8) {
-            i++;
-            String field = null;
-            switch(i) {
-                case 1: field = this.b.getOwnerName();
-                    object = object+field;
-                case 2: field = "completedJobs";
-                    object = object+","+field;
-                case 3: field = "scoutedJobs";
-                    object = object+","+field;
-                case 4: field = this.employee.getName();
-                              object = object+","+field;
-                case 5: field = this.getEmployeeName();
-                    object = object+","+field;
-                case 6: field = this.getJob().getId() + "";
-                    object = object+","+field;
-                case 7: field = this.hasJob + "";
-                    object = object+","+field;
-            }
-        }
-        return object;
-    }
-
-    public static Employee fromString(String stringRep) {
-        return new Employee(stringRep);
     }
 }

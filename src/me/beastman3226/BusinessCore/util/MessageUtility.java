@@ -20,5 +20,5 @@ public class MessageUtility {
             + "deposit: Deposit the amount specified, subtracts that number from your server account" + "\r\n"
             + "withdrawal: Withdraws the amount specified from your business" + "\r\n"
             + "force-pay: Gives all the employees smaller paycheck depending on the last pay cycle";
-
+    public static final String newLine = "\r\n";
 }
