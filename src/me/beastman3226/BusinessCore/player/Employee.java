@@ -3,6 +3,7 @@ package me.beastman3226.BusinessCore.player;
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.job.Job;
+import me.beastman3226.BusinessCore.util.DataStore;
 import me.beastman3226.BusinessCore.util.DataUpdate;
 import org.bukkit.entity.Player;
 
@@ -26,6 +27,7 @@ public class Employee {
         this.b = b;
         this.employee = player;
         this.name = player.getName();
+        DataStore.addEmployee(name, b.getIndex(), completedJobs, scoutedJobs, hasJob, activeJob.getId());
     }
 
     public int getCompletedJobs() {
