@@ -12,9 +12,6 @@ import java.util.logging.Logger;
 public class DataStore extends Data {
 
     private static Statement s;
-    public static String bTable;
-    public static String eTable;
-    public static String jTable;
 
     private static void createBusinessTable(String tableName) {
         try {
@@ -113,6 +110,18 @@ public class DataStore extends Data {
             }
             s.executeUpdate("INSERT INTO " + jTable + MessageUtility.newLine
                     + "VALUES ('"+issuer+"','"+description+"',"+pay+","+x+","+y+","+z+","+jobId+",'"+employeeName+"',"+bid+");");
+        } catch (SQLException ex) {
+            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void deleteBusiness(String name) {
+        try {
+            if(s == null) {
+                s = Data.c.createStatement();
+            }
+            s.executeUpdate("DELETE FROM " + bTable + MessageUtility.newLine
+                    + "WHERE BusinessOwner="+name);
         } catch (SQLException ex) {
             Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
         }

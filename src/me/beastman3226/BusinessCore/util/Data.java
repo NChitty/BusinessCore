@@ -12,6 +12,10 @@ public class Data {
 
     public static MySQL MySQL;
     public static Connection c = null;
+    public static String bTable;
+    public static String eTable;
+    public static String jTable;
+
 
     public static final void startup(Plugin plugin, String ip, String port, String tableName, String user, String pass ) {
         MySQL = new MySQL(plugin, ip, port, tableName, user, pass);

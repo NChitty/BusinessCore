@@ -1,5 +1,6 @@
 package me.beastman3226.BusinessCore.job;
 
+import java.util.ArrayList;
 import me.beastman3226.BusinessCore.player.Employee;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,7 +20,7 @@ public class Job {
     private boolean completed = false;
     private Employee worker; //done
     private String businessName;
-    public static Job[] jobList = new Job[600];
+    public static ArrayList<Job> jobList = new ArrayList();
 
     public Job(String description, double payment, Location loc, String issuer, int id) {
         this.description = description;
