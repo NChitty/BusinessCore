@@ -2,6 +2,7 @@ package me.beastman3226.BusinessCore.job;
 
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.player.Employee;
+import me.beastman3226.BusinessCore.util.DataUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -62,6 +63,7 @@ public class Job {
     public void complete() {
         this.worker.addCompletedJob();
         this.completed = true;
+        DataUpdate.deleteJob(issuer);
     }
 
     public void setWorker(Employee emp) {
