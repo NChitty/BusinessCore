@@ -3,8 +3,8 @@ package me.beastman3226.BusinessCore.player;
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.job.Job;
-import me.beastman3226.BusinessCore.util.DataStore;
-import me.beastman3226.BusinessCore.util.DataUpdate;
+import me.beastman3226.BusinessCore.data.DataStore;
+import me.beastman3226.BusinessCore.data.DataUpdate;
 import org.bukkit.entity.Player;
 
 /**

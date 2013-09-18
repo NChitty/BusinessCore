@@ -1,4 +1,4 @@
-package me.beastman3226.BusinessCore.util;
+package me.beastman3226.BusinessCore.data;
 
 import code.husky.mysql.MySQL;
 import java.sql.Connection;

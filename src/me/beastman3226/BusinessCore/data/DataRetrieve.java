@@ -1,4 +1,4 @@
-package me.beastman3226.BusinessCore.util;
+package me.beastman3226.BusinessCore.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

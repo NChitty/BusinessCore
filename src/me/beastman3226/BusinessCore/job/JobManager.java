@@ -1,6 +1,6 @@
 package me.beastman3226.BusinessCore.job;
 
-import me.beastman3226.BusinessCore.util.DataStore;
+import me.beastman3226.BusinessCore.data.DataStore;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

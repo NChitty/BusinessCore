@@ -2,7 +2,7 @@ package me.beastman3226.BusinessCore.job;
 
 import java.util.ArrayList;
 import me.beastman3226.BusinessCore.player.Employee;
-import me.beastman3226.BusinessCore.util.DataUpdate;
+import me.beastman3226.BusinessCore.data.DataUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

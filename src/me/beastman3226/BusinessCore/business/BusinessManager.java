@@ -2,10 +2,11 @@ package me.beastman3226.BusinessCore.business;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
-import me.beastman3226.BusinessCore.util.DataStore;
+import me.beastman3226.BusinessCore.data.DataStore;
 
 /**
  *
@@ -52,5 +53,25 @@ public class BusinessManager {
         } catch (SQLException ex) {
             Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void payOut(double calculate) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static void withdraw(String name, double parseDouble) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static Business getBusiness(String ownername) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static Vector<String> getEmployeeList(String ownername) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static void deposit(String name, double parseDouble) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
