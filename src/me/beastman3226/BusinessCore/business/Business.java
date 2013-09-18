@@ -54,7 +54,7 @@ public class Business {
 		return false;
 	}
 
-	protected Vector<String> getEmployeeList() {
+	public Vector<String> getEmployeeList() {
 		return employeeList;
 	}
 
@@ -95,7 +95,7 @@ public class Business {
 		return null;
 	}
 
-    protected int getNumberOfEmployees() {
+    public int getNumberOfEmployees() {
         int number = 0;
         number = this.employeeList.lastIndexOf(this.employeeList.lastElement());
         return number;

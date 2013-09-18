@@ -74,4 +74,8 @@ public class BusinessManager {
     public static void deposit(String name, double parseDouble) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+    public static void addEmployee(Business get, String name) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }
