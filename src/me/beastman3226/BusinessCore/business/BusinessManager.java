@@ -67,7 +67,7 @@ public class BusinessManager {
     }
 
     public static void populateBusinesses(Configuration config) {
-        
+
     }
 
     public static void payOut(double calculate) {

@@ -2,6 +2,7 @@ package me.beastman3226.BusinessCore;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.config.ConfigManager;
@@ -9,6 +10,7 @@ import me.beastman3226.BusinessCore.config.Configuration;
 import me.beastman3226.BusinessCore.data.Data;
 import me.beastman3226.BusinessCore.data.DataStore;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,18 +22,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BusinessMain extends JavaPlugin {
 
     public Economy econ;
-    public final ConfigManager manager = new ConfigManager(this);
-    public static Configuration config;
+    public ConfigManager manager = new ConfigManager(this);
     public static Configuration flatfile;
+    public static FileConfiguration config;
 
     @Override
     public void onEnable() {
+        this.saveConfig();
+        this.reloadConfig();
         this.setupEconomy();
-        try {
-            config = manager.getNewConfig("config.yml");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
         HashMap<String, Object> defaults = new HashMap<>();
         defaults.put("db.enabled", true);
         defaults.put("db.ip", "localhost");
@@ -43,13 +42,18 @@ public class BusinessMain extends JavaPlugin {
         defaults.put("db.employee.tableName", "employee");
         defaults.put("db.jobs.tableName", "jobs");
 
-        config.getConfig().addDefaults(defaults);
-        if(!config.contains("db.enabled")) {
-            config.getConfig().setDefaults(config.getConfig().getDefaults());
+        if(!getConfig().contains("db.enabled")) {
+            Set<String> keys = defaults.keySet();
+                        for(String path : keys) {
+                            getConfig().set(path, defaults.get(path));
+                        }
+                        this.saveDefaultConfig();
+                        saveConfig();
+                        reloadConfig();
         }
-        if(config.getBoolean("db.enabled")) {
-            Data.startup(this, config.getString("db.ip"), config.getString("db.port"), config.getString("db.name"), config.getString("db.user"), config.getString("db.pass"));
-            DataStore.createTables(config.getString("db.business.tableName"), config.getString("db.employee.tableName"), config.getString("db.employee.tableName"));
+        if(getConfig().getBoolean("db.enabled")) {
+            Data.startup(this, getConfig().getString("db.ip"), getConfig().getString("db.port"), getConfig().getString("db.name"), getConfig().getString("db.user"), getConfig().getString("db.pass"));
+            DataStore.createTables(getConfig().getString("db.business.tableName"), getConfig().getString("db.employee.tableName"), getConfig().getString("db.employee.tableName"));
         } else {
             getLogger().info("Not using MySQL, using flatfile");
             try {
@@ -58,7 +62,8 @@ public class BusinessMain extends JavaPlugin {
                 Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
+        reloadConfig();
+        config = getConfig();
     }
 
     @Override
