@@ -25,9 +25,11 @@ public class BusinessMain extends JavaPlugin {
     public ConfigManager manager = new ConfigManager(this);
     public static Configuration flatfile;
     public static FileConfiguration config;
+    public me.beastman3226.BusinessCore.business.CommandHandler businessHandler = new me.beastman3226.BusinessCore.business.CommandHandler(this);
 
     @Override
     public void onEnable() {
+        this.getCommand("business").setExecutor(businessHandler);
         this.saveConfig();
         this.reloadConfig();
         this.setupEconomy();
