@@ -21,8 +21,8 @@ public class BusinessMain extends JavaPlugin {
 
     public Economy econ;
     public final ConfigManager manager = new ConfigManager(this);
-    public Configuration config;
-    public Configuration flatfile;
+    public static Configuration config;
+    public static Configuration flatfile;
 
     @Override
     public void onEnable() {
@@ -36,7 +36,7 @@ public class BusinessMain extends JavaPlugin {
         defaults.put("db.enabled", true);
         defaults.put("db.ip", "localhost");
         defaults.put("db.port", "3306");
-        defaults.put("db.name", "BusinessCore");
+        defaults.put("db.name", "please_change_before_starting");
         defaults.put("db.user", "user");
         defaults.put("db.pass", "password");
         defaults.put("db.business.tableName", "business");

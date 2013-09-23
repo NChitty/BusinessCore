@@ -6,6 +6,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
+import me.beastman3226.BusinessCore.config.Configuration;
 import me.beastman3226.BusinessCore.data.DataStore;
 
 /**
@@ -19,13 +20,23 @@ public class BusinessManager {
         Business finalB = Business.businessList.get(Business.businessList.size());
         int index = finalB.getIndex() + 1;
         b = new Business(index, name, owner);
-        DataStore.addBusiness(name, index, owner, 0.0);
+        if(BusinessMain.config.getBoolean("db.enabled")) {
+            DataStore.addBusiness(name, index, owner, 0.0);
+        } else {
+            BusinessMain.flatfile.set(name + ".owner", owner);
+            BusinessMain.flatfile.set(name + ".id", index);
+            BusinessMain.flatfile.set(name + ".worth", 0.0);
+        }
         return  b;
     }
 
     public static void deleteBusiness(String name, BusinessMain plugin) {
         Business.businessList.remove(Business.getBusiness(name));
-        DataStore.deleteBusiness(name);
+        if(BusinessMain.config.getBoolean("db.enabled")) {
+            DataStore.deleteBusiness(name);
+        } else {
+            BusinessMain.flatfile.set(name, null);
+        }
     }
 
     public static String[] listBusinesses() {
@@ -47,12 +58,16 @@ public class BusinessManager {
     public static void populateBusinesses(ResultSet executeQuery) {
         try {
             while(executeQuery.next() == true) {
-               Business b = createBusiness(executeQuery.getString("BusinessName"), executeQuery.getString("BusinessOwner"));
+               Business b = createBusiness(executeQuery.getString("BusinessName"), executeQuery.getString("BusinessOwner"), executeQuery.getInt("BusinessID"));
                b.setWorth(executeQuery.getDouble("BusinessWorth"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void populateBusinesses(Configuration config) {
+        
     }
 
     public static void payOut(double calculate) {
@@ -77,5 +92,11 @@ public class BusinessManager {
 
     public static void addEmployee(Business get, String name) {
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private static Business createBusiness(String string, String string0, int aInt) {
+        Business b= new Business(aInt, string, string0);
+        Business.businessList.add(aInt, b);
+        return b;
     }
 }
