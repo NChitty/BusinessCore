@@ -3,6 +3,7 @@ package me.beastman3226.BusinessCore.data;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.util.MessageUtility;
 
 /**
@@ -19,7 +20,8 @@ public class DataUpdate extends Data {
             s.executeUpdate("DELETE FROM 'business'" + MessageUtility.newLine
                     + "WHERE BusinessOwner=" + owner);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -31,7 +33,8 @@ public class DataUpdate extends Data {
             s.executeUpdate("DELETE FROM 'job'" + MessageUtility.newLine
                     + "WHERE JobIssuer=" + issuer);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -44,7 +47,8 @@ public class DataUpdate extends Data {
                     + "SET BusinessID="+bId+ MessageUtility.newLine
                     + "WHERE JobIssuer="+issuer);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -57,7 +61,8 @@ public class DataUpdate extends Data {
                     + "SET BusinessWorth="+worth+MessageUtility.newLine
                     + "WHERE BusinessOwner="+owner);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -70,7 +75,8 @@ public class DataUpdate extends Data {
                     + "SET CompletedJobs="+completedJobs + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -83,7 +89,8 @@ public class DataUpdate extends Data {
                     + "SET Scouted="+scoutedJobs + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -96,7 +103,8 @@ public class DataUpdate extends Data {
                     + "SET ActiveJobId="+id + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {
-            Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
+           Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+           BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 

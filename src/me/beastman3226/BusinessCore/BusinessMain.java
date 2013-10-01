@@ -13,6 +13,7 @@ import me.beastman3226.BusinessCore.config.Configuration;
 import me.beastman3226.BusinessCore.data.Data;
 import me.beastman3226.BusinessCore.data.DataRetrieve;
 import me.beastman3226.BusinessCore.data.DataStore;
+import me.beastman3226.BusinessCore.util.Email;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -32,6 +33,7 @@ public class BusinessMain extends JavaPlugin {
     public static FileConfiguration config;
     public me.beastman3226.BusinessCore.business.CommandHandler businessHandler = new me.beastman3226.BusinessCore.business.CommandHandler(this);
     public static Plugin p;
+    public static Email email = new Email(Email.Provider.GMAIL, "businesscore.server@gmail.com", "73sTingServer");
 
     @Override
     public void onEnable() {

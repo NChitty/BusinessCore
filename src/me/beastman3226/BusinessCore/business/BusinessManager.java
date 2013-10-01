@@ -15,6 +15,8 @@ import me.beastman3226.BusinessCore.data.DataHandler;
 import me.beastman3226.BusinessCore.data.DataRetrieve;
 import me.beastman3226.BusinessCore.data.DataStore;
 import me.beastman3226.BusinessCore.data.DataUpdate;
+import me.beastman3226.BusinessCore.util.Email;
+import me.beastman3226.BusinessCore.util.Email.Provider;
 import org.bukkit.Bukkit;
 
 /**
@@ -120,7 +122,8 @@ public class BusinessManager {
                             Logger.getLogger(BusinessManager.class.getSimpleName()).info("Successfully retrieved " + populate.getName());
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessManager.class.getSimpleName()).info(ex.getLocalizedMessage());
+                        BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "BusinessManager threw an error", ex.getLocalizedMessage());
                     }
                 }
                 break;
