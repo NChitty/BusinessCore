@@ -14,9 +14,6 @@ public class Data {
     public static MySQL MySQL;
     public static Connection c = null;
     protected static Statement s;
-    protected static String bTable;
-    protected static String eTable;
-    protected static String jTable;
 
 
     public static final void startup(Plugin plugin, String ip, String port, String tableName, String user, String pass ) {

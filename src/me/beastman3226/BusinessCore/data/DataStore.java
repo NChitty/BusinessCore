@@ -12,72 +12,67 @@ import me.beastman3226.BusinessCore.util.MessageUtility;
  */
 public class DataStore extends Data {
 
-
-
-    private static void createBusinessTable(String tableName) {
+    private static void createBusinessTable() {
         try {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.execute("CREATE TABLE " + tableName + "\r\n" +
-                    "(" + "\r\n"
-                    + "BusinessName VARCHAR(255)," + MessageUtility.newLine
-                    + "BusinessID INTEGER," + MessageUtility.newLine
-                    + "BusinessOwner VARCHAR(255)," + MessageUtility.newLine
+            s.execute("CREATE TABLE 'business'"
+                    + "("
+                    + "BusinessName VARCHAR(255),"
+                    + "BusinessID INTEGER,"
+                    + "BusinessOwner VARCHAR(255),"
                     + "BusinessWorth FLOAT);");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex.getLocalizedMessage());
+            System.out.println(ex.getLocalizedMessage());
         }
-        bTable = tableName;
     }
 
-    private static void createEmployeeTable (String tableName) {
+    private static void createEmployeeTable () {
         try {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.execute("CREATE TABLE " + tableName + "\r\n" +
-                    "(" + "\r\n"
-                    + "EmployeeName VARCHAR(255)," + MessageUtility.newLine
-                    + "BusinessID INTEGER," + MessageUtility.newLine
-                    + "CompletedJobs INTEGER," + MessageUtility.newLine
-                    + "ScoutedJobs INTEGER," + MessageUtility.newLine
-                    + "HasJob BOOLEAN," +  MessageUtility.newLine
-                    + "ActiveJobId INTEGER"+ "\r\n" +
-                    ");");
-        } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        eTable = tableName;
-    }
-
-    private static void createJobTable (String tableName) {
-        try {
-            if(s == null) {
-                s = Data.c.createStatement();
-            }
-            s.execute("CREATE TABLE " + tableName + "\r\n" +
-                    "(" + MessageUtility.newLine
-                    + "JobIssuer VARCHAR(255)," + MessageUtility.newLine
-                    + "JobDescription Memo," + MessageUtility.newLine
-                    + "JobPayment FLOAT," + MessageUtility.newLine
-                    + "JobLocationX FLOAT," + MessageUtility.newLine
-                    + "JobLocationY FLOAT," + MessageUtility.newLine
-                    + "JobLocationZ FLOAT," + MessageUtility.newLine
-                    + "JobID INTEGER" + MessageUtility.newLine
-                    + "Employee VARCHAR(255)," + MessageUtility.newLine
-                    + "BusinessID INTEGER" + MessageUtility.newLine
+            s.execute("CREATE TABLE 'employee'" + "\r\n" +
+                    "("
+                    + "EmployeeName VARCHAR(255),"
+                    + "BusinessID INTEGER,"
+                    + "CompletedJobs INTEGER,"
+                    + "ScoutedJobs INTEGER,"
+                    + "HasJob BOOLEAN,"
+                    + "ActiveJobId INTEGER"
                     + ");");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
-        jTable = tableName;
     }
 
-    public static void createTables(String bTable, String eTable, String jTable) {
-        createBusinessTable(bTable);
-        createEmployeeTable(eTable);
-        createJobTable(jTable);
+    private static void createJobTable () {
+        try {
+            if(s == null) {
+                s = Data.c.createStatement();
+            }
+            s.execute("CREATE TABLE 'job'" + "\r\n" +
+                    "("
+                    + "JobIssuer VARCHAR(255),"
+                    + "JobDescription TEXT,"
+                    + "JobPayment FLOAT,"
+                    + "JobLocationX FLOAT,"
+                    + "JobLocationY FLOAT,"
+                    + "JobLocationZ FLOAT,"
+                    + "JobID INTEGER"
+                    + "Employee VARCHAR(255),"
+                    + "BusinessID INTEGER"
+                    + ");");
+        } catch (SQLException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+    }
+
+    public static void createTables() {
+        createBusinessTable();
+        createEmployeeTable();
+        createJobTable();
     }
 
     public static void addBusiness(String name, int id, String owner, double worth) {
@@ -85,10 +80,10 @@ public class DataStore extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("INSERT INTO " + bTable + MessageUtility.newLine
+            s.executeUpdate("INSERT INTO 'business'" + MessageUtility.newLine
                     + "VALUES ('" + name + "'," + id + ",'" + owner + "'," + worth + ");");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
     }
 
@@ -97,10 +92,10 @@ public class DataStore extends Data {
             if(s == null){
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("INSERT INTO " + eTable + MessageUtility.newLine
+            s.executeUpdate("INSERT INTO 'employee'"+ MessageUtility.newLine
                     + "VALUES ('" + name + "'," + bId + "," + jobs + "," + scouted + "," + hasJob + "," + jobId + ");");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
     }
 
@@ -109,10 +104,10 @@ public class DataStore extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("INSERT INTO " + jTable + MessageUtility.newLine
+            s.executeUpdate("INSERT INTO 'job'" + MessageUtility.newLine
                     + "VALUES ('"+issuer+"','"+description+"',"+pay+","+x+","+y+","+z+","+jobId+",'"+employeeName+"',"+bid+");");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
     }
 
@@ -121,10 +116,10 @@ public class DataStore extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("DELETE FROM " + bTable + MessageUtility.newLine
-                    + "WHERE BusinessOwner="+name);
+            s.executeUpdate("DELETE FROM 'business'" + MessageUtility.newLine
+                    + "WHERE BusinessOwner="+name+";");
         } catch (SQLException ex) {
-            Logger.getLogger(DataStore.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
     }
 

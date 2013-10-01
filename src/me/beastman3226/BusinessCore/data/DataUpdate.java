@@ -16,7 +16,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("DELETE FROM " + bTable + MessageUtility.newLine
+            s.executeUpdate("DELETE FROM 'business'" + MessageUtility.newLine
                     + "WHERE BusinessOwner=" + owner);
         } catch (SQLException ex) {
             Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
@@ -28,7 +28,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("DELETE FROM " + jTable + MessageUtility.newLine
+            s.executeUpdate("DELETE FROM 'job'" + MessageUtility.newLine
                     + "WHERE JobIssuer=" + issuer);
         } catch (SQLException ex) {
             Logger.getLogger(DataUpdate.class.getName()).log(Level.SEVERE, null, ex);
@@ -40,7 +40,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("UPDATE " + jTable + MessageUtility.newLine
+            s.executeUpdate("UPDATE 'job'" + MessageUtility.newLine
                     + "SET BusinessID="+bId+ MessageUtility.newLine
                     + "WHERE JobIssuer="+issuer);
         } catch (SQLException ex) {
@@ -53,7 +53,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s =  Data.c.createStatement();
             }
-            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+            s.executeUpdate("UPDATE 'business'"+ MessageUtility.newLine
                     + "SET BusinessWorth="+worth+MessageUtility.newLine
                     + "WHERE BusinessOwner="+owner);
         } catch (SQLException ex) {
@@ -66,7 +66,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+            s.executeUpdate("UPDATE 'business'" + MessageUtility.newLine
                     + "SET CompletedJobs="+completedJobs + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {
@@ -79,7 +79,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+            s.executeUpdate("UPDATE 'business'" + MessageUtility.newLine
                     + "SET Scouted="+scoutedJobs + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {
@@ -92,7 +92,7 @@ public class DataUpdate extends Data {
             if(s == null) {
                 s = Data.c.createStatement();
             }
-            s.executeUpdate("UPDATE " + bTable + MessageUtility.newLine
+            s.executeUpdate("UPDATE 'business'" + MessageUtility.newLine
                     + "SET ActiveJobId="+id + MessageUtility.newLine
                     + "WHERE EmployeeName="+employeeName);
         } catch (SQLException ex) {

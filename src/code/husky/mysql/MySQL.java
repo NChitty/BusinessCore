@@ -1,19 +1,17 @@
 package code.husky.mysql;
 
+import code.husky.Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
-
 import org.bukkit.plugin.Plugin;
-
-import code.husky.Database;
 
 /**
  * Connects to and uses a MySQL database
- * 
+ *
  * @author -_Husky_-
  * @author tips48
  */
@@ -28,7 +26,7 @@ public class MySQL extends Database {
 
     /**
      * Creates a new MySQL instance
-     * 
+     *
      * @param plugin
      *            Plugin instance
      * @param hostname
@@ -58,9 +56,9 @@ public class MySQL extends Database {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database, this.user, this.password);
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not connect to MySQL server! because: " + e.getMessage());
+            System.out.println(e.getLocalizedMessage());
         } catch (ClassNotFoundException e) {
-            plugin.getLogger().log(Level.SEVERE, "JDBC Driver not found!");
+           System.out.println(e.getLocalizedMessage());
         }
         return connection;
     }
@@ -82,7 +80,7 @@ public class MySQL extends Database {
                 connection.close();
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "Error closing the MySQL Connection!");
-                e.printStackTrace();
+                System.out.println(e.getLocalizedMessage());
             }
         }
     }
@@ -95,7 +93,7 @@ public class MySQL extends Database {
         try {
             s = c.createStatement();
         } catch (SQLException e1) {
-            e1.printStackTrace();
+            System.out.println(e1.getLocalizedMessage());
         }
 
         ResultSet ret = null;
@@ -103,7 +101,7 @@ public class MySQL extends Database {
         try {
             ret = s.executeQuery(query);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getLocalizedMessage());
         }
 
         return ret;
@@ -118,7 +116,7 @@ public class MySQL extends Database {
             s = c.createStatement();
             s.executeUpdate(update);
         } catch (SQLException e1) {
-            e1.printStackTrace();
+            System.out.println(e1.getLocalizedMessage());
         }
 
     }

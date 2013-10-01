@@ -13,24 +13,7 @@ import me.beastman3226.BusinessCore.business.BusinessManager;
  */
 public class DataRetrieve extends Data {
 
-    public static void shutdown() {
-
-    }
-
-    public static void retrieveBusinesses() {
-        try {
-            String query = "SELECT * FROM " + bTable;
-            BusinessManager.populateBusinesses(s.executeQuery(query));
-        } catch (SQLException ex) {
-            Logger.getLogger(DataRetrieve.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public static void retrieveEmployees() {
-
-    }
-
-    public static void retrieveJobs() {
-
-    }
+    public static String retrieveBusinesses = "SELECT * FROM 'business'";
+    public static String retrieveEmployees = "SELECT * FROM 'employee'";
+    public static String retrieveJobs = "SELECT * FROM 'job'";
 }

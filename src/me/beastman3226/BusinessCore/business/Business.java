@@ -1,7 +1,11 @@
 package me.beastman3226.BusinessCore.business;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.job.Job;
 import me.beastman3226.BusinessCore.player.Employee;
 import me.beastman3226.BusinessCore.data.DataUpdate;
@@ -10,6 +14,16 @@ import org.bukkit.Bukkit;
 public class Business {
 
 	public static ArrayList<Business> businessList = new ArrayList();
+
+    static void createBusiness(List<String> stringList) {
+        for(String s : stringList) {
+            String b = BusinessMain.flatfile.getString(s);
+            String[] args = b.split(",");
+            Business business = new Business(Integer.valueOf(args[0]), args[2], args[3]);
+            business.setWorth(Double.valueOf(args[1]));
+            Logger.getLogger(Business.class.getSimpleName()).log(Level.INFO,"Added: \r\n Business: {0} | Index: {1} | Owner: {2} | Worth: {3}", new Object[]{business.getName(), business.getIndex(), business.getOwnerName(), business.getWorth()});
+        }
+    }
 
 	private final int index;
 	private double worth;

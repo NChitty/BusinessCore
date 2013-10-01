@@ -22,8 +22,9 @@ public class BusinessMoney extends CommandHandler {
 
     public static void executeDeposit(CommandSender sender, String[] args) {
         Business b = BusinessManager.getBusiness(sender.getName());
-        BusinessManager.deposit(sender.getName(), Double.parseDouble(args[0]));
+        BusinessManager.deposit(sender.getName(), Double.parseDouble(args[0]) + b.getWorth());
         sender.sendMessage(MessageUtility.PREFIX_INFO + b.getName() + " has " + b.getWorth() + " in the bank.");
+        main.econ.withdrawPlayer(sender.getName(), Double.parseDouble(args[0]));
     }
 
     public static void executeWithdraw(CommandSender sender, String[] args) {
