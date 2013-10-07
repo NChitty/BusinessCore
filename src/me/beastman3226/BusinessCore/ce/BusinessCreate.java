@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-/**
+/** Handles the creation of a business
  *
  * @author beastman3226
  */

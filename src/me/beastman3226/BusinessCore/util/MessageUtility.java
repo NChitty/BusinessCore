@@ -13,12 +13,12 @@ public class MessageUtility {
     public static String PREFIX_INFO = ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": ";
     public static String PREFIX_OTHER = ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": ";
     public static String[] B_HELP = new String[]{ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]" + ChatColor.RESET + ": These are arguments for the command business",
-            "help: Returns this screen.",
-            "create: Creates a business. Correct format is: /business create <name of business>",
-            "delete: Deletes your business, if you are not the owner, the business will not be deleted",
-            "hire: Hires the player with the specified name",
-            "deposit: Deposit the amount specified, subtracts that number from your server account",
-            "withdraw: Withdraws the amount specified from your business",
-            "force-pay: Gives all the employees smaller paycheck depending on the last pay cycle"};
+            ChatColor.AQUA + "help:" + ChatColor.WHITE +  " Returns this screen.",
+            ChatColor.AQUA + "create:" + ChatColor.WHITE +  " Creates a business. Correct format is: /business create <name of business>",
+            ChatColor.AQUA + "delete:" + ChatColor.WHITE +  " Deletes your business, if you are not the owner, the business will not be deleted",
+            ChatColor.AQUA + "hire:" + ChatColor.WHITE +  " Hires the player with the specified name",
+            ChatColor.AQUA + "deposit:" + ChatColor.WHITE +  " Deposit the amount specified, subtracts that number from your server account",
+            ChatColor.AQUA + "withdraw:" + ChatColor.WHITE +  " Withdraws the amount specified from your business",
+            ChatColor.AQUA + "force-pay:" + ChatColor.WHITE +  "  Gives all the employees smaller paycheck depending on the last pay cycle"};
     public static final String newLine = "\r\n";
 }

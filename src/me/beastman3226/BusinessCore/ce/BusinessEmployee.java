@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
+/**Handles adding and paying your employees
  *
  * @author beastman3226
  */

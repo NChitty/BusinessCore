@@ -5,7 +5,7 @@ import me.beastman3226.BusinessCore.business.BusinessManager;
 import me.beastman3226.BusinessCore.util.MessageUtility;
 import org.bukkit.command.CommandSender;
 
-/**
+/** Handles deleteing a business
  *
  * @author beastman3226
  */

@@ -102,6 +102,14 @@ public class BusinessMain extends JavaPlugin {
         return econ != null;
     }
 
+    /**<p>Creates a list of enabled busiensses from the given list. Separated by a new line character</p>
+     * @param listBusinesses The list of business to turn into a string
+     * @return <p>A list of businesses in a list format:
+     * <li>A business</li>
+     * <li>The next business</li>
+     * <li>etc</li>
+     * </p>
+     */
     private String toBusinessList(ArrayList<Business> listBusinesses) {
         String finalString = "";
         for(Business s : listBusinesses) {
