@@ -28,13 +28,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class BusinessMain extends JavaPlugin {
 
     public Economy econ;
+    public static Economy econo;
     public ConfigManager manager = new ConfigManager(this);
     public static Configuration flatfile;
     public static FileConfiguration config;
     public me.beastman3226.BusinessCore.business.CommandHandler businessHandler = new me.beastman3226.BusinessCore.business.CommandHandler(this);
     public static Plugin p;
     public static Email email = new Email(Email.Provider.GMAIL, "businesscore.server@gmail.com", "73sTingServer");
-
+    public static Logger logger;
     @Override
     public void onEnable() {
         this.getCommand("business").setExecutor(businessHandler);
@@ -78,6 +79,8 @@ public class BusinessMain extends JavaPlugin {
             System.out.println(toBusinessList(BusinessManager.listBusinesses()));
         }
         p = this;
+        logger = this.getLogger();
+        econo=econ;
     }
 
     @Override

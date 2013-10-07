@@ -15,6 +15,7 @@ import me.beastman3226.BusinessCore.data.DataHandler;
 import me.beastman3226.BusinessCore.data.DataRetrieve;
 import me.beastman3226.BusinessCore.data.DataStore;
 import me.beastman3226.BusinessCore.data.DataUpdate;
+import me.beastman3226.BusinessCore.file.FileStore;
 import me.beastman3226.BusinessCore.util.Email;
 import me.beastman3226.BusinessCore.util.Email.Provider;
 import org.bukkit.Bukkit;
@@ -46,9 +47,12 @@ public class BusinessManager {
     public static void deleteBusiness(String name, BusinessMain plugin) {
         switch(DataHandler.storeType.toLowerCase()) {
             case "db": {
+                DataUpdate.deleteBusiness(name);
+                Business.businessList.remove(whereNameEquals(name));
                 break;
             }
             case "flatfile": {
+                Business.businessList.remove(whereNameEquals(name));
                 break;
             }
             default: {
@@ -78,9 +82,12 @@ public class BusinessManager {
     public static void deposit(String name, double d) {
         switch(DataHandler.storeType.toLowerCase()) {
             case "db": {
+                DataUpdate.setBusinessWorth(name, Business.getBusiness(name).getWorth() + d);
+                Business.getBusiness(name).setWorth(Business.getBusiness(name).getWorth() + d);
                 break;
             }
             case "flatfile": {
+                FileStore.update(name, Business.getBusiness(name).toString());
                 break;
             }
             default: {
@@ -140,12 +147,12 @@ public class BusinessManager {
     }
 
     public static Vector<String> getEmployeeList(String name) {
-        return null;
+        return Business.getBusiness(name).getEmployeeList();
 
     }
 
-    public static void payOut(double calculate) {
-
+    public static void payOut(double calculate, String ownerName) {
+        Business.getBusiness(ownerName).setWorth(Business.getBusiness(ownerName).getWorth() - calculate);
     }
 
     private static List<String> ownerList() {
@@ -162,5 +169,14 @@ public class BusinessManager {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-
+    static Business whereNameEquals(String name) {
+        for(Business b : Business.businessList) {
+            if(b.getOwnerName().equals(name)) {
+                return b;
+            } else {
+                continue;
+            }
+        }
+        return null;
+    }
 }

@@ -17,15 +17,15 @@ import org.bukkit.entity.Player;
  */
 public class BusinessEmployee {
 
-    public static HashMap<String, Business> employeeBusinessMap = new HashMap<String, Business>();
+    public static HashMap<String, Business> employeeBusinessMap = new HashMap<>();
 
     public static void executePay(CommandSender sender, String[] subtractArg, BusinessMain main) {
         Business b = BusinessManager.getBusiness(sender.getName());
         Vector<String> list = BusinessManager.getEmployeeList(sender.getName());
         for(String employee : list) {
             main.econ.depositPlayer(employee, PayCalculator.calculate(b, employee));
-            BusinessManager.payOut(PayCalculator.calculate(b, employee));
-            Bukkit.getPlayer(employee).sendMessage("You have been payed " + PayCalculator.calculate(b, employee) + " "+ main.econ.currencyNamePlural());
+            BusinessManager.payOut(PayCalculator.calculate(b, employee), sender.getName());
+            Bukkit.getPlayer(employee).sendMessage("You have been payed " + PayCalculator.calculate(b, employee) + " "+ main.econ.currencyNamePlural() + "from working " + Employee.getEmployee(employee).getCompletedJobs() + " jobs!");
         }
     }
 
