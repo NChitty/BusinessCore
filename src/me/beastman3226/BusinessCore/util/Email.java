@@ -25,36 +25,31 @@ public class Email {
 		String USER = Base64Coder.encodeString(owner);
 
 		try {
-			Socket socket = new Socket(HOST, port);
-			DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-			DataInputStream is = new DataInputStream(socket.getInputStream());
+                try (Socket socket = new Socket(HOST, port); DataOutputStream dos = new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream())) {
 
-			dos.writeBytes("HELO\r\n");
-			dos.writeBytes("AUTH LOGIN");
-			dos.writeBytes("\r\n");
-			dos.writeBytes(USER);
-			dos.writeBytes("\r\n");
-			dos.writeBytes(PASSWORD);
-			dos.writeBytes("\r\n");
-			dos.writeBytes("MAIL FROM:<" + owner + ">\r\n");
-			dos.writeBytes("\r\n");
-			dos.writeBytes("RCPT TO: <" + to + ">\r\n");
-			dos.writeBytes("DATA\r\n");
-			dos.writeBytes("Subject: " + subject + "\r\n");
-			dos.writeBytes(content);
-			dos.writeBytes("\r\n.\r\n");
-			dos.writeBytes("QUIT\r\n");
+                    dos.writeBytes("HELO\r\n");
+                    dos.writeBytes("AUTH LOGIN");
+                    dos.writeBytes("\r\n");
+                    dos.writeBytes(USER);
+                    dos.writeBytes("\r\n");
+                    dos.writeBytes(PASSWORD);
+                    dos.writeBytes("\r\n");
+                    dos.writeBytes("MAIL FROM:<" + owner + ">\r\n");
+                    dos.writeBytes("\r\n");
+                    dos.writeBytes("RCPT TO: <" + to + ">\r\n");
+                    dos.writeBytes("DATA\r\n");
+                    dos.writeBytes("Subject: " + subject + "\r\n");
+                    dos.writeBytes(content);
+                    dos.writeBytes("\r\n.\r\n");
+                    dos.writeBytes("QUIT\r\n");
 
-			dos.flush();
+                    dos.flush();
 
-			String responseline;
-			while ((responseline = is.readLine()) != null) {
-				System.out.println(responseline);
-			}
-
-			is.close();
-			dos.close();
-			socket.close();
+                    String responseline;
+                    while ((responseline = is.readLine()) != null) {
+                            System.out.println(responseline);
+                    }
+                }
 		} catch (IOException ex) {
 			System.err.println(ex);
 		}

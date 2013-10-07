@@ -107,5 +107,16 @@ public class DataUpdate extends Data {
            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
+    
+    public static void purgeResetBusiness() {
 
+    }
+
+    public static void purgeResetEmployee() {
+
+    }
+
+    public static void purgeResetJob() {
+
+    }
 }
