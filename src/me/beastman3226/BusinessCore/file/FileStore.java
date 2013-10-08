@@ -10,10 +10,15 @@ import me.beastman3226.BusinessCore.BusinessMain;
 
 /**
  *
- * @author Nicholas
+ * @author beastman3226
  */
 public class FileStore {
 
+    /**
+     * Updates information in the business file.
+     * @param path the path to be updated
+     * @param updateWith the path to be updated
+     */
     public static void update(String path, String updateWith) {
         if(BusinessMain.flatfile.contains(path)) {
             String business = BusinessMain.flatfile.getString(path);
@@ -29,10 +34,16 @@ public class FileStore {
         }
     }
 
+    /**
+     * Saves all the data to the disk
+     */
     public static void save() {
-        
+
     }
 
+    /**
+     * Loads all the data from the disk
+     */
     public static void load() {
 
     }

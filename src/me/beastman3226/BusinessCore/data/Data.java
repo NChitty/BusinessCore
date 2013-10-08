@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import org.bukkit.plugin.Plugin;
 
-/**
+/**A data object
  *
  * @author beastman3226
  */

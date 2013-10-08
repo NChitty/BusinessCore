@@ -29,7 +29,7 @@ public class ConfigManager {
 
     private JavaPlugin plugin;
 
-    /*
+    /**
     * Manage custom configurations and files
     */
     public ConfigManager(JavaPlugin plugin) {
@@ -71,7 +71,7 @@ public class ConfigManager {
 
     }
 
-    /*
+    /**
     * Get new configuration
     * @param filePath - Path to file
     * @return - New SimpleConfig
@@ -80,7 +80,7 @@ public class ConfigManager {
         return this.getNewConfig(filePath, null);
     }
 
-    /*
+    /**
     * Get configuration file from string
     * @param file - File path
     * @return - New file object
@@ -109,7 +109,7 @@ public class ConfigManager {
 
     }
 
-    /*
+    /**
     * Create new file for config and copy resource into it
     * @param file - Path to file
     * @param resource - Resource to copy

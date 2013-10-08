@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.business.BusinessManager;
 
-/**
+/**Just some stuff for retrieving data
  *
  * @author beastman3226
  */

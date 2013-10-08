@@ -2,7 +2,7 @@ package me.beastman3226.BusinessCore.data;
 
 import me.beastman3226.BusinessCore.BusinessMain;
 
-/**
+/**Handles data, checks the type of storage
  *
  * @author beastman3226
  */

@@ -1,5 +1,6 @@
 package me.beastman3226.BusinessCore;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,21 @@ public class BusinessMain extends JavaPlugin {
     public Economy econ;
     public static Economy econo;
     public ConfigManager manager = new ConfigManager(this);
+    /**
+     * Stores business info
+     */
     public static Configuration flatfile;
+    /**
+     * Stores employee stuff
+     */
+    public static File employee;
+    /**
+     * Stores job info in the file
+     */
+    public static File job;
+    /**
+     * Standard config
+     */
     public static FileConfiguration config;
     public me.beastman3226.BusinessCore.business.CommandHandler businessHandler = new me.beastman3226.BusinessCore.business.CommandHandler(this);
     public static Plugin p;
@@ -110,7 +125,7 @@ public class BusinessMain extends JavaPlugin {
      * <li>etc</li>
      * </p>
      */
-    private String toBusinessList(ArrayList<Business> listBusinesses) {
+    public String toBusinessList(ArrayList<Business> listBusinesses) {
         String finalString = "";
         for(Business s : listBusinesses) {
             finalString = finalString + "\r\n" + s.getName();

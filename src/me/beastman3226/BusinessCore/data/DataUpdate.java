@@ -12,6 +12,10 @@ import me.beastman3226.BusinessCore.util.MessageUtility;
  */
 public class DataUpdate extends Data {
 
+    /**
+     * See DataStore.deleteBusiness(String string);
+     * @param owner
+     */
     public static void deleteBusiness(String owner) {
         try {
             if(s == null) {
@@ -25,6 +29,10 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * Deletes a job from the database
+     * @param issuer The issuer of the job
+     */
     public static void deleteJob(String issuer) {
         try {
             if(s == null) {
@@ -38,6 +46,11 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * Updates a job to add a business
+     * @param issuer the person who created the job
+     * @param bId the business who is taking the job
+     */
     public static void updateJob(String issuer, int bId) {
         try {
             if(s == null) {
@@ -52,6 +65,11 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * Changes the worth of a business
+     * @param owner Name of the owner for the business
+     * @param worth new worth
+     */
     public static void setBusinessWorth(String owner, double worth) {
         try {
             if(s == null) {
@@ -66,6 +84,11 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * Updates the number of completed jobs an employee has
+     * @param employeeName name of the employee
+     * @param completedJobs number of completed jobs
+     */
     public static void updateEmployee(String employeeName, int completedJobs) {
         try {
             if(s == null) {
@@ -80,6 +103,11 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * updates scouted jobs
+     * @param employeeName name of the employee
+     * @param scoutedJobs scouted jobs
+     */
     public static void updateEmployeeScouted(String employeeName, int scoutedJobs) {
         try {
             if(s == null) {
@@ -94,6 +122,11 @@ public class DataUpdate extends Data {
         }
     }
 
+    /**
+     * Changes the current job
+     * @param employeeName name of employee
+     * @param id job id
+     */
     public static void updateEmployeeJob(String employeeName, int id) {
         try {
             if(s == null) {
@@ -107,7 +140,7 @@ public class DataUpdate extends Data {
            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
-    
+
     public static void purgeResetBusiness() {
 
     }

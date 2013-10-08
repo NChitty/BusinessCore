@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-/**
+/** Job object, stores data in memory for downstream
  *
  * @author beastman3226
  */
@@ -23,6 +23,14 @@ public class Job {
     private String businessName;
     public static ArrayList<Job> jobList = new ArrayList();
 
+    /**
+     * Creates a new job
+     * @param description
+     * @param payment
+     * @param loc
+     * @param issuer
+     * @param id
+     */
     public Job(String description, double payment, Location loc, String issuer, int id) {
         this.description = description;
         this.payment = payment;

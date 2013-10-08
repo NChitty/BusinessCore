@@ -7,12 +7,15 @@ import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.util.MessageUtility;
 
-/**
+/**Storing data
  *
  * @author beastman3226
  */
 public class DataStore extends Data {
 
+    /**<p>Creates a new table called 'business'.
+     * Does not check to see if it has already been made.</p>
+     */
     private static void createBusinessTable() {
         try {
             if(s == null) {
@@ -30,6 +33,9 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * <p>Creates an employee table, will error out if the table already exists.</p>
+     */
     private static void createEmployeeTable () {
         try {
             if(s == null) {
@@ -50,6 +56,9 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * <p>Creates a table called 'job', errors out if the table exists</p>
+     */
     private static void createJobTable () {
         try {
             if(s == null) {
@@ -73,12 +82,22 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * Creates all the tables
+     */
     public static void createTables() {
         createBusinessTable();
         createEmployeeTable();
         createJobTable();
     }
 
+    /**
+     * Adds a business to the table
+     * @param name The name of the business
+     * @param id The id
+     * @param owner the owner
+     * @param worth the worth
+     */
     public static void addBusiness(String name, int id, String owner, double worth) {
         try {
             if(s == null) {
@@ -92,6 +111,15 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * Adds an employee to the business
+     * @param name Name
+     * @param bId id of the business
+     * @param jobs Jobs completed
+     * @param scouted Jobs scouted
+     * @param hasJob if the employee currently has a job
+     * @param jobId the id of the current job
+     */
     public static void addEmployee(String name, int bId, int jobs, int scouted, boolean hasJob, int jobId) {
         try {
             if(s == null){
@@ -105,6 +133,18 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * Adds a job to the database
+     * @param issuer Name of the issuer
+     * @param description The description of the job
+     * @param pay the amount to be payed
+     * @param x the location on the x axis
+     * @param y the location on the y axis (up and down)
+     * @param z the location on the z axis
+     * @param jobId the id of the job
+     * @param employeeName the current employee
+     * @param bid the business id
+     */
     public static void addJob(String issuer, String description, double pay, double x, double y, double z, int jobId, String employeeName, int bid) {
         try {
             if(s == null) {
@@ -118,6 +158,10 @@ public class DataStore extends Data {
         }
     }
 
+    /**
+     * Deletes a business
+     * @param name The name of the owner where the business should be deleted
+     */
     public static void deleteBusiness(String name) {
         try {
             if(s == null) {
