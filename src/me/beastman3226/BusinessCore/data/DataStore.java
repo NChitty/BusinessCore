@@ -29,7 +29,6 @@ public class DataStore extends Data {
                     + "BusinessWorth FLOAT);");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -52,7 +51,6 @@ public class DataStore extends Data {
                     + ");");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -78,7 +76,6 @@ public class DataStore extends Data {
                     + ");");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -107,7 +104,6 @@ public class DataStore extends Data {
                     + "VALUES ('" + name + "'," + id + ",'" + owner + "'," + worth + ");");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -129,7 +125,6 @@ public class DataStore extends Data {
                     + "VALUES ('" + name + "'," + bId + "," + jobs + "," + scouted + "," + hasJob + "," + jobId + ");");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -154,7 +149,6 @@ public class DataStore extends Data {
                     + "VALUES ('"+issuer+"','"+description+"',"+pay+","+x+","+y+","+z+","+jobId+",'"+employeeName+"',"+bid+");");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 
@@ -171,7 +165,6 @@ public class DataStore extends Data {
                     + "WHERE BusinessOwner="+name+";");
         } catch (SQLException ex) {
             System.out.println(ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "Data is having an error", ex.getLocalizedMessage());
         }
     }
 

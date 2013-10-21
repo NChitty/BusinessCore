@@ -27,6 +27,10 @@
 
 package tk.ivybits.smtplib;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,10 +42,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 
 public class SMTP {
     static class Coder {
@@ -232,13 +232,13 @@ public class SMTP {
         }
     }
 
-    class Email {
-        protected Map<String, String> headers = new HashMap<String, String>();
+    public class Email {
+        protected Map<String, String> headers = new HashMap<>();
         protected String body = "";
         protected Map.Entry<String, String> from;
-        protected Map<String, String> to = new HashMap<String, String>();
-        protected Map<String, String> cc = new HashMap<String, String>();
-        protected Map<String, String> bcc = new HashMap<String, String>();
+        protected Map<String, String> to = new HashMap<>();
+        protected Map<String, String> cc = new HashMap<>();
+        protected Map<String, String> bcc = new HashMap<>();
         final SimpleDateFormat emailFormat = new SimpleDateFormat("EEE, d MMMMM yyyy HH:mm:ss Z", Locale.ENGLISH);
 
         public Email from(String email) {
@@ -356,8 +356,9 @@ public class SMTP {
         for (String string : iterable) {
             buffer.append(string).append(deliminator);
         }
-        if (buffer.length() < deliminator.length())
+        if (buffer.length() < deliminator.length()) {
             return "";
+        }
         return buffer.toString().substring(0, buffer.length() - deliminator.length());
     }
 
@@ -407,11 +408,13 @@ public class SMTP {
     }
 
     protected void send(String line) {
-        if (socket == null)
+        if (socket == null) {
             throw new SMTPDisconnectedException("Not connected in the first place.");
+        }
         try {
-            if (write == null)
+            if (write == null) {
                 write = new OutputStreamWriter(socket.getOutputStream());
+            }
             write.write(line);
             if (debug) {
                 System.out.print('>');
@@ -424,10 +427,12 @@ public class SMTP {
     }
 
     protected void putCommand(String cmd, String args) {
-        if (args == null || args.isEmpty())
+        if (args == null || args.isEmpty()) {
             cmd += "\r\n";
-        else
+        }
+        else {
             cmd += " " + args + "\r\n";
+        }
         send(cmd);
     }
 
@@ -439,10 +444,11 @@ public class SMTP {
 
             String line;
             int code = -1;
-            ArrayList<String> responses = new ArrayList<String>();
+            ArrayList<String> responses = new ArrayList<>();
             while ((line = read.readLine()) != null) {
-                if (line.length() < 4)
+                if (line.length() < 4) {
                     throw new SMTPDisconnectedException("Not enough data read.");
+                }
                 if (debug) {
                     System.out.print('<');
                     System.out.println(line);
@@ -481,8 +487,9 @@ public class SMTP {
     protected void addAuth(String value) {
         if (esmtpFeatures.containsKey("auth")) {
             esmtpFeatures.put("auth", esmtpFeatures.get("auth") + " " + value);
-        } else
+        } else {
             esmtpFeatures.put("auth", value);
+        }
     }
 
     public Response ehlo() {
@@ -554,11 +561,13 @@ public class SMTP {
 
     public Response data(String data) {
         Response response = doCommand("data", null);
-        if (response.code != 354)
+        if (response.code != 354) {
             return response;
+        }
         data = data.replaceAll("(?:\\r\\n|\\n|\\r(?!\\n))", "\r\n").replaceAll("^\\.", "..");
-        if (!data.endsWith("\r\n"))
+        if (!data.endsWith("\r\n")) {
             data += "\r\n";
+        }
         data += "." + "\r\n";
         send(data);
         return getReply();
@@ -716,20 +725,5 @@ public class SMTP {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        SMTP google = new SMTP("smtp.gmail.com");
-        google.debug = true;
-        google.starttls();
-        google.login("botfortune@gmail.com", "*********");
-        google.mail("botfortune@gmail.com");
-        google.rcpt("*********@gmail.com");
-        google.sendMail(google.email().from("Fortune Bot", "botfortune@gmail.com")
-                .to("Xiaomao Chen", "*********@gmail.com")
-                .subject("Hi").body("Hello Xiaomao,\n\n" +
-                        "Your code is working! Congrats!\n\n" +
-                        "Fortune Bot\n"));
-        google.close();
     }
 }

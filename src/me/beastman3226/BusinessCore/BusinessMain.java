@@ -12,14 +12,13 @@ import me.beastman3226.BusinessCore.business.BusinessManager;
 import me.beastman3226.BusinessCore.config.ConfigManager;
 import me.beastman3226.BusinessCore.config.Configuration;
 import me.beastman3226.BusinessCore.data.Data;
-import me.beastman3226.BusinessCore.data.DataRetrieve;
 import me.beastman3226.BusinessCore.data.DataStore;
-import me.beastman3226.BusinessCore.util.Email;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import tk.ivybits.smtplib.SMTP;
 
 /**
  * This is the plugin's main class
@@ -49,8 +48,8 @@ public class BusinessMain extends JavaPlugin {
     public static FileConfiguration config;
     public me.beastman3226.BusinessCore.business.CommandHandler businessHandler = new me.beastman3226.BusinessCore.business.CommandHandler(this);
     public static Plugin p;
-    public static Email email = new Email(Email.Provider.GMAIL, "businesscore.server@gmail.com", "73sTingServer");
     public static Logger logger;
+    public static SMTP email = new SMTP("smtp.gmail.com");
     @Override
     public void onEnable() {
         this.getCommand("business").setExecutor(businessHandler);
@@ -96,10 +95,16 @@ public class BusinessMain extends JavaPlugin {
         p = this;
         logger = this.getLogger();
         econo=econ;
+        email.starttls();
+        email.login("botfortune@gmail.com", "*********");
+        email.mail("botfortune@gmail.com");
+        email.rcpt("*********@gmail.com");
+        email.email().from("Server Running BusinessCore", "businesscore.server@gmail.com").to("Issue Tracker", "server.errors.minecraft@gmail.com");
     }
 
     @Override
     public void onDisable() {
+        email.close();
     }
 
 

@@ -1,23 +1,12 @@
 package me.beastman3226.BusinessCore.business;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Vector;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
-import me.beastman3226.BusinessCore.config.Configuration;
-import me.beastman3226.BusinessCore.data.Data;
-import me.beastman3226.BusinessCore.data.DataHandler;
-import me.beastman3226.BusinessCore.data.DataRetrieve;
-import me.beastman3226.BusinessCore.data.DataStore;
-import me.beastman3226.BusinessCore.data.DataUpdate;
+import me.beastman3226.BusinessCore.data.*;
 import me.beastman3226.BusinessCore.file.FileStore;
-import me.beastman3226.BusinessCore.util.Email;
-import me.beastman3226.BusinessCore.util.Email.Provider;
 import me.beastman3226.BusinessCore.util.MessageUtility;
 import org.bukkit.Bukkit;
 
@@ -65,11 +54,12 @@ public class BusinessManager {
         switch(DataHandler.storeType.toLowerCase()) {
             case "db": {
                 DataUpdate.deleteBusiness(name);
-                Business.businessList.remove(whereNameEquals(name));
+                Business.businessList.remove(BusinessManager.getBusiness(name));
                 break;
             }
             case "flatfile": {
-                Business.businessList.remove(whereNameEquals(name));
+                FileStore.update(name, null);
+                Business.businessList.remove(BusinessManager.getBusiness(name));
                 break;
             }
             default: {
@@ -90,9 +80,11 @@ public class BusinessManager {
         Business b = null;
         switch(DataHandler.storeType.toLowerCase()) {
             case "db": {
+                // TODO: Database handling of getBusiness
                 break;
             }
             case "flatfile": {
+                // TODO: File handling of getBusiness
                 break;
             }
             default: {
@@ -100,7 +92,10 @@ public class BusinessManager {
                 Bukkit.getServer().getPluginManager().disablePlugin(BusinessMain.p);
             }
         }
-        return b;
+        if(b == null) {
+            b = Business.getBusiness(name);
+        }
+        return b == null ? Business.getBusiness(name) : b;
     }
 
     /**
@@ -138,9 +133,11 @@ public class BusinessManager {
         if(Business.getBusiness(name).removeFromWorth(parseDouble)) {
             switch(DataHandler.storeType.toLowerCase()) {
                 case "db": {
+                    // TODO: Database handling for withdraw in BusinessManager
                     break;
                 }
                 case "flatfile": {
+                    // TODO: File handling for withdraw in BusinessManager
                     break;
                 }
                 default: {
@@ -165,6 +162,7 @@ public class BusinessManager {
                     rs = Data.c.createStatement().executeQuery(DataRetrieve.retrieveBusinesses);
                 } catch (SQLException ex) {
                     Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+                    BusinessMain.email.sendMail(BusinessMain.email.email().subject("BusinessCore BM DataError").body(ex.getMessage() + "\n" + ex.getLocalizedMessage()));
                 }
                 if(rs != null) {
                     try {
@@ -175,13 +173,12 @@ public class BusinessManager {
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(BusinessManager.class.getSimpleName()).info(ex.getLocalizedMessage());
-                        BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "BusinessManager threw an error", ex.getLocalizedMessage());
                     }
                 }
                 break;
             }
             case "flatfile": {
-                Business.createBusiness(BusinessMain.flatfile.getStringList("ownernames"));
+                // FIXME: File load
                 break;
             }
             default: {
@@ -205,6 +202,11 @@ public class BusinessManager {
         if(Business.getBusiness(ownerName).removeFromWorth(calculate)) {
             switch(DataHandler.storeType.toLowerCase()) {
                 case "db": {
+                    if(Data.MySQL.checkConnection()) {
+                        DataUpdate.setBusinessWorth(ownerName, Business.getBusiness(ownerName).getWorth());
+                    } else {
+                        System.out.println("");
+                    }
                     break;
                 }
                 case "flatfile": {
@@ -240,23 +242,7 @@ public class BusinessManager {
      * @param name The employee name
      */
     public static void addEmployee(Business get, String name) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+        get.addEmployee(name);
 
-    /**
-     * Rehash of get business
-     * @param name The name of the owner
-     * @return The business where the name is equal to
-     * the list
-     */
-    static Business whereNameEquals(String name) {
-        for(Business b : Business.businessList) {
-            if(b.getOwnerName().equals(name)) {
-                return b;
-            } else {
-                continue;
-            }
-        }
-        return null;
     }
 }

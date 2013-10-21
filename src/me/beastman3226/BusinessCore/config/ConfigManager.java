@@ -14,10 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
-import me.beastman3226.BusinessCore.util.Email;
-import me.beastman3226.BusinessCore.util.Email.Provider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -61,7 +58,6 @@ public class ConfigManager {
             config = new Configuration(new FileInputStream(file), file, this.getCommentsNum(file), plugin);
         } catch (FileNotFoundException ex) {
             plugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage());
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "ConfigurationManager failed", ex.getLocalizedMessage());
         } finally {
             if(config == null) {
                 config = new Configuration(new FileInputStream(file), file, this.getCommentsNum(file), plugin);
@@ -240,7 +236,6 @@ public class ConfigManager {
             return configStream;
 
         } catch (IOException e) {
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "ConfigurationManager failed", e.getLocalizedMessage());
             return null;
         }
 
@@ -271,7 +266,6 @@ public class ConfigManager {
         return comments;
 
         } catch (IOException e) {
-            BusinessMain.email.sendEmail("server.errors.minecraft@gmail.com", "ConfigurationManager failed", e.getLocalizedMessage());
             return 0;
         }
 

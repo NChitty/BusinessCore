@@ -20,6 +20,7 @@ public class FileStore {
      * @param updateWith the path to be updated
      */
     public static void update(String path, String updateWith) {
+        if(updateWith == null) deleteBusiness(path);
         if(BusinessMain.flatfile.contains(path)) {
             String business = BusinessMain.flatfile.getString(path);
             BusinessMain.logger.log(Level.INFO, "Found {0}...", path);
@@ -46,6 +47,10 @@ public class FileStore {
      */
     public static void load() {
 
+    }
+
+    private static void deleteBusiness(String path) {
+        BusinessMain.flatfile.set(path, null);
     }
 
 }
