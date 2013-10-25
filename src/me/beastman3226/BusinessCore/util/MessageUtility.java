@@ -21,4 +21,8 @@ public class MessageUtility {
             ChatColor.AQUA + "withdraw:" + ChatColor.WHITE +  " Withdraws the amount specified from your business",
             ChatColor.AQUA + "force-pay:" + ChatColor.WHITE +  "  Gives all the employees smaller paycheck depending on the last pay cycle"};
     public static final String newLine = "\r\n";
+
+    public static String debug(Business param) {
+        return "Name: " + param.getName() + "\r\n Owner name: " + param.getOwnerName() + "\r\n ID:Worth" + param.getIndex() + ":" + param.getWorth();
+    }
 }

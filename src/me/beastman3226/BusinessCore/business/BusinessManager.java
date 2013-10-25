@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.data.*;
+import me.beastman3226.BusinessCore.error.InvalidFormatException;
 import me.beastman3226.BusinessCore.file.FileStore;
 import me.beastman3226.BusinessCore.util.MessageUtility;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class BusinessManager {
         if(DataHandler.isDataStore()) {
             DataStore.addBusiness(newBusiness.getName(), newBusiness.getIndex(), newBusiness.getOwnerName(), newBusiness.getWorth());
         } else if (DataHandler.isFileStore()) {
-            BusinessMain.flatfile.set(name, newBusiness.toString());
+            BusinessMain.flatfile.set(name, newBusiness);
             BusinessMain.flatfile.set("ownernames", ownerList());
         } else {
             BusinessMain.p.getLogger().info("BusinessManager has encountered a problem! You do not have a valid way of storing data!");
@@ -80,11 +81,26 @@ public class BusinessManager {
         Business b = null;
         switch(DataHandler.storeType.toLowerCase()) {
             case "db": {
-                // TODO: Database handling of getBusiness
+                ResultSet rs = Data.MySQL.querySQL(DataRetrieve.retrieveBusinesses);
+            try {
+                do {
+                    if(rs.getString("BusinessOwner").equalsIgnoreCase(name)){
+                        b = Business.getBusiness(rs.getInt("BusinessID"));
+                        break;
+                    } else {
+                        continue;
+                    }
+                } while (rs.next());
+            } catch (SQLException ex) {
+                Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
                 break;
             }
             case "flatfile": {
-                // TODO: File handling of getBusiness
+                while(FileStore.getAll().hasNext()) {
+
+                }
                 break;
             }
             default: {
@@ -133,11 +149,11 @@ public class BusinessManager {
         if(Business.getBusiness(name).removeFromWorth(parseDouble)) {
             switch(DataHandler.storeType.toLowerCase()) {
                 case "db": {
-                    // TODO: Database handling for withdraw in BusinessManager
+                    DataUpdate.setBusinessWorth(name, BusinessManager.getBusiness(name).getWorth());
                     break;
                 }
                 case "flatfile": {
-                    // TODO: File handling for withdraw in BusinessManager
+                    FileStore.update(name + ".worth", BusinessManager.getBusiness(name).getWorth());
                     break;
                 }
                 default: {
@@ -244,5 +260,40 @@ public class BusinessManager {
     public static void addEmployee(Business get, String name) {
         get.addEmployee(name);
 
+    }
+
+    public static Business fromString(String string) throws InvalidFormatException {
+        Business b;
+        String[] params = string.split(",");
+        int index = 0;
+        double worth = 0;
+        String name = null;
+        String ownerName = null;
+        for(int i = 0; i < params.length; i++) {
+            switch(i) {
+                case 0: {
+                    index = Integer.valueOf(params[i]);
+                    break;
+                }
+                case 1: {
+                    worth = Double.valueOf(params[i]);
+                    break;
+                }
+                case 2: {
+                    name = params[i];
+                    break;
+                }
+                case 3: {
+                    ownerName = params[i];
+                }
+            }
+        }
+        if(name == null | ownerName ==null) {
+            throw new InvalidFormatException();
+        } else {
+            b = new Business(index, name, ownerName);
+            b.setWorth(worth);
+        }
+        return b;
     }
 }

@@ -31,6 +31,10 @@ public class Business {
         }
     }
 
+    static Business getBusiness(int aInt) {
+        return businessList.get(aInt);
+    }
+
 	private final int index;
 	private double worth;
 	private final String name;
@@ -149,7 +153,7 @@ public class Business {
          *
          * @return A list of jobs that the business' employees are working on
          */
-	protected Vector<Job> getJobList() {
+	public Vector<Job> getJobList() {
 		return jobList;
 	}
 
@@ -207,7 +211,7 @@ public class Business {
     /**
      *
      * @return Creates a string from the main parts of a business:
-     * {index},{worth},{name},{ownerName},{jobId}|{jobId}|{etc}
+     * {index},{worth},{name},{ownerName}
      */
     @Override
     public String toString() {
@@ -236,15 +240,6 @@ public class Business {
                     field = this.getOwnerName();
                     object = object + "," + field;
                     field = null;
-                    break;
-                }
-                case 5: {
-                    for(Object e : this.getJobList().toArray()) {
-                        if(e != null) {
-                            Job j = (Job) e;
-                            field = field + "|" + j.getId();
-                        }
-                    }
                     break;
                 }
             }
