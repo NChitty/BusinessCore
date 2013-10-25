@@ -178,7 +178,6 @@ public class BusinessManager {
                     rs = Data.c.createStatement().executeQuery(DataRetrieve.retrieveBusinesses);
                 } catch (SQLException ex) {
                     Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
-                    BusinessMain.email.sendMail(BusinessMain.email.email().subject("BusinessCore BM DataError").body(ex.getMessage() + "\n" + ex.getLocalizedMessage()));
                 }
                 if(rs != null) {
                     try {
