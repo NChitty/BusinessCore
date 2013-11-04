@@ -135,7 +135,7 @@ public class Business {
          *
          * @param newList The list to replace the old list with
          */
-	protected void setEmployeeList(Vector<String> newList) {
+	public void setEmployeeList(Vector<String> newList) {
 		this.employeeList = newList;
 	}
 
@@ -161,7 +161,7 @@ public class Business {
          *
          * @param jobList The list to replace the old list with
          */
-	protected void setJobList(Vector<Job> jobList) {
+	public void setJobList(Vector<Job> jobList) {
 		this.jobList = jobList;
 	}
 

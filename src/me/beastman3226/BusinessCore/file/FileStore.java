@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
@@ -69,7 +70,16 @@ public class FileStore {
      * Loads all the data from the disk
      */
     public static void load() {
-        // TODO: Switch from toString to path keys
+        for(String owner : BusinessMain.flatfile.getStringList("ownernames")) {
+            BusinessManager.createBusiness(BusinessMain.flatfile.getString(owner + ".business"), owner);
+            BusinessManager.deposit(owner, BusinessMain.flatfile.getDouble(owner + ".worth"));
+            Vector<String> employees = new Vector<>();
+            employees.addAll(BusinessMain.flatfile.getStringList(owner + ".employees"));
+            BusinessManager.getBusiness(owner).setEmployeeList(employees);
+            Vector<String> jobs = new Vector<>();
+            jobs.addAll(BusinessMain.flatfile.getStringList(owner + ".jobs"));
+            BusinessManager.getBusiness(owner).setJobList(toJob(jobs));
+        }
     }
 
     private static void deleteBusiness(String path) {
@@ -84,6 +94,11 @@ public class FileStore {
             businesses.add((Business) value);
         }
         return businesses.iterator();
+    }
+
+    private static Vector<Job> toJob(Vector<String> jobs) {
+        // TODO : turn string into jobs
+        return null;
     }
 
 }
