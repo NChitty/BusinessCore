@@ -1,19 +1,17 @@
 package code.husky.sqlite;
 
+import code.husky.Database;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
-
 import org.bukkit.plugin.Plugin;
-
-import code.husky.Database;
 
 /**
  * Connects to and uses a SQLite database
- * 
+ *
  * @author tips48
  */
 public class SQLite extends Database {
@@ -23,7 +21,7 @@ public class SQLite extends Database {
 
     /**
      * Creates a new SQLite instance
-     * 
+     *
      * @param plugin
      *            Plugin instance
      * @param dbLocation

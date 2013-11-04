@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import me.beastman3226.BusinessCore.BusinessMain;
 import me.beastman3226.BusinessCore.job.Job;
 import me.beastman3226.BusinessCore.player.Employee;
-import me.beastman3226.BusinessCore.data.DataUpdate;
 import org.bukkit.Bukkit;
 /**A business object for handling all of our business related data
  *
