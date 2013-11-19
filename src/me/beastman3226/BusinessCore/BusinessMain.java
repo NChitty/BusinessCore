@@ -15,6 +15,7 @@ import me.beastman3226.BusinessCore.data.Data;
 import me.beastman3226.BusinessCore.data.DataStore;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +34,8 @@ public class BusinessMain extends JavaPlugin {
      * Stores business info
      */
     public static Configuration flatfile;
+    public static FileConfiguration employeeFile;
+    public static FileConfiguration jobFile;
     /**
      * Stores employee stuff
      */
@@ -79,7 +82,9 @@ public class BusinessMain extends JavaPlugin {
         } else if(!Data.MySQL.checkConnection()){
             getLogger().info("Not using MySQL, using flatfile");
             try {
-                flatfile = manager.getNewConfig("storage.prop");
+                flatfile = manager.getNewConfig("business.yml");
+                jobFile = YamlConfiguration.loadConfiguration(job);
+                employeeFile = YamlConfiguration.loadConfiguration(employee);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(BusinessMain.class.getName()).log(Level.SEVERE, null, ex);
             }
