@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.beastman3226.BusinessCore.file;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,7 +13,6 @@ import me.beastman3226.BusinessCore.business.Business;
 import me.beastman3226.BusinessCore.business.BusinessManager;
 import me.beastman3226.BusinessCore.job.Job;
 import me.beastman3226.BusinessCore.player.Employee;
-import me.beastman3226.BusinessCore.util.MessageUtility;
 
 /**
  *
@@ -54,30 +49,60 @@ public class FileStore {
             BusinessMain.flatfile.set(b.getOwnerName() + ".business", b.getName());
             BusinessMain.flatfile.set(b.getOwnerName() + ".employees", b.getEmployeeList().toArray(new String[]{}));
             BusinessMain.flatfile.set(b.getOwnerName() + ".id", b.getIndex());
-            BusinessMain.flatfile.set(b.getOwnerName() + ".jobs",  b.getJobList().toArray(new String[]{}));
+            BusinessMain.flatfile.set(b.getOwnerName() + ".jobs",  b.getJobList().toArray());
             BusinessMain.flatfile.set(b.getOwnerName() + ".ownerName", b.getOwnerName());
             BusinessMain.flatfile.set(b.getOwnerName() + ".worth", b.getWorth());
+            BusinessMain.flatfile.saveConfig();
         }
+        HashSet<String> employeeNames = new HashSet<>();
         for(Employee e : Employee.employeeList) {
-            // TODO: Employee save (file)
+            BusinessMain.employeeFile.set(e.getEmployeeName() + ".name", e.getEmployeeName());
+            BusinessMain.employeeFile.set(e.getEmployeeName() + ".completed", e.getCompletedJobs());
+            BusinessMain.employeeFile.set(e.getEmployeeName() + ".scouted", e.getScoutedJobs());
+            BusinessMain.employeeFile.set(e.getEmployeeName() + ".current", e.getJob().getId());
+            try {
+                BusinessMain.employeeFile.save(BusinessMain.employee);
+            } catch (IOException ex) {
+                Logger.getLogger(FileStore.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            employeeNames.add(e.getEmployeeName());
         }
+        BusinessMain.employeeFile.set("employees", employeeNames.toArray(new String[]{}));
+        try {
+                BusinessMain.employeeFile.save(BusinessMain.employee);
+            } catch (IOException ex) {
+                Logger.getLogger(FileStore.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        HashSet<Integer> jobIds = new HashSet<>();
         for(Job j : Job.jobList) {
-            // TODO: Job save (file)
+            //TODO: Job save
+           jobIds.add(j.getId());
         }
+        BusinessMain.jobFile.set("jobids", jobIds.toArray());
     }
 
     /**
      * Loads all the data from the disk
      */
     public static void load() {
+        for(Object id : BusinessMain.jobFile.getList("jobIds")) {
+            //TODO: id's into jobs
+        }
+        for(String name : BusinessMain.employeeFile.getStringList("employees")) {
+            //TODO: names into employees
+            //FIXME: If job has reference to employee, do here
+        }
         for(String owner : BusinessMain.flatfile.getStringList("ownernames")) {
             BusinessManager.createBusiness(BusinessMain.flatfile.getString(owner + ".business"), owner);
             BusinessManager.deposit(owner, BusinessMain.flatfile.getDouble(owner + ".worth"));
             Vector<String> employees = new Vector<>();
             employees.addAll(BusinessMain.flatfile.getStringList(owner + ".employees"));
             BusinessManager.getBusiness(owner).setEmployeeList(employees);
-            Vector<String> jobs = new Vector<>();
-            jobs.addAll(BusinessMain.flatfile.getStringList(owner + ".jobs"));
+            Vector<Integer> jobs = new Vector<>();
+            for(Object o : BusinessMain.flatfile.getList(owner + ".jobs")) {
+                int k = (int) o;
+                jobs.add(k);
+            }
             BusinessManager.getBusiness(owner).setJobList(toJob(jobs));
         }
     }
@@ -96,8 +121,8 @@ public class FileStore {
         return businesses.iterator();
     }
 
-    private static Vector<Job> toJob(Vector<String> jobs) {
-        // TODO : turn string into jobs
+    private static Vector<Job> toJob(Vector<Integer> jobs) {
+        //TODO: method logice for grabbing jobs
         return null;
     }
 
