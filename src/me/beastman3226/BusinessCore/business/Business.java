@@ -1,6 +1,7 @@
 package me.beastman3226.BusinessCore.business;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -152,8 +153,18 @@ public class Business {
          *
          * @return A list of jobs that the business' employees are working on
          */
-	public Vector<Job> getJobList() {
-		return jobList;
+	public Vector<Integer> getJobList() {
+            int[] toReturn = new int[this.jobList.size()];
+            int i = 0;
+            for(Job j : this.jobList) {
+                toReturn[i] = j.getId();
+                i++;
+            }
+            Vector<Integer> returnThis = new Vector<>(this.jobList.size());
+            for(int j : toReturn) {
+                returnThis.add(j);
+            }
+		return returnThis;
 	}
 
         /**
