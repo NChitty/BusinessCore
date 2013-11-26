@@ -3,8 +3,10 @@ package me.beastman3226.bc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.beastman3226.bc.db.Database;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,11 +25,13 @@ public class Main extends JavaPlugin {
         reloadConfig();
         Information.config = getConfig();
         if(getConfig().getBoolean("database.enabled")) {
-            //TODO: Work on database initialization
+            Database.instance();
         } else {
             Information.initFiles();
         }
-
+        registerListeners();
+        registerCommands();
+        registerEvents();
     }
 
     /**
@@ -44,6 +48,10 @@ public class Main extends JavaPlugin {
         //TODO: No commands registered
     }
 
+    private void registerEvents() {
+        //TODO: Add events
+    }
+
     /**
      * This class turns normally protected, private or other information that isn't
      * in scope and puts it out there for everyone to use; information stored in the
@@ -53,7 +61,11 @@ public class Main extends JavaPlugin {
         private static File businessFile, jobFile, employeeFile;
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml;
+
         public static Plugin BusinessCore;
+
+        public static Connection connection;
+
         public static void initFiles() {
             businessFile = new File("business.yml");
             jobFile = new File("jobs.yml");
