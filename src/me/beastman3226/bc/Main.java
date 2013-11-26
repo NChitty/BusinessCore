@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -18,9 +19,29 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Information.initFiles();
+        Information.BusinessCore = this;
         reloadConfig();
         Information.config = getConfig();
+        if(getConfig().getBoolean("database.enabled")) {
+            //TODO: Work on database initialization
+        } else {
+            Information.initFiles();
+        }
+
+    }
+
+    /**
+     * A method to condense the clutter inside the onEnable method.
+     */
+    public void registerListeners() {
+        //TODO: No listeners registered
+    }
+
+    /**
+     * Method to avoid clutter inside onEnable for commands.
+     */
+    public void registerCommands() {
+        //TODO: No commands registered
     }
 
     /**
@@ -32,7 +53,7 @@ public class Main extends JavaPlugin {
         private static File businessFile, jobFile, employeeFile;
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml;
-
+        public static Plugin BusinessCore;
         public static void initFiles() {
             businessFile = new File("business.yml");
             jobFile = new File("jobs.yml");
