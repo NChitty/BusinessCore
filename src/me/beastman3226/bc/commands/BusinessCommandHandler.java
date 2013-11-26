@@ -19,7 +19,8 @@ public class BusinessCommandHandler implements CommandExecutor {
             if(cmnd.getName().equalsIgnoreCase("b.create") && args.length > 0) {
                 BusinessPreCreatedEvent event = new BusinessPreCreatedEvent(sender, args);
                 Bukkit.getPluginManager().callEvent(event);
-                //TODO: create from args, call post created after
+                BusinessManager.createBusiness(new Business.Builder(/*TODO: Find next ID*/).name(event.getName()).owner(event.getSender().getName());
+                //TODO: Create and event call
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
