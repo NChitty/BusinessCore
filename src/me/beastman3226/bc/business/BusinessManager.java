@@ -53,10 +53,10 @@ public class BusinessManager {
         id = (r.nextInt(1000) + 1000);
         for(Business b : Business.businessList) {
             if(b.getID() == id) {
-                id = (r.nextInt(5000) + 1000);
+                id = (r.nextInt(5000) + 5000);
                 for(Business b1 : Business.businessList) {
                     if(b1.getID() == id) {
-                        id = (r.nextInt(10000) + 1000);
+                        id = (r.nextInt(10000) + 10000);
                         for(Business b2 : Business.businessList) {
                             if(b1.getID() == id) {
                                 throw new NoOpenIDException(id);
