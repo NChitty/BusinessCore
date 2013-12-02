@@ -12,10 +12,10 @@ import org.bukkit.event.HandlerList;
  */
 public class BusinessEvent extends Event implements Cancellable{
 
-    private static final HandlerList handlers = new HandlerList();
-    private boolean cancelled;
-    private int businessID;
-    private Business business;
+    protected static final HandlerList handlers = new HandlerList();
+    protected boolean cancelled;
+    protected int businessID;
+    protected Business business;
 
     public BusinessEvent(int id) {
         this.businessID = id;
