@@ -18,7 +18,7 @@ public enum Table {
     BUSINESS("business", new String[]{"BusinessID INTEGER",
         "BusinessName VARCHAR(255)",
         "BusinessOwner VARCHAR(40)",
-        "BusinessWorth FLOAT",
+        "BusinessBalance FLOAT",
         "EmployeeIDs TEXT"}),
     EMPLOYEE("employees", new String[]{"EmployeeID INTEGER",
         "EmployeeName VARCHAR(40)",
