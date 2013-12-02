@@ -26,8 +26,10 @@ public class Main extends JavaPlugin {
         Information.config = getConfig();
         if(getConfig().getBoolean("database.enabled")) {
             Database.instance();
+            Information.database = true;
         } else {
             Information.initFiles();
+            Information.database= false;
         }
         registerListeners();
         registerCommands();
@@ -61,6 +63,7 @@ public class Main extends JavaPlugin {
         private static File businessFile, jobFile, employeeFile;
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml;
+        public static boolean database;
 
         public static Plugin BusinessCore;
 
