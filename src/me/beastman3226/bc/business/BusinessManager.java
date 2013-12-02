@@ -3,6 +3,11 @@ package me.beastman3226.bc.business;
 import java.sql.ResultSet;
 import java.util.Iterator;
 import java.util.Random;
+import me.beastman3226.bc.Main;
+import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.data.BusinessHandler;
+import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.NoOpenIDException;
 
 /**
@@ -28,13 +33,28 @@ public class BusinessManager {
     /**
      * Base method for creating a new business
      * @param build
-     * @return
+     * @return a new business
      */
     public static Business createBusiness(Business.Builder build) {
+        if(Information.database) {
+            BusinessHandler.add(Data.BUSINESS
+                    .add("BusinessID", build.getID())
+                    .add("BusinessName", build.getName())
+                    .add("BusinessOwner", build.getOwnerName())
+                    .add("BusinessBalance", build.getBalance())
+                    .add("EmployeeIDs", build.getEmployeeIDs()));
+        } else {
+            //TODO: File store
+        }
         return build.build();
     }
 
 
+    /**
+     * Gets a business based on id
+     * @param id The id of the business
+     * @return The business
+     */
     public static Business getBusiness(int id) {
         Business b = null;
         Business[] array = Business.businessList.toArray(new Business[]{});
@@ -47,6 +67,11 @@ public class BusinessManager {
         return b;
     }
 
+    /**
+     * Finds an open business ID for a newly created business
+     * @return The open id
+     * @throws NoOpenIDException
+     */
     public static int openID() throws NoOpenIDException {
         int id = 1000;
         Random r = new Random();
@@ -58,7 +83,7 @@ public class BusinessManager {
                     if(b1.getID() == id) {
                         id = (r.nextInt(10000) + 10000);
                         for(Business b2 : Business.businessList) {
-                            if(b1.getID() == id) {
+                            if(b2.getID() == id) {
                                 throw new NoOpenIDException(id);
                             }
                         }
@@ -69,7 +94,16 @@ public class BusinessManager {
         return id;
     }
 
+    /**
+     * Deletes a business from storage and in memory
+     * @param business The business to be deleted
+     */
     public static void deleteBusiness(Business business) {
+        if(Information.database) {
+            BusinessHandler.remove("BusinessID", business.getID());
+        } else {
+            //TODO: File remove
+        }
         Business.businessList.remove(business);
     }
 
