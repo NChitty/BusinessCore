@@ -68,6 +68,23 @@ public class BusinessManager {
     }
 
     /**
+     * Finds a business based on the name of the current owner,
+     * 100% match is not guaranteed (ownership change)
+     * @param name Name of the owner
+     * @return The business
+     */
+    public static Business getBusiness(String name) {
+        Business business = null;
+        for(Business b : Business.businessList) {
+            if(b.getOwnerName().equalsIgnoreCase(name)) {
+                business = b;
+                break;
+            }
+        }
+        return business;
+    }
+
+    /**
      * Finds an open business ID for a newly created business
      * @return The open id
      * @throws NoOpenIDException
@@ -107,4 +124,13 @@ public class BusinessManager {
         Business.businessList.remove(business);
     }
 
+    /**
+     * Checks if the player is an owner via a null check
+     * using the getBusiness(name) method
+     * @param name The name of the player
+     * @return True if name has a business, false if not.
+     */
+    public static boolean isOwner(String name) {
+        return getBusiness(name) != null;
+    }
 }
