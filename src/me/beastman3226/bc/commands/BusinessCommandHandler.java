@@ -9,6 +9,7 @@ import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.BusinessPreCreatedEvent;
+import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -163,6 +164,53 @@ public class BusinessCommandHandler implements CommandExecutor {
                    }
                 }
             // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="Business balance">
+            } else if(cmnd.getName().equalsIgnoreCase("b.balance")) {
+                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())) {
+                    sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + BusinessManager.getBusiness(sender.getName()).getName() + " is " + BusinessManager.getBusiness(sender.getName()).getBalance());
+                    return true;
+                } else if(!(sender instanceof Player) && args.length > 0) {
+                    int id = 0;
+                    String name = "";
+                    boolean caught = false;
+                    try {
+                    id = Integer.valueOf(args[0]);
+                    } catch (NumberFormatException nfe) {
+                        caught = true;
+                    }
+                    if(caught) {
+                        name = args[0];
+                        if(BusinessManager.isOwner(name)) {
+                            Business b = BusinessManager.getBusiness(name);
+                            sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance());
+                            return true;
+                        } else {
+                            sender.sendMessage(Prefixes.ERROR + name + " is not an owner. Try again with valid name.");
+                            return false;
+                        }
+                    } else {
+                        if(BusinessManager.isID(id)) {
+                            Business b = BusinessManager.getBusiness(id);
+                            sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance());
+                            return true;
+                        } else {
+                            sender.sendMessage(Prefixes.ERROR + "That is not a valid id!");
+                            return false;
+                        }
+                    }
+                }
+            // </editor-fold>
+            } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
+                if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
+                    String name = args[0];
+                    Player player = Bukkit.getPlayer(name);
+                    if(player != null & player.isOnline()) {
+                        if(EmployeeManager.isEmployee(sender.getName())) {
+                            player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + EmployeeManager.getEmployee(sender.getName()).getBusiness().getName() + " by " + sender.getName());
+                            //TODO: Employee acceptance
+                        }
+                    }
+                }
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));

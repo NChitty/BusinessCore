@@ -133,4 +133,14 @@ public class BusinessManager {
     public static boolean isOwner(String name) {
         return getBusiness(name) != null;
     }
+
+    /**
+     * Checks if the player is an owner via
+     * null check using getbusiness(id) method.
+     * @param id The id in question
+     * @return True if the id is attached to a business, false if not
+     */
+    public static boolean isID(int id) {
+        return getBusiness(id) != null;
+    }
 }
