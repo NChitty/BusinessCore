@@ -6,24 +6,29 @@ depend: [Vault]
 commands:
   b.create:
     description: Creates a business
-    usage: "Try b.create [name]"
     permission: business.create
     permission-message: "&4You do not have 'business.create' or the like, please talk to an adminstrator"
     aliases: [business.create, create, b.c]
   b.delete:
     description: Delete your business, or (from console) someone elses
-    usage: "Try b.delete (or from console: b.delete [player_name|business_id]"
     permission: business.delete
     permission-message: "&4You do not have 'business.delete' or the like, please talk to an adminstrator"
     aliases: [business.delete, delete, b.d]
   b.withdraw:
     description: Withdraws money from your business
-    usage: "/<command> [amount], if the amount is greater than the balance you will error out."
     permission: business.withdraw
     permission-message: "&4You do not have 'business.withdraw' or the like, please talk to an adminstrator"
     aliases: [business.withdraw, withdraw, b.w]
   b.deposit:
-    description:
+    description: Deposits money into the bank
+    permission: business.deposit
+    permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
+    aliases: [business.deposit, deposit, delete, b.de]
+  hire:
+    description: Hires the specified player
+    permission: business.hire
+    permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
+    aliases: [b.h, h]
 permissions:
   business.business:
     description: Gives permission to business side
