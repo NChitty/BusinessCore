@@ -1,13 +1,36 @@
 name: BusinessCore
 version: 0.0.1
 author: beastman3226
-main: me.beastman3226.BusinessCore.BusinessMain
+main: me.beastman3226.bc.Main
 depend: [Vault]
 commands:
-  business:
-    description: This controls the business portion of the plugin
+  b.create:
+    description: Creates a business
+    permission: business.create
+    permission-message: "&4You do not have 'business.create' or the like, please talk to an adminstrator"
+    aliases: [business.create, create, b.c]
+  b.delete:
+    description: Delete your business, or (from console) someone elses
+    permission: business.delete
+    permission-message: "&4You do not have 'business.delete' or the like, please talk to an adminstrator"
+    aliases: [business.delete, delete, b.d]
+  b.withdraw:
+    description: Withdraws money from your business
+    permission: business.withdraw
+    permission-message: "&4You do not have 'business.withdraw' or the like, please talk to an adminstrator"
+    aliases: [business.withdraw, withdraw, b.w]
+  b.deposit:
+    description: Deposits money into the bank
+    permission: business.deposit
+    permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
+    aliases: [business.deposit, deposit, delete, b.de]
+  hire:
+    description: Hires the specified player
+    permission: business.hire
+    permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
+    aliases: [b.h, h]
 permissions:
-  bw.business:
+  business.business:
     description: Gives permission to business side
     default: true
   business.admin:
