@@ -1,10 +1,14 @@
 package me.beastman3226.bc.player;
 
+import java.util.HashMap;
+
 /**
  *
  * @author beastman3226
  */
 public class EmployeeManager {
+
+    public static HashMap<String, Integer> pending = new HashMap<>(50);
 
     public static Employee addEmployee(String name) {
         Employee employee = new Employee(name, Employee.employeeList.size() + 1);

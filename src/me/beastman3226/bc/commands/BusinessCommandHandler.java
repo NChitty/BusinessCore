@@ -7,10 +7,12 @@ import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.errors.NoOpenIDException;
+import me.beastman3226.bc.event.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.BusinessPreCreatedEvent;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
+import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -57,9 +59,17 @@ public class BusinessCommandHandler implements CommandExecutor {
                         caught = true;
                     }
                     if(!caught) {
-                        BusinessManager.deleteBusiness(BusinessManager.getBusiness(k));
-                    } else {
+                        if(BusinessManager.isID(k)) {
+                            BusinessManager.deleteBusiness(BusinessManager.getBusiness(k));
+                        } else {
+                            sender.sendMessage(Prefixes.ERROR + "That ID is not valid!");
+                            return false;
+                        }
+                    } else if(BusinessManager.isOwner(args[0])){
                         BusinessManager.deleteBusiness(BusinessManager.getBusiness(args[0]));
+                    } else {
+                       sender.sendMessage(Prefixes.ERROR + "That owner is not valid!");
+                       return false;
                     }
                 } else {
                     sender.sendMessage(Prefixes.ERROR + "Valid business not found.");
@@ -82,11 +92,16 @@ public class BusinessCommandHandler implements CommandExecutor {
                         return false;
                     } else {
                         try {
-                            b.withdraw(amount);
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                            if(!event.isCancelled()) {
+                                event.getBusiness().withdraw(event.getAbsoluteAmount());
+                            }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage(Prefixes.ERROR + "The amount must be less than the current balance.");
                             return false;
                         }
+                        Information.eco.depositPlayer(sender.getName(), amount);
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
                         return true;
                     }
@@ -101,11 +116,16 @@ public class BusinessCommandHandler implements CommandExecutor {
                         caught = true;
                     }
                     if(caught) {
-                        sender.sendMessage("Please do b.withdraw [business_id] [amount], both must be numbers!");
+                        sender.sendMessage("Please do 'b.withdraw [business_id] [amount]', both must be numbers!");
                         return false;
                     } else {
                         try {
-                            BusinessManager.getBusiness(id).withdraw(amount);
+                            Business b = BusinessManager.getBusiness(id);
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                            if(!event.isCancelled()) {
+                                event.getBusiness().withdraw(event.getAbsoluteAmount());
+                            }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage("The amount must be less than the balance!");
                             return false;
@@ -129,9 +149,13 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(Prefixes.ERROR + args[0] + " is not the proper format for a deposit");
                         return false;
                     } else {
-                        Information.eco.withdrawPlayer(sender.getName(), amount);
                         Business b = BusinessManager.getBusiness(sender.getName());
-                        b.deposit(amount);
+                        BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                             event.getBusiness().deposit(event.getAmount());
+                        }
+                        Information.eco.withdrawPlayer(sender.getName(), event.getAmount());
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
                         return true;
                     }
@@ -155,10 +179,14 @@ public class BusinessCommandHandler implements CommandExecutor {
                        return false;
                    } else {
                        Business b = BusinessManager.getBusiness(id);
-                       b.deposit(amount);
+                        BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                             event.getBusiness().deposit(event.getAmount());
+                        }
                        Player owner = Bukkit.getPlayerExact(b.getOwnerName());
                        if(owner.isOnline() | owner != null) {
-                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your bank, your new balance is " + b.getBalance() + Information.eco.currencyNamePlural());
+                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your business, your new balance is " + b.getBalance() + Information.eco.currencyNamePlural());
                        }
                        return true;
                    }
@@ -200,6 +228,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                     }
                 }
             // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="Hire">
             } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
                     String name = args[0];
@@ -207,19 +236,21 @@ public class BusinessCommandHandler implements CommandExecutor {
                     if(player != null & player.isOnline()) {
                         if(EmployeeManager.isEmployee(sender.getName())) {
                             player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + EmployeeManager.getEmployee(sender.getName()).getBusiness().getName() + " by " + sender.getName());
-                            //TODO: Employee acceptance
+                            EmployeeManager.pending.put(player.getName(), EmployeeManager.getEmployee(sender.getName()).getBusiness().getID());
+                            Scheduler.runAcceptance();
+                        } else if(BusinessManager.isOwner(sender.getName())) {
+                            player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + BusinessManager.getBusiness(sender.getName()).getName() + " by " + sender.getName());
+                            EmployeeManager.pending.put(player.getName(), BusinessManager.getBusiness(sender.getName()).getID());
+                            Scheduler.runAcceptance();
                         }
                     }
                 }
+            // </editor-fold>
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
             return false;
         }
         return false;
-    }
-
-    private boolean throwNew(Exception e) throws Exception {
-            throw e;
     }
 }
