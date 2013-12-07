@@ -10,8 +10,8 @@ import me.beastman3226.bc.db.Table;
 public class BusinessHandler {
 
 
-    public static void update(String column, Object data, Object condition) {
-        DataHandler.update(Table.BUSINESS, column, data, condition);
+    public static void update(String column, Object data, String other_column, Object condition) {
+        DataHandler.update(Table.BUSINESS, column, data, other_column, condition);
     }
 
     public static void remove(String column, Object condition) {

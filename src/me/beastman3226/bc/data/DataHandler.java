@@ -15,13 +15,23 @@ import me.beastman3226.bc.db.Table;
  */
 public abstract class DataHandler {
 
-    public static void update(Table table, String column, Object data, Object condition) {
+    public static void update(Table table, String column, Object data, String column_condition, Object condition) {
         if(Database.MySQL.checkConnection()) {
             try {
                 Statement s =  Database.MySQL.getConnection().createStatement();
-                s.execute("UPDATE " + table + "\n"
+                if(data instanceof int[]) {
+                    String k = "";
+                    for(int i : (int[]) data) {
+                        k = k + "," + i;
+                    }
+                    s.execute("UPDATE " + table + "\n"
+                        + "SET " + column + "='" + k + "'\n"
+                        + "WHERE " + column_condition + "='" + condition + "';");
+                } else {
+                    s.execute("UPDATE " + table + "\n"
                         + "SET " + column + "='" + data + "'\n"
-                        + "WHERE " + column + "='" + condition + "';");
+                        + "WHERE " + column_condition + "='" + condition + "';");
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
