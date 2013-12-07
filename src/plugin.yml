@@ -23,7 +23,12 @@ commands:
     description: Deposits money into the bank
     permission: business.deposit
     permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
-    aliases: [business.deposit, deposit, delete, b.de]
+    aliases: [business.deposit, deposit, b.de]
+  b.balance:
+    description: Shows you your balance
+    permission: business.balance
+    permission-message: "&4You do not have 'business.balance' or the like, please talk to an adminstrator"
+    aliases: [business.balance, balance, b.b]
   hire:
     description: Hires the specified player
     permission: business.hire

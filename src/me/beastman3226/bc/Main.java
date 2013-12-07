@@ -8,6 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.db.Database;
+import me.beastman3226.bc.listener.BusinessListener;
+import me.beastman3226.bc.listener.PlayerListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,7 +38,6 @@ public class Main extends JavaPlugin {
         }
         registerListeners();
         registerCommands();
-        registerEvents();
         setupEconomy();
     }
 
@@ -44,7 +45,8 @@ public class Main extends JavaPlugin {
      * A method to condense the clutter inside the onEnable method.
      */
     public void registerListeners() {
-        //TODO: No listeners registered
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new BusinessListener(), this);
     }
 
     /**
@@ -53,10 +55,11 @@ public class Main extends JavaPlugin {
     public void registerCommands() {
         BusinessCommandHandler bch = new BusinessCommandHandler();
         getCommand("b.create").setExecutor(bch);
-    }
-
-    private void registerEvents() {
-        //TODO: Add events
+        getCommand("b.delete").setExecutor(bch);
+        getCommand("b.withdraw").setExecutor(bch);
+        getCommand("b.deposit").setExecutor(bch);
+        getCommand("b.balance").setExecutor(bch);
+        getCommand("hire").setExecutor(bch);
     }
 
     private boolean setupEconomy() {
