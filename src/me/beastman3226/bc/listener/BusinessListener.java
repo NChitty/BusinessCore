@@ -4,6 +4,7 @@ import me.beastman3226.bc.Main.Information;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;
 import me.beastman3226.bc.event.BusinessBalanceChangeEvent;
+import me.beastman3226.bc.event.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import org.bukkit.event.EventHandler;
@@ -47,5 +48,13 @@ public class BusinessListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onFire(BusinessFiredEmployeeEvent e) {
+        if(Information.database && !e.isCancelled()) {
+            BusinessHandler.update("EmployeeIDs", e.finalEmployeeList(), "BusinessID", e.getID());
+        } else if(!Information.database && !e.isCancelled()) {
+            //TODO: File update
+        }
+    }
 
 }

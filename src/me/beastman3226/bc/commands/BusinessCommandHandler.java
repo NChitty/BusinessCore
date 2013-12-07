@@ -8,6 +8,7 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.event.BusinessBalanceChangeEvent;
+import me.beastman3226.bc.event.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.BusinessPreCreatedEvent;
 import me.beastman3226.bc.player.EmployeeManager;
@@ -244,6 +245,37 @@ public class BusinessCommandHandler implements CommandExecutor {
                             Scheduler.runAcceptance();
                         }
                     }
+                }
+            // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="Fire">
+            } else if(cmnd.getName().equalsIgnoreCase("fire") && args.length > 0) {
+                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())) {
+                    boolean caught = false;
+                    int id = 0;
+                    String name = args[0];
+                    try {
+                        id = Integer.parseInt(name);
+                    } catch (NumberFormatException e) {
+                        caught = true;
+                    }
+                    Business b = BusinessManager.getBusiness(sender.getName());
+                    BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, null);
+                    if(!caught) {
+                        event.setEmployee(id);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                        }
+                    } else {
+                        event.setEmployee(EmployeeManager.getEmployee(name));
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                        }
+                    }
+                    Bukkit.getPlayerExact(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
+                } else if(!(sender instanceof Player)) {
+                    sender.sendMessage(Prefixes.ERROR + "I am having issues finding the correct business and employee");
                 }
             // </editor-fold>
             }
