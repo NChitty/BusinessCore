@@ -49,4 +49,12 @@ public class BusinessEvent extends Event implements Cancellable{
         return businessID;
     }
 
+    public Business getBusiness() {
+        return this.business;
+    }
+
+    public void setBusiness(Business b) {
+        this.business = b;
+    }
+
 }
