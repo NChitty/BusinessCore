@@ -36,16 +36,6 @@ public class BusinessManager {
      * @return a new business
      */
     public static Business createBusiness(Business.Builder build) {
-        if(Information.database) {
-            BusinessHandler.add(Data.BUSINESS
-                    .add("BusinessID", build.getID())
-                    .add("BusinessName", build.getName())
-                    .add("BusinessOwner", build.getOwnerName())
-                    .add("BusinessBalance", build.getBalance())
-                    .add("EmployeeIDs", build.getEmployeeIDs()));
-        } else {
-            //TODO: File store
-        }
         return build.build();
     }
 
