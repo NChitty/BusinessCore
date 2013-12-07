@@ -52,4 +52,12 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
         }
         return this.getAmount();
     }
+
+    public double getFinalAmount() {
+        if(this.isWithdrawal() && this.getBusiness().getBalance() + this.getAmount() < 0) {
+            return this.getBusiness().getBalance();
+        } else {
+            return this.getBusiness().getBalance() + this.getAmount();
+        }
+    }
 }
