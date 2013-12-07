@@ -105,7 +105,7 @@ public class Main extends JavaPlugin {
      *
      * @author beastman3226
      */
-    private static class FileFunctions {
+    public static class FileFunctions {
 
         /**
          * Reloads the specified config, simply dumps all information that is in
