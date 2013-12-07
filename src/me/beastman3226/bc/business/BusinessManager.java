@@ -1,12 +1,15 @@
 package me.beastman3226.bc.business;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import me.beastman3226.bc.Main;
 import me.beastman3226.bc.Main.Information;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.data.file.BusinessFileManager;
+import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.NoOpenIDException;
 
@@ -15,6 +18,8 @@ import me.beastman3226.bc.errors.NoOpenIDException;
  * @author beastman3226
  */
 public class BusinessManager {
+
+    public static ArrayList<String> names = new ArrayList<>();
 
     /**
      * This creates a business from a pre-existing business in the database.
@@ -36,6 +41,7 @@ public class BusinessManager {
      * @return a new business
      */
     public static Business createBusiness(Business.Builder build) {
+        names.add(build.getName());
         return build.build();
     }
 
@@ -109,7 +115,7 @@ public class BusinessManager {
         if(Information.database) {
             BusinessHandler.remove("BusinessID", business.getID());
         } else {
-            //TODO: File remove
+            BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
         }
         Business.businessList.remove(business);
     }

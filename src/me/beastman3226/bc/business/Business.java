@@ -128,6 +128,11 @@ public class Business {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public static class Builder {
         private int id;
         private String name;
