@@ -1,8 +1,11 @@
 package me.beastman3226.bc.listener;
 
 import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.data.file.BusinessFileManager;
+import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.event.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessHiredEmployeeEvent;
@@ -19,9 +22,9 @@ public class BusinessListener implements Listener {
     @EventHandler
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
         if(Information.database && !e.isCancelled()) {
-                BusinessHandler.update("BusinessBalance", e.getBusiness().getBalance(), "BusinessID", e.getID());
+                BusinessHandler.update("BusinessBalance", e.getFinalAmount(), "BusinessID", e.getID());
         } else if(!Information.database && !e.isCancelled()) {
-            //TODO: File update
+            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
         }
     }
 
@@ -35,16 +38,21 @@ public class BusinessListener implements Listener {
                     .add("BusinessBalance", e.getBusiness().getBalance())
                     .add("EmployeeIDs", e.getBusiness().getEmployeeIDs()));
         } else if(!Information.database && !e.isCancelled()) {
-            //TODO: File update
+            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".name", e.getBusiness().getName())
+                    .add(e.getBusiness().getName() + ".ownerName", e.getBusiness().getOwnerName())
+                    .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
+                    .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
+                    .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
+            BusinessFileManager.editConfig(new FileData().add("names", BusinessManager.names));
         }
     }
 
     @EventHandler
     public void onHire(BusinessHiredEmployeeEvent e) {
         if(Information.database && !e.isCancelled()) {
-            BusinessHandler.update("EmployeeIDs", e.getBusiness().getEmployeeIDs(), "BusinessID", e.getID());
+            BusinessHandler.update("EmployeeIDs", e.getFinalList(), "BusinessID", e.getID());
         } else if(!Information.database && !e.isCancelled()) {
-            //TODO: File update
+            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.getFinalList()));
         }
     }
 
@@ -53,7 +61,7 @@ public class BusinessListener implements Listener {
         if(Information.database && !e.isCancelled()) {
             BusinessHandler.update("EmployeeIDs", e.finalEmployeeList(), "BusinessID", e.getID());
         } else if(!Information.database && !e.isCancelled()) {
-            //TODO: File update
+            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.finalEmployeeList()));
         }
     }
 

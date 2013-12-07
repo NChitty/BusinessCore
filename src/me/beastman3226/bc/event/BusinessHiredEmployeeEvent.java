@@ -32,4 +32,8 @@ public class BusinessHiredEmployeeEvent extends BusinessEvent {
     public void setEmployee(Employee e) {
         this.employee = e;
     }
+
+    public int[] getFinalList() {
+        return this.getBusiness().addEmployee(this.employee.getID()).getEmployeeIDs();
+    }
 }
