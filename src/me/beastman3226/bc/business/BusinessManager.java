@@ -42,6 +42,9 @@ public class BusinessManager {
      */
     public static Business createBusiness(Business.Builder build) {
         names.add(build.getName());
+        if(Information.debug) {
+            Information.log.info("Created a business with name " + build.getName());
+        }
         return build.build();
     }
 

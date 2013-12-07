@@ -29,6 +29,11 @@ public class Main extends JavaPlugin {
         Information.BusinessCore = this;
         reloadConfig();
         Information.config = getConfig();
+        if(getConfig().getBoolean("debug-messages")) {
+            Information.debug = true;
+        } else {
+            Information.debug = false;
+        }
         if (getConfig().getBoolean("database.enabled")) {
             Database.instance();
             Information.database = true;
@@ -36,9 +41,10 @@ public class Main extends JavaPlugin {
             Information.initFiles();
             Information.database = false;
         }
+        setupEconomy();
         registerListeners();
         registerCommands();
-        setupEconomy();
+        Information.log = this.getLogger();
     }
 
     /**
@@ -88,6 +94,8 @@ public class Main extends JavaPlugin {
         public static Plugin BusinessCore;
         public static Connection connection;
         public static Economy eco;
+        public static boolean debug;
+        public static Logger log;
 
         public static void initFiles() {
             businessFile = new File("business.yml");

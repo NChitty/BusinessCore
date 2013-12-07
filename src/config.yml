@@ -1,0 +1,9 @@
+debug-message: false
+database:
+  #PLEASE ENSURE ALL VALUES ARE ACCURATE!!
+  enabled: false
+  ip: 127.0.0.0
+  port: 36606
+  name: mc07
+  username: user
+  password: pass
