@@ -7,3 +7,4 @@ database:
   name: mc07
   username: user
   password: pass
+payperiod: 1h

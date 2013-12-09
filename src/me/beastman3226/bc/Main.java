@@ -10,6 +10,7 @@ import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.PlayerListener;
+import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -105,6 +106,22 @@ public class Main extends JavaPlugin {
             businessYml = YamlConfiguration.loadConfiguration(businessFile);
             employeeYml = YamlConfiguration.loadConfiguration(employeeFile);
             jobYml = YamlConfiguration.loadConfiguration(jobFile);
+        }
+
+        public static Time getTime() {
+            String string = config.getString("payperiod");
+            for(Time t : Time.values()) {
+                if(string.contains(t.identifier + "")) {
+                    return t;
+                }
+            }
+            return null;
+        }
+
+        public static int getValue() {
+            String string = config.getString("payperiod");
+            string = string.replace(getTime().identifier, ' ');
+            return Integer.valueOf(string.trim());
         }
     }
 
