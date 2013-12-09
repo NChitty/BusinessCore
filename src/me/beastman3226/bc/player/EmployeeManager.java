@@ -1,6 +1,12 @@
 package me.beastman3226.bc.player;
 
 import java.util.HashMap;
+import me.beastman3226.bc.Main;
+import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.data.EmployeeHandler;
+import me.beastman3226.bc.data.file.EmployeeFileManager;
+import me.beastman3226.bc.data.file.FileData;
 
 /**
  *
@@ -11,8 +17,18 @@ public class EmployeeManager {
     public static HashMap<String, Integer> pending = new HashMap<>(50);
 
     public static Employee addEmployee(String name) {
-        Employee employee = new Employee(name, Employee.employeeList.size() + 1);
+        Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
         Employee.employeeList.add(employee);
+        if(Information.database) {
+            EmployeeHandler.add(Data.EMPLOYEE.add("", name));
+        } else {
+            EmployeeFileManager.editConfig(new FileData().add(name + ".name", name)
+                    .add(name + ".id", employee.getID())
+                    .add(name + ".business", employee.getBusiness().getID())
+                    .add(name + ".completed", employee.getCompletedJobs())
+                    .add(name + ".job", employee.getCurrentJob()));
+
+        }
         return employee;
     }
 

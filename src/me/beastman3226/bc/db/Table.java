@@ -23,7 +23,6 @@ public enum Table {
     EMPLOYEE("employees", new String[]{"EmployeeID INTEGER",
         "EmployeeName VARCHAR(40)",
         "BusinessID INTEGER",
-        "ScoutedJobs INTEGER",
         "CompletedJobs INTEGER",
         "JobID INTEGER"}),
     JOB("jobs", new String[]{"JobID INTEGER",
