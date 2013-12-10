@@ -35,12 +35,17 @@ commands:
     permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
     aliases: [b.h, h]
 permissions:
+  business.create: true
+  business.delete: true
+  business.withdraw: true
+  business.deposit: true
+  business.balance: true
+  business.hire: true
   business.business:
-    description: Gives permission to business side
-    default: true
-  business.admin:
-    description: Allows player to use admin commands
-    default: op
-  business.owner.delete:
-    description: Gives permission to delete own business
-    default: false
+    children:
+      business.create: true
+      business.delete: true
+      business.withdraw: true
+      business.deposit: true
+      business.balance: true
+      business.hire: true

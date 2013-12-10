@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.db.Database;
+import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.util.Time;
@@ -39,15 +43,37 @@ public class Main extends JavaPlugin {
             Database.instance();
             Information.database = true;
         } else {
-            Information.initFiles();
+            Information.initFiles(this);
             Information.database = false;
         }
         setupEconomy();
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
+        if(getConfig().getBoolean("firstrun")) {
+            getConfig().set("firstrun", false);
+        } else {
+            if(Information.database) {
+                Connection c= Database.MySQL.getConnection();
+                try {
+                    Statement s = c.createStatement();
+                    BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                BusinessManager.createBusinesses();
+            }
+        }
     }
 
+
+    @Override
+    public void onDisable() {
+        Information.BusinessCore.saveConfig();
+        Information.BusinessCore = null;
+        FileFunctions.save();
+    }
     /**
      * A method to condense the clutter inside the onEnable method.
      */
@@ -98,10 +124,23 @@ public class Main extends JavaPlugin {
         public static boolean debug;
         public static Logger log;
 
-        public static void initFiles() {
-            businessFile = new File("business.yml");
-            jobFile = new File("jobs.yml");
-            employeeFile = new File("employee.yml");
+        public static void initFiles(Plugin p) {
+            businessFile = new File(p.getDataFolder(), "business.yml");
+            jobFile = new File(p.getDataFolder(), "jobs.yml");
+            employeeFile = new File(p.getDataFolder(), "employee.yml");
+
+            if(!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
+                businessFile.getParentFile().mkdirs();
+                jobFile.getParentFile().mkdirs();
+                employeeFile.getParentFile().mkdirs();
+                try {
+                    businessFile.createNewFile();
+                    jobFile.createNewFile();
+                    employeeFile.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
 
             businessYml = YamlConfiguration.loadConfiguration(businessFile);
             employeeYml = YamlConfiguration.loadConfiguration(employeeFile);

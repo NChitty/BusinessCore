@@ -29,6 +29,7 @@ public class Database {
         build.database = database;
         build.user = user;
         build.pass = pass;
+        MySQL.openConnection();
     }
 
     public String getDatabase() {

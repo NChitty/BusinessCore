@@ -1,4 +1,5 @@
 debug-message: false
+firstrun: true
 database:
   #PLEASE ENSURE ALL VALUES ARE ACCURATE!!
   enabled: false
