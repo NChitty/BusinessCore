@@ -20,7 +20,11 @@ public class EmployeeManager {
         Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
         Employee.employeeList.add(employee);
         if(Information.database) {
-            EmployeeHandler.add(Data.EMPLOYEE.add("", name));
+            EmployeeHandler.add(Data.EMPLOYEE.add("EmployeeID", employee.getID())
+                                             .add("EmployeeName", name)
+                                             .add("BusinessID", employee.getBusiness().getID())
+                                             .add("CompletedJobs", employee.getCompletedJobs())
+                                             .add("JobID", employee.getCurrentJob()));
         } else {
             EmployeeFileManager.editConfig(new FileData().add(name + ".name", name)
                     .add(name + ".id", employee.getID())

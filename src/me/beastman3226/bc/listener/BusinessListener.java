@@ -11,6 +11,7 @@ import me.beastman3226.bc.event.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -19,7 +20,7 @@ import org.bukkit.event.Listener;
  */
 public class BusinessListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
         if(Information.database && !e.isCancelled()) {
                 BusinessHandler.update("BusinessBalance", e.getFinalAmount(), "BusinessID", e.getID());
@@ -28,7 +29,7 @@ public class BusinessListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onCreated(BusinessPostCreatedEvent e) {
         if(Information.database && !e.isCancelled()) {
                 BusinessHandler.add(Data.BUSINESS
@@ -47,7 +48,7 @@ public class BusinessListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onHire(BusinessHiredEmployeeEvent e) {
         if(Information.database && !e.isCancelled()) {
             BusinessHandler.update("EmployeeIDs", e.getFinalList(), "BusinessID", e.getID());
@@ -56,7 +57,7 @@ public class BusinessListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onFire(BusinessFiredEmployeeEvent e) {
         if(Information.database && !e.isCancelled()) {
             BusinessHandler.update("EmployeeIDs", e.finalEmployeeList(), "BusinessID", e.getID());

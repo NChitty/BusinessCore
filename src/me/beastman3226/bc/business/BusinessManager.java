@@ -1,9 +1,13 @@
 package me.beastman3226.bc.business;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.bc.Main;
 import me.beastman3226.bc.Main.Information;
 import me.beastman3226.bc.data.BusinessHandler;
@@ -12,6 +16,7 @@ import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.NoOpenIDException;
+import org.bukkit.configuration.file.FileConfiguration;
 
 /**
  *
@@ -25,14 +30,28 @@ public class BusinessManager {
      * This creates a business from a pre-existing business in the database.
      */
     public static void createBusiness(ResultSet rs) {
-        //TODO: business database
+        try {
+            while(rs.next()) {
+                createBusiness(new Business.Builder(rs.getInt("BusinessID"))
+                        .balance(rs.getDouble("BusinessBalance"))
+                        .name(rs.getString("BusinessName"))
+                        .owner(rs.getString("BusinessOwner"))
+                        .ids(rs.getString("EmployeeIDs").split(",")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
-        //TODO: Businesses from file
+        ArrayList<String> names = new ArrayList<>(Information.businessYml.getStringList("names"));
+        for(String s : names) {
+            FileConfiguration yml = Information.businessYml;
+            createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")).ids(yml.getString(s + ".employeeIDs").split(",")));
+        }
     }
 
     /**
@@ -43,7 +62,7 @@ public class BusinessManager {
     public static Business createBusiness(Business.Builder build) {
         names.add(build.getName());
         if(Information.debug) {
-            Information.log.info("Created a business with name " + build.getName());
+            Information.log.log(Level.INFO, "Created a business with name {0}", build.getName());
         }
         return build.build();
     }
