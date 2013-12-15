@@ -1,6 +1,6 @@
 package me.beastman3226.bc.data.file;
 
-import me.beastman3226.bc.Main;
+import me.beastman3226.bc.BusinessCore;
 
 /**
  *
@@ -9,7 +9,7 @@ import me.beastman3226.bc.Main;
 public class BusinessFileManager {
 
     public static void editConfig(FileData data) {
-        FileManager.editConfig(Main.Config.BUSINESS, data);
+        FileManager.editConfig(BusinessCore.Config.BUSINESS, data);
     }
 
 }

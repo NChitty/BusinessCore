@@ -1,7 +1,7 @@
 package me.beastman3226.bc.util;
 
 import java.util.HashMap;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;

@@ -5,7 +5,7 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.Main;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
 

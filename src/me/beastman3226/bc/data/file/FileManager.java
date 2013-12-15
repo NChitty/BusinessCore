@@ -1,8 +1,8 @@
 package me.beastman3226.bc.data.file;
 
-import me.beastman3226.bc.Main.Config;
-import me.beastman3226.bc.Main.FileFunctions;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore.Config;
+import me.beastman3226.bc.BusinessCore.FileFunctions;
+import me.beastman3226.bc.BusinessCore.Information;
 
 /**
  *

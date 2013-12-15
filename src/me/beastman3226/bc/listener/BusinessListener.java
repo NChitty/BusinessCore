@@ -1,6 +1,6 @@
 package me.beastman3226.bc.listener;
 
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;

@@ -5,8 +5,8 @@
 package me.beastman3226.bc.db;
 
 import code.husky.mysql.MySQL;
-import me.beastman3226.bc.Main;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.BusinessCore.Information;
 
 /**
  *

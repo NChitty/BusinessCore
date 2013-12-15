@@ -27,7 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author beastman3226
  */
-public class Main extends JavaPlugin {
+public class BusinessCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -61,7 +61,7 @@ public class Main extends JavaPlugin {
                     Statement s = c.createStatement();
                     BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
                 } catch (SQLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 BusinessManager.createBusinesses();
@@ -123,7 +123,7 @@ public class Main extends JavaPlugin {
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml;
         public static boolean database;
-        public static Main BusinessCore;
+        public static BusinessCore BusinessCore;
         public static Connection connection;
         public static net.milkbowl.vault.economy.Economy eco = null;
         public static boolean debug;
@@ -143,7 +143,7 @@ public class Main extends JavaPlugin {
                     jobFile.createNewFile();
                     employeeFile.createNewFile();
                 } catch (IOException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -188,27 +188,27 @@ public class Main extends JavaPlugin {
                     try {
                         Information.businessYml.load(Information.businessFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
                 case EMPLOYEE:
                     try {
                         Information.employeeYml.load(Information.employeeFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
                 case JOB:
                     try {
                         Information.jobYml.load(Information.jobFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
             }
@@ -222,23 +222,23 @@ public class Main extends JavaPlugin {
             try {
                 Information.businessYml.load(Information.businessFile);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 Information.employeeYml.load(Information.employeeFile);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 Information.jobYml.load(Information.jobFile);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -254,21 +254,21 @@ public class Main extends JavaPlugin {
                     try {
                         Information.businessYml.save(Information.businessFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
                 case EMPLOYEE:
                     try {
                         Information.employeeYml.save(Information.employeeFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
                 case JOB:
                     try {
                         Information.jobYml.save(Information.jobFile);
                     } catch (IOException ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
             }
@@ -284,7 +284,7 @@ public class Main extends JavaPlugin {
                 Information.employeeYml.save(Information.employeeFile);
                 Information.jobYml.save(Information.jobFile);
             } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
