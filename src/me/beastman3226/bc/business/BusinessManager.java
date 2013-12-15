@@ -60,11 +60,13 @@ public class BusinessManager {
      * @return a new business
      */
     public static Business createBusiness(Business.Builder build) {
-        names.add(build.getName());
+        Business b = build.build();
+        names.add(b.getName());
+        Business.businessList.add(b);
         if(Information.debug) {
             Information.log.log(Level.INFO, "Created a business with name {0}", build.getName());
         }
-        return build.build();
+        return b;
     }
 
 

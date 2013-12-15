@@ -32,9 +32,11 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         Information.BusinessCore = this;
-        reloadConfig();
+        if (getConfig().getBoolean("firstrun")) {
+            saveDefaultConfig();
+        }
         Information.config = getConfig();
-        if(getConfig().getBoolean("debug-messages")) {
+        if (getConfig().getBoolean("debug-messages")) {
             Information.debug = true;
         } else {
             Information.debug = false;
@@ -50,11 +52,11 @@ public class Main extends JavaPlugin {
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        if(getConfig().getBoolean("firstrun")) {
+        if (getConfig().getBoolean("firstrun")) {
             getConfig().set("firstrun", false);
         } else {
-            if(Information.database) {
-                Connection c= Database.MySQL.getConnection();
+            if (Information.database) {
+                Connection c = Database.MySQL.getConnection();
                 try {
                     Statement s = c.createStatement();
                     BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
@@ -67,13 +69,13 @@ public class Main extends JavaPlugin {
         }
     }
 
-
     @Override
     public void onDisable() {
-        Information.BusinessCore.saveConfig();
+        this.saveConfig();
         Information.BusinessCore = null;
         FileFunctions.save();
     }
+
     /**
      * A method to condense the clutter inside the onEnable method.
      */
@@ -95,12 +97,15 @@ public class Main extends JavaPlugin {
         getCommand("hire").setExecutor(bch);
     }
 
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+    public boolean setupEconomy() {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            System.out.println("Vault not detected");
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = null;
+            rsp = (RegisteredServiceProvider<Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (rsp == null) {
+            System.out.println("Economy plugin not detected");
             return false;
         }
         Information.eco = rsp.getProvider();
@@ -118,9 +123,9 @@ public class Main extends JavaPlugin {
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml;
         public static boolean database;
-        public static Plugin BusinessCore;
+        public static Main BusinessCore;
         public static Connection connection;
-        public static Economy eco;
+        public static net.milkbowl.vault.economy.Economy eco = null;
         public static boolean debug;
         public static Logger log;
 
@@ -129,7 +134,7 @@ public class Main extends JavaPlugin {
             jobFile = new File(p.getDataFolder(), "jobs.yml");
             employeeFile = new File(p.getDataFolder(), "employee.yml");
 
-            if(!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
+            if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
                 businessFile.getParentFile().mkdirs();
                 jobFile.getParentFile().mkdirs();
                 employeeFile.getParentFile().mkdirs();
@@ -149,8 +154,8 @@ public class Main extends JavaPlugin {
 
         public static Time getTime() {
             String string = config.getString("payperiod");
-            for(Time t : Time.values()) {
-                if(string.contains(t.identifier + "")) {
+            for (Time t : Time.values()) {
+                if (string.contains(t.identifier + "")) {
                     return t;
                 }
             }

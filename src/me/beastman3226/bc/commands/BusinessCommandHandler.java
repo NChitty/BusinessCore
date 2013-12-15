@@ -29,6 +29,9 @@ public class BusinessCommandHandler implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
+        if(Information.eco == null) {
+            Information.BusinessCore.setupEconomy();
+        }
         if(sender.hasPermission(cmnd.getPermission())) {
             // <editor-fold defaultstate="collapsed" desc="Business Create">
             if(cmnd.getName().equalsIgnoreCase("b.create") && args.length > 0) {
@@ -155,8 +158,12 @@ public class BusinessCommandHandler implements CommandExecutor {
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if(!event.isCancelled()) {
                              event.getBusiness().deposit(event.getAmount());
+                             Information.
+                                     eco.
+                                     withdrawPlayer(sender.getName(),
+                                     event
+                                     .getAmount());
                         }
-                        Information.eco.withdrawPlayer(sender.getName(), event.getAmount());
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
                         return true;
                     }
@@ -176,7 +183,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                        caught = true;
                    }
                    if(caught) {
-                       sender.sendMessage(Prefixes.ERROR + "Please specify valid numbers as numbers ie. 1, 0.0");
+                       sender.sendMessage("Please specify valid numbers as numbers ie. 1, 0.0");
                        return false;
                    } else {
                        Business b = BusinessManager.getBusiness(id);

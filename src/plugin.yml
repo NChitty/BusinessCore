@@ -3,6 +3,7 @@ version: 0.0.1
 author: beastman3226
 main: me.beastman3226.bc.Main
 depend: [Vault]
+softdepend: [iConomy, BOSEconomy, Mineconomy]
 commands:
   b.create:
     description: Creates a business
@@ -35,12 +36,18 @@ commands:
     permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
     aliases: [b.h, h]
 permissions:
-  business.create: true
-  business.delete: true
-  business.withdraw: true
-  business.deposit: true
-  business.balance: true
-  business.hire: true
+  business.create:
+    default: true
+  business.delete:
+    default: true
+  business.withdraw:
+    default: true
+  business.deposit:
+    default: true
+  business.balance:
+    default: true
+  business.hire:
+    default: true
   business.business:
     children:
       business.create: true
