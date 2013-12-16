@@ -14,7 +14,7 @@ import me.beastman3226.bc.BusinessCore.Information;
  */
 public class Database {
 
-    public static MySQL MySQL;
+    public MySQL MySQL;
 
     public static Database instance() {
         return Holder.INSTANCE;
