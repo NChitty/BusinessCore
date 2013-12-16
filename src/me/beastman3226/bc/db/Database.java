@@ -10,7 +10,7 @@ import me.beastman3226.bc.BusinessCore.Information;
 
 /**
  *
- * @author Nicholas
+ * @author beastman3226
  */
 public class Database {
 
