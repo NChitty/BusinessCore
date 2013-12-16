@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.business.BusinessManager;
@@ -15,10 +17,11 @@ import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.util.Time;
-import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.Vault;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +31,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author beastman3226
  */
 public class BusinessCore extends JavaPlugin {
+
+    HashMap<String, String> hm = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -48,11 +53,11 @@ public class BusinessCore extends JavaPlugin {
             Information.initFiles(this);
             Information.database = false;
         }
-        setupEconomy();
+        this.getLogger().info(setupEconomy() + "");
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        if (getConfig().getBoolean("firstrun")) {
+        if (getConfig().getBoolean("firstrun") || !Information.businessYml.contains("names")) {
             getConfig().set("firstrun", false);
         } else {
             if (Information.database) {
@@ -98,18 +103,22 @@ public class BusinessCore extends JavaPlugin {
     }
 
     public boolean setupEconomy() {
-        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-            System.out.println("Vault not detected");
+        Plugin p = this.getServer().getPluginManager().getPlugin("Vault");
+        if (p == null) {
             return false;
         }
         RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = null;
-            rsp = (RegisteredServiceProvider<Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        rsp = (RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (rsp == null) {
             System.out.println("Economy plugin not detected");
+            rsp = (RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        }
+        if(rsp == null) {
             return false;
         }
         Information.eco = rsp.getProvider();
         return Information.eco != null;
+
     }
 
     /**
@@ -125,7 +134,7 @@ public class BusinessCore extends JavaPlugin {
         public static boolean database;
         public static BusinessCore BusinessCore;
         public static Connection connection;
-        public static net.milkbowl.vault.economy.Economy eco = null;
+        public static net.milkbowl.vault.economy.Economy eco;
         public static boolean debug;
         public static Logger log;
 

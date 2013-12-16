@@ -1,9 +1,8 @@
 name: BusinessCore
 version: 0.0.1
 author: beastman3226
-main: me.beastman3226.bc.Main
+main: me.beastman3226.bc.BusinessCore
 depend: [Vault]
-softdepend: [iConomy, BOSEconomy, Mineconomy]
 commands:
   b.create:
     description: Creates a business
