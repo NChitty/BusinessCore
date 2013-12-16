@@ -16,9 +16,9 @@ import me.beastman3226.bc.db.Table;
 public abstract class DataHandler {
 
     public static void update(Table table, String column, Object data, String column_condition, Object condition) {
-        if(Database.MySQL.checkConnection()) {
+        if(Database.instance().MySQL.checkConnection()) {
             try {
-                Statement s =  Database.MySQL.getConnection().createStatement();
+                Statement s =  Database.instance().MySQL.getConnection().createStatement();
                 if(data instanceof int[]) {
                     String k = "";
                     for(int i : (int[]) data) {
@@ -39,9 +39,9 @@ public abstract class DataHandler {
     }
 
     public static void remove(Table table, String column, Object condition) {
-        if(Database.MySQL.checkConnection()) {
+        if(Database.instance().MySQL.checkConnection()) {
             try {
-                Statement s = Database.MySQL.getConnection().createStatement();
+                Statement s = Database.instance().MySQL.getConnection().createStatement();
                 s.execute("DELETE FROM " + table + "\n"
                         + "WHERE " + column + "='" + condition + "';");
             } catch (SQLException ex) {
@@ -52,9 +52,9 @@ public abstract class DataHandler {
     }
 
     public static void add(Table table, Data object) {
-        if(Database.MySQL.checkConnection()) {
+        if(Database.instance().MySQL.checkConnection()) {
             try {
-                Statement s = Database.MySQL.getConnection().createStatement();
+                Statement s = Database.instance().MySQL.getConnection().createStatement();
                 Iterator i = object.getData().values().iterator();
                 String string = "";
                 while(i.hasNext()) {

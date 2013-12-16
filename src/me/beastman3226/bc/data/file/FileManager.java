@@ -14,21 +14,21 @@ public class FileManager {
         switch(type) {
             case BUSINESS:
                 FileFunctions.reload(type);
-                for(String path : data.data.keySet()) {
+                for(String path : data.getData().keySet()) {
                     Information.businessYml.set(path, data.getData().get(path));
                 }
                 FileFunctions.save(type);
                 break;
             case EMPLOYEE:
                 FileFunctions.reload(type);
-                for(String path : data.data.keySet()) {
+                for(String path : data.getData().keySet()) {
                     Information.employeeYml.set(path, data.getData().get(path));
                 }
                 FileFunctions.save(type);
                 break;
             case JOB:
                 FileFunctions.reload(type);
-                for(String path : data.data.keySet()) {
+                for(String path : data.getData().keySet()) {
                     Information.jobYml.set(path, data.getData().get(path));
                 }
                 FileFunctions.save(type);

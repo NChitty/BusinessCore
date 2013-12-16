@@ -61,7 +61,7 @@ public class BusinessCore extends JavaPlugin {
             getConfig().set("firstrun", false);
         } else {
             if (Information.database) {
-                Connection c = Database.MySQL.getConnection();
+                Connection c = Database.instance().MySQL.getConnection();
                 try {
                     Statement s = c.createStatement();
                     BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));

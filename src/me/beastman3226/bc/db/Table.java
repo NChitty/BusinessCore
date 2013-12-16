@@ -35,8 +35,8 @@ public enum Table {
     private String name;
     Table(String name, String[] columns) {
         this.name = name;
-        if(!Database.MySQL.checkConnection()) {
-            Information.connection = Database.MySQL.openConnection();
+        if(!Database.instance().MySQL.checkConnection()) {
+            Information.connection = Database.instance().MySQL.openConnection();
         }
         Statement s = null;
         try {
