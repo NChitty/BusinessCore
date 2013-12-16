@@ -62,6 +62,7 @@ public abstract class DataHandler {
                 }
                 s.execute("INSERT INTO " + table + "\n"
                         + "VALUES(" + string + ");");
+                object.clear();
             } catch (SQLException ex) {
                 Logger.getLogger(DataHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
