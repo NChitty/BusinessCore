@@ -60,4 +60,8 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
             return this.getBusiness().getBalance() + this.getAmount();
         }
     }
+
+    public void setFinalAmount(double d) {
+        this.change = d;
+    }
 }

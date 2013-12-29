@@ -99,14 +99,14 @@ public class BusinessCommandHandler implements CommandExecutor {
                             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
                             Bukkit.getServer().getPluginManager().callEvent(event);
                             if(!event.isCancelled()) {
-                                event.getBusiness().withdraw(event.getAbsoluteAmount());
+                                event.getBusiness().withdraw(event.getFinalAmount());
                             }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage(Prefixes.ERROR + "The amount must be less than the current balance.");
                             return false;
                         }
                         Information.eco.depositPlayer(sender.getName(), amount);
-                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
+                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " + Information.eco.currencyNamePlural());
                         return true;
                     }
                 } else if(!(sender instanceof Player)) {
@@ -164,7 +164,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                                      event
                                      .getAmount());
                         }
-                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
+                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " +  Information.eco.currencyNamePlural());
                         return true;
                     }
                 } else {
@@ -194,7 +194,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                         }
                        Player owner = Bukkit.getPlayerExact(b.getOwnerName());
                        if(owner.isOnline() | owner != null) {
-                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your business, your new balance is " + b.getBalance() + Information.eco.currencyNamePlural());
+                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your business, your new balance is " + b.getBalance() + " " + Information.eco.currencyNamePlural());
                        }
                        return true;
                    }

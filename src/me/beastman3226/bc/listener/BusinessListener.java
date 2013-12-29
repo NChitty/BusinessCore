@@ -26,6 +26,7 @@ public class BusinessListener implements Listener {
                 BusinessHandler.update("BusinessBalance", e.getFinalAmount(), "BusinessID", e.getID());
         } else if(!Information.database && !e.isCancelled()) {
             BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
+            e.setFinalAmount(e.getAbsoluteAmount());
         }
     }
 

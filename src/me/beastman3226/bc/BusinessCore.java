@@ -18,6 +18,8 @@ import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.VaultEco;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,7 +55,7 @@ public class BusinessCore extends JavaPlugin {
             Information.initFiles(this);
             Information.database = false;
         }
-        this.getLogger().info(setupEconomy() + "");
+        this.getLogger().log(Level.INFO, "{0}", setupEconomy());
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
@@ -76,6 +78,7 @@ public class BusinessCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.reloadConfig();
         this.saveConfig();
         Information.BusinessCore = null;
         FileFunctions.save();

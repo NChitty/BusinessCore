@@ -50,8 +50,12 @@ public class BusinessManager {
         ArrayList<String> names = new ArrayList<>(Information.businessYml.getStringList("names"));
         for(String s : names) {
             FileConfiguration yml = Information.businessYml;
-            createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")).ids(yml.getString(s + ".employeeIDs").split(",")));
-        }
+            if(yml.getString(s + ".employeeIDs") != null) {
+                createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")).ids(yml.getString(s + ".employeeIDs").split(",")));
+            } else {
+                createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")));
+            }
+          }
     }
 
     /**
@@ -136,12 +140,14 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void deleteBusiness(Business business) {
+        names.remove(business.getName());
+        Business.businessList.remove(business);
         if(Information.database) {
             BusinessHandler.remove("BusinessID", business.getID());
         } else {
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
+            BusinessFileManager.editConfig(new FileData().add("names", names));
         }
-        Business.businessList.remove(business);
     }
 
     /**
