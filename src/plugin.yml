@@ -1,5 +1,5 @@
 name: BusinessCore
-version: 0.0.1
+version: 1.0-Alpha
 author: beastman3226
 main: me.beastman3226.bc.BusinessCore
 depend: [Vault]
@@ -29,11 +29,21 @@ commands:
     permission: business.balance
     permission-message: "&4You do not have 'business.balance' or the like, please talk to an adminstrator"
     aliases: [business.balance, balance, b.b]
+  b.info:
+    description: Shows info on businesses
+    permission: business.info
+    permission-message: "&4You do not have 'business.info' or the like, please talk to an adminstrator"
+    aliases: [business.info, b.i, info]
   hire:
     description: Hires the specified player
     permission: business.hire
     permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
     aliases: [b.h, h]
+  fire:
+   description: Fires the specified player.
+   permission: business.fire
+   permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
+   aliases: [b.f, f]
 permissions:
   business.create:
     default: true
@@ -47,6 +57,8 @@ permissions:
     default: true
   business.hire:
     default: true
+  business.fire:
+    default: true
   business.business:
     children:
       business.create: true
@@ -55,3 +67,4 @@ permissions:
       business.deposit: true
       business.balance: true
       business.hire: true
+      business.fire: true

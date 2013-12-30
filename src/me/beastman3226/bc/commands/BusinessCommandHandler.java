@@ -236,6 +236,20 @@ public class BusinessCommandHandler implements CommandExecutor {
                     }
                 }
             // </editor-fold>
+            //<editor-fold defaultstate="collapsed" desc="Business info">
+            } else if (cmnd.getName().equalsIgnoreCase("b.info")) {
+                if(sender instanceof Player) {
+                    if(BusinessManager.isOwner(sender.getName())) {
+                        Business b = BusinessManager.getBusiness(sender.getName());
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|==========Business Info==========|",
+                                                          ChatColor.GREEN + "  Name: " + b.getName(),
+                                                          ChatColor.GREEN + "  ID: " + b.getID(),
+                                                          ChatColor.GREEN + "  Balance: " + b.getBalance(),
+                                                          ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null ? "N/A" : this.asString(b.getEmployeeIDs())};
+                        sender.sendMessage(info);
+                    }
+                }
+            //</editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Hire">
             } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
@@ -291,5 +305,18 @@ public class BusinessCommandHandler implements CommandExecutor {
             return false;
         }
         return false;
+    }
+
+    private String asString(int[] a) {
+        String string = "";
+        int i = 0;
+        for(int j : a) {
+            if(i == 0) {
+                string = j + "";
+                continue;
+            }
+            string = string.concat(", " + j);
+        }
+        return string;
     }
 }
