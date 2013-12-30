@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
  */
 public class Scheduler {
 
-    public static HashMap<String, Long> playerMilli = new HashMap<>();
+    public static HashMap<String, Long> playerMilli = new HashMap<String, Long>();
 
     public static void runAcceptance() {
         Bukkit.getServer().getScheduler().runTask(Information.BusinessCore, new Runnable() {

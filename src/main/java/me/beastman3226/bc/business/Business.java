@@ -11,7 +11,7 @@ public class Business {
     private String ownerName;
     private double worth;
     private int[] employeeIDs;
-    public static HashSet<Business> businessList = new HashSet<>();
+    public static HashSet<Business> businessList = new HashSet<Business>();
 
     private Business(Builder build) {
         this.id = build.id;

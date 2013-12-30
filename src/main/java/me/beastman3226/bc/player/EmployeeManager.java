@@ -20,7 +20,7 @@ import me.beastman3226.bc.errors.OpenJobException;
  */
 public class EmployeeManager {
 
-    public static HashMap<String, Integer> pending = new HashMap<>(50);
+    public static HashMap<String, Integer> pending = new HashMap<String, Integer>(50);
 
     public static void loadEmployees() {
         if(Information.database) {

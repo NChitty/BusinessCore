@@ -15,7 +15,7 @@ public enum Data {
     Data() {
 
     }
-    private HashMap<String, Object> dataColumn = new HashMap<>();
+    private HashMap<String, Object> dataColumn = new HashMap<String, Object>();
 
     public Data add(String column, Object data) {
         dataColumn.put(column, data);
@@ -25,7 +25,7 @@ public enum Data {
     public HashMap getData() {
         return this.dataColumn;
     }
-    
+
     public void clear() {
         dataColumn.clear();
     }

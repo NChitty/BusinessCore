@@ -27,7 +27,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class BusinessManager {
 
-    public static ArrayList<String> names = new ArrayList<>();
+    public static ArrayList<String> names = new ArrayList<String>();
 
     /**
      * This creates a business from a pre-existing business in the database.
@@ -50,8 +50,8 @@ public class BusinessManager {
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
-        ArrayList<String> names = new ArrayList<>(Information.businessYml.getStringList("names"));
-        for(String s : names) {
+        ArrayList<String> bnames = new ArrayList<String>(Information.businessYml.getStringList("names"));
+        for(String s : bnames) {
             FileConfiguration yml = Information.businessYml;
             if(yml.getString(s + ".employeeIDs") != null) {
                 createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")).ids(yml.getString(s + ".employeeIDs").split(",")));

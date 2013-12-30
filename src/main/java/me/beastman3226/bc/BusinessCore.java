@@ -35,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BusinessCore extends JavaPlugin {
 
-    HashMap<String, String> hm = new HashMap<>();
+    HashMap<String, String> hm = new HashMap<String, String>();
 
     @Override
     public void onEnable() {
@@ -202,27 +202,33 @@ public class BusinessCore extends JavaPlugin {
                     try {
                         Information.businessYml.load(Information.businessFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
                     }
                     break;
                 case EMPLOYEE:
                     try {
                         Information.employeeYml.load(Information.employeeFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
                     }
                     break;
                 case JOB:
                     try {
                         Information.jobYml.load(Information.jobFile);
                     } catch (FileNotFoundException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException | InvalidConfigurationException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
                     }
                     break;
             }
@@ -236,24 +242,30 @@ public class BusinessCore extends JavaPlugin {
             try {
                 Information.businessYml.load(Information.businessFile);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    }
             try {
                 Information.employeeYml.load(Information.employeeFile);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           } catch (FileNotFoundException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    }
             try {
                 Information.jobYml.load(Information.jobFile);
             } catch (FileNotFoundException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException | InvalidConfigurationException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    } catch (InvalidConfigurationException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    }
         }
 
         /**

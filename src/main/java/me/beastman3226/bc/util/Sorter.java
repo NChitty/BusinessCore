@@ -10,7 +10,7 @@ import me.beastman3226.bc.business.Business;
 public class Sorter {
 
     public static ArrayList<Business> sort() {
-        ArrayList<Business> list = new ArrayList<>();
+        ArrayList<Business> list = new ArrayList<Business>();
         for(Business b : Business.businessList) {
             int i = 0;
             if(list.get(i) == null || list.get(i).getBalance() < b.getBalance()) {

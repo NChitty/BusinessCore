@@ -8,8 +8,8 @@ import java.util.HashMap;
  */
 public class FileData {
 
-    private HashMap<String, Object> data = new HashMap<>();
-    
+    private HashMap<String, Object> data = new HashMap<String, Object>();
+
     public FileData add(String path, Object data) {
         if(data instanceof int[]) {
             String fin = "";
@@ -21,7 +21,7 @@ public class FileData {
         }
         return this;
     }
-    
+
     public HashMap<String, Object> getData() {
         return this.data;
     }

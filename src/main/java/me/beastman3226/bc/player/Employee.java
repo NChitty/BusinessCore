@@ -17,7 +17,7 @@ public class Employee {
     private int completedJobs;
     private int jobID;
 
-    public static HashSet<Employee> employeeList = new HashSet<>();
+    public static HashSet<Employee> employeeList = new HashSet<Employee>();
 
     public Employee(String name, int id) {
         this.employeeName = name;
