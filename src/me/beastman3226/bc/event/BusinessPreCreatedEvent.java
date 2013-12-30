@@ -32,9 +32,9 @@ public class BusinessPreCreatedEvent extends Event {
     public String getName() {
         String toReturn = "";
         for(String s : args) {
-            toReturn = toReturn + " " + s;
+            toReturn = toReturn.concat(s + " ");
         }
-        return toReturn;
+        return toReturn.trim();
     }
 
     public CommandSender getSender() {

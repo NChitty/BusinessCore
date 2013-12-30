@@ -11,7 +11,7 @@ public class Business {
     private String ownerName;
     private double worth;
     private int[] employeeIDs;
-    protected static HashSet<Business> businessList = new HashSet<>();
+    public static HashSet<Business> businessList = new HashSet<>();
 
     private Business(Builder build) {
         this.id = build.id;
@@ -126,6 +126,11 @@ public class Business {
         }
         this.employeeIDs = newList;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
     public static class Builder {

@@ -25,4 +25,8 @@ public enum Data {
     public HashMap getData() {
         return this.dataColumn;
     }
+    
+    public void clear() {
+        dataColumn.clear();
+    }
 }

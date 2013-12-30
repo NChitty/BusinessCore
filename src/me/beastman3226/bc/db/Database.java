@@ -5,8 +5,8 @@
 package me.beastman3226.bc.db;
 
 import code.husky.mysql.MySQL;
-import me.beastman3226.bc.Main;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.BusinessCore.Information;
 
 /**
  *
@@ -14,7 +14,7 @@ import me.beastman3226.bc.Main.Information;
  */
 public class Database {
 
-    public static MySQL MySQL;
+    public MySQL MySQL;
 
     public static Database instance() {
         return Holder.INSTANCE;
@@ -29,6 +29,7 @@ public class Database {
         build.database = database;
         build.user = user;
         build.pass = pass;
+        MySQL.openConnection();
     }
 
     public String getDatabase() {

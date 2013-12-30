@@ -2,15 +2,18 @@ package me.beastman3226.bc.commands;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.errors.NoOpenIDException;
+import me.beastman3226.bc.event.BusinessBalanceChangeEvent;
+import me.beastman3226.bc.event.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.BusinessPreCreatedEvent;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
+import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -26,6 +29,9 @@ public class BusinessCommandHandler implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
+        if(Information.eco == null) {
+            Information.BusinessCore.setupEconomy();
+        }
         if(sender.hasPermission(cmnd.getPermission())) {
             // <editor-fold defaultstate="collapsed" desc="Business Create">
             if(cmnd.getName().equalsIgnoreCase("b.create") && args.length > 0) {
@@ -40,6 +46,9 @@ public class BusinessCommandHandler implements CommandExecutor {
                     }
                     BusinessPostCreatedEvent event1 = new BusinessPostCreatedEvent(b);
                     Bukkit.getPluginManager().callEvent(event1);
+                    if(!event1.isCancelled()) {
+                        Bukkit.getServer().broadcastMessage(Prefixes.POSITIVE + event1.getBusiness().getOwnerName() + " has just created " + event1.getBusiness().getName());
+                    }
                 } else {
                     sender.sendMessage(Prefixes.ERROR + "I need a player name to create a business. You aren't a player. OR You already have a business");
                 }
@@ -57,9 +66,17 @@ public class BusinessCommandHandler implements CommandExecutor {
                         caught = true;
                     }
                     if(!caught) {
-                        BusinessManager.deleteBusiness(BusinessManager.getBusiness(k));
-                    } else {
+                        if(BusinessManager.isID(k)) {
+                            BusinessManager.deleteBusiness(BusinessManager.getBusiness(k));
+                        } else {
+                            sender.sendMessage(Prefixes.ERROR + "That ID is not valid!");
+                            return false;
+                        }
+                    } else if(BusinessManager.isOwner(args[0])){
                         BusinessManager.deleteBusiness(BusinessManager.getBusiness(args[0]));
+                    } else {
+                       sender.sendMessage(Prefixes.ERROR + "That owner is not valid!");
+                       return false;
                     }
                 } else {
                     sender.sendMessage(Prefixes.ERROR + "Valid business not found.");
@@ -82,12 +99,19 @@ public class BusinessCommandHandler implements CommandExecutor {
                         return false;
                     } else {
                         try {
-                            b.withdraw(amount);
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                            if(!event.isCancelled()) {
+                                event.getBusiness().withdraw(event.getFinalAmount());
+                                Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
+                            }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage(Prefixes.ERROR + "The amount must be less than the current balance.");
                             return false;
                         }
-                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
+                        Information.eco.depositPlayer(sender.getName(), amount);
+                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " + Information.eco.currencyNamePlural());
                         return true;
                     }
                 } else if(!(sender instanceof Player)) {
@@ -101,11 +125,18 @@ public class BusinessCommandHandler implements CommandExecutor {
                         caught = true;
                     }
                     if(caught) {
-                        sender.sendMessage("Please do b.withdraw [business_id] [amount], both must be numbers!");
+                        sender.sendMessage("Please do 'b.withdraw [business_id] [amount]', both must be numbers!");
                         return false;
                     } else {
                         try {
-                            BusinessManager.getBusiness(id).withdraw(amount);
+                            Business b = BusinessManager.getBusiness(id);
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
+                            Bukkit.getServer().getPluginManager().callEvent(event);
+                            if(!event.isCancelled()) {
+                                event.getBusiness().withdraw(event.getAbsoluteAmount());
+                                Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
+                            }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage("The amount must be less than the balance!");
                             return false;
@@ -129,10 +160,20 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(Prefixes.ERROR + args[0] + " is not the proper format for a deposit");
                         return false;
                     } else {
-                        Information.eco.withdrawPlayer(sender.getName(), amount);
                         Business b = BusinessManager.getBusiness(sender.getName());
-                        b.deposit(amount);
-                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + Information.eco.currencyNamePlural());
+                        BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                             event.getBusiness().deposit(event.getAmount());
+                             Information.
+                                     eco.
+                                     withdrawPlayer(sender.getName(),
+                                     event
+                                     .getAmount());
+                             Business.businessList.remove(event.getBusiness());
+                             Business.businessList.add(event.getBusiness());
+                        }
+                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " +  Information.eco.currencyNamePlural());
                         return true;
                     }
                 } else {
@@ -151,14 +192,20 @@ public class BusinessCommandHandler implements CommandExecutor {
                        caught = true;
                    }
                    if(caught) {
-                       sender.sendMessage(Prefixes.ERROR + "Please specify valid numbers as numbers ie. 1, 0.0");
+                       sender.sendMessage("Please specify valid numbers as numbers ie. 1, 0.0");
                        return false;
                    } else {
                        Business b = BusinessManager.getBusiness(id);
-                       b.deposit(amount);
+                        BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                             event.getBusiness().deposit(event.getAmount());
+                             Business.businessList.remove(event.getBusiness());
+                             Business.businessList.add(event.getBusiness());
+                        }
                        Player owner = Bukkit.getPlayerExact(b.getOwnerName());
                        if(owner.isOnline() | owner != null) {
-                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your bank, your new balance is " + b.getBalance() + Information.eco.currencyNamePlural());
+                           owner.sendMessage(Prefixes.POSITIVE + "Server has just deposited " + amount + " into your business, your new balance is " + b.getBalance() + " " + Information.eco.currencyNamePlural());
                        }
                        return true;
                    }
@@ -200,6 +247,33 @@ public class BusinessCommandHandler implements CommandExecutor {
                     }
                 }
             // </editor-fold>
+            //<editor-fold defaultstate="collapsed" desc="Business info">
+            } else if (cmnd.getName().equalsIgnoreCase("b.info")) {
+                if(sender instanceof Player) {
+                    if(BusinessManager.isOwner(sender.getName())) {
+                        Business b = BusinessManager.getBusiness(sender.getName());
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|==========Business Info==========|",
+                                                          ChatColor.GREEN + "  Name: " + b.getName(),
+                                                          ChatColor.GREEN + "  ID: " + b.getID(),
+                                                          ChatColor.GREEN + "  Balance: " + b.getBalance(),
+                                                          ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null ? "N/A" : this.asString(b.getEmployeeIDs())};
+                        sender.sendMessage(info);
+                    } else {
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
+                                                          ChatColor.GREEN + "1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
+                                                          ChatColor.GREEN + "5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
+                        sender.sendMessage(info);
+                    }
+                } else if(!(sender instanceof Player) && args.length > 0) {
+
+                } else if(!(sender instanceof Player)) {
+
+                }
+            //</editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="Hire">
             } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
                     String name = args[0];
@@ -207,10 +281,51 @@ public class BusinessCommandHandler implements CommandExecutor {
                     if(player != null & player.isOnline()) {
                         if(EmployeeManager.isEmployee(sender.getName())) {
                             player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + EmployeeManager.getEmployee(sender.getName()).getBusiness().getName() + " by " + sender.getName());
-                            //TODO: Employee acceptance
+                            EmployeeManager.pending.put(player.getName(), EmployeeManager.getEmployee(sender.getName()).getBusiness().getID());
+                            Scheduler.runAcceptance();
+                        } else if(BusinessManager.isOwner(sender.getName())) {
+                            player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + BusinessManager.getBusiness(sender.getName()).getName() + " by " + sender.getName());
+                            EmployeeManager.pending.put(player.getName(), BusinessManager.getBusiness(sender.getName()).getID());
+                            Scheduler.runAcceptance();
                         }
                     }
                 }
+            // </editor-fold>
+            // <editor-fold defaultstate="collapsed" desc="Fire">
+            } else if(cmnd.getName().equalsIgnoreCase("fire") && args.length > 0) {
+                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())) {
+                    boolean caught = false;
+                    int id = 0;
+                    String name = args[0];
+                    try {
+                        id = Integer.parseInt(name);
+                    } catch (NumberFormatException e) {
+                        caught = true;
+                    }
+                    Business b = BusinessManager.getBusiness(sender.getName());
+                    BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, null);
+                    if(!caught) {
+                        event.setEmployee(id);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
+                        }
+                    } else {
+                        event.setEmployee(EmployeeManager.getEmployee(name));
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                            Business.businessList.add(event.getBusiness());
+                        }
+                    }
+                    Bukkit.getPlayerExact(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
+                } else if(!(sender instanceof Player)) {
+                    sender.sendMessage(Prefixes.ERROR + "I am having issues finding the correct business and employee");
+                }
+            // </editor-fold>
             }
         } else {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
@@ -219,7 +334,16 @@ public class BusinessCommandHandler implements CommandExecutor {
         return false;
     }
 
-    private boolean throwNew(Exception e) throws Exception {
-            throw e;
+    private String asString(int[] a) {
+        String string = "";
+        int i = 0;
+        for(int j : a) {
+            if(i == 0) {
+                string = j + "";
+                continue;
+            }
+            string = string.concat(", " + j);
+        }
+        return string;
     }
 }

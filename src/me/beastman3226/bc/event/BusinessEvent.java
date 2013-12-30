@@ -7,10 +7,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- *
+ * This class is abstract to avoid instantiation
  * @author beastman3226
  */
-public class BusinessEvent extends Event implements Cancellable{
+public abstract class BusinessEvent extends Event implements Cancellable{
 
     protected static final HandlerList handlers = new HandlerList();
     protected boolean cancelled;
@@ -47,6 +47,14 @@ public class BusinessEvent extends Event implements Cancellable{
 
     public int getID() {
         return businessID;
+    }
+
+    public Business getBusiness() {
+        return this.business;
+    }
+
+    public void setBusiness(Business b) {
+        this.business = b;
     }
 
 }

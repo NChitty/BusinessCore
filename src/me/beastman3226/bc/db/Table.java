@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.Main.Information;
+import me.beastman3226.bc.BusinessCore.Information;
 
 /**
  *
@@ -23,7 +23,6 @@ public enum Table {
     EMPLOYEE("employees", new String[]{"EmployeeID INTEGER",
         "EmployeeName VARCHAR(40)",
         "BusinessID INTEGER",
-        "ScoutedJobs INTEGER",
         "CompletedJobs INTEGER",
         "JobID INTEGER"}),
     JOB("jobs", new String[]{"JobID INTEGER",
@@ -36,8 +35,8 @@ public enum Table {
     private String name;
     Table(String name, String[] columns) {
         this.name = name;
-        if(!Database.MySQL.checkConnection()) {
-            Information.connection = Database.MySQL.openConnection();
+        if(!Database.instance().MySQL.checkConnection()) {
+            Information.connection = Database.instance().MySQL.openConnection();
         }
         Statement s = null;
         try {
