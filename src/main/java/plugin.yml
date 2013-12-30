@@ -55,6 +55,8 @@ permissions:
     default: true
   business.balance:
     default: true
+  business.info:
+    default: true
   business.hire:
     default: true
   business.fire:
@@ -66,5 +68,6 @@ permissions:
       business.withdraw: true
       business.deposit: true
       business.balance: true
+      business.info: true
       business.hire: true
       business.fire: true
