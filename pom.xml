@@ -14,8 +14,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkitVersion>1.7.2-R0.3-SNAPSHOT</bukkitVersion>
         <vaultVersion>1.2.30</vaultVersion>
-        <netbeans.hint.jdkPlatform>JDK 1.7_45</netbeans.hint.jdkPlatform>
     </properties>
+
+
+
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>

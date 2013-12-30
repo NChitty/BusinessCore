@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.beastman3226.bc.db;
 
 import code.husky.mysql.MySQL;
