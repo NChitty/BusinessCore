@@ -1,18 +1,70 @@
 name: BusinessCore
-version: 0.0.1
+version: 1.0-Alpha
 author: beastman3226
-main: me.beastman3226.BusinessCore.BusinessMain
+main: me.beastman3226.bc.BusinessCore
 depend: [Vault]
 commands:
-  business:
-    description: This controls the business portion of the plugin
+  b.create:
+    description: Creates a business
+    permission: business.create
+    permission-message: "&4You do not have 'business.create' or the like, please talk to an adminstrator"
+    aliases: [business.create, create, b.c]
+  b.delete:
+    description: Delete your business, or (from console) someone elses
+    permission: business.delete
+    permission-message: "&4You do not have 'business.delete' or the like, please talk to an adminstrator"
+    aliases: [business.delete, delete, b.d]
+  b.withdraw:
+    description: Withdraws money from your business
+    permission: business.withdraw
+    permission-message: "&4You do not have 'business.withdraw' or the like, please talk to an adminstrator"
+    aliases: [business.withdraw, withdraw, b.w]
+  b.deposit:
+    description: Deposits money into the bank
+    permission: business.deposit
+    permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
+    aliases: [business.deposit, deposit, b.de]
+  b.balance:
+    description: Shows you your balance
+    permission: business.balance
+    permission-message: "&4You do not have 'business.balance' or the like, please talk to an adminstrator"
+    aliases: [business.balance, balance, b.b]
+  b.info:
+    description: Shows info on businesses
+    permission: business.info
+    permission-message: "&4You do not have 'business.info' or the like, please talk to an adminstrator"
+    aliases: [business.info, b.i, info]
+  hire:
+    description: Hires the specified player
+    permission: business.hire
+    permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
+    aliases: [b.h, h]
+  fire:
+   description: Fires the specified player.
+   permission: business.fire
+   permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
+   aliases: [b.f, f]
 permissions:
-  bw.business:
-    description: Gives permission to business side
+  business.create:
     default: true
-  business.admin:
-    description: Allows player to use admin commands
-    default: op
-  business.owner.delete:
-    description: Gives permission to delete own business
-    default: false
+  business.delete:
+    default: true
+  business.withdraw:
+    default: true
+  business.deposit:
+    default: true
+  business.balance:
+    default: true
+  business.hire:
+    default: true
+  business.fire:
+    default: true
+  business.business:
+    children:
+      business.create: true
+      business.delete: true
+      business.withdraw: true
+      business.deposit: true
+      business.balance: true
+      business.hire: true
+      business.fire: true
