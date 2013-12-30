@@ -16,6 +16,9 @@ import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.NoOpenIDException;
+import me.beastman3226.bc.util.Prefixes;
+import me.beastman3226.bc.util.Sorter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -148,6 +151,7 @@ public class BusinessManager {
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
             BusinessFileManager.editConfig(new FileData().add("names", names));
         }
+        Bukkit.getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
     }
 
     /**
@@ -169,4 +173,15 @@ public class BusinessManager {
     public static boolean isID(int id) {
         return getBusiness(id) != null;
     }
+
+    /**
+     * Sorts the list and gets the rank specified
+     * @param rank The rank
+     * @return The name of the business at said rank
+     */
+    public static String getIndex(int rank) {
+        Business b= Sorter.sort().get(rank);
+        return b.getName();
+    }
+
 }

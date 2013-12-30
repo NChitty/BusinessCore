@@ -27,9 +27,10 @@ public class PlayerListener implements Listener {
                 if(!event.isCancelled()) {
                     event.getBusiness().addEmployee(event.getEmployee());
                     EmployeeManager.pending.remove(e.getPlayer().getName());
+                    Business.businessList.remove(event.getBusiness());
+                    Business.businessList.add(event.getBusiness());
                     e.setCancelled(true);
                 }
-
             } else {
                 Scheduler.playerMilli.remove(e.getPlayer().getName());
             }

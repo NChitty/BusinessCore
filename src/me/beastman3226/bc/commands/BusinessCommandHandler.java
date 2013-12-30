@@ -46,6 +46,9 @@ public class BusinessCommandHandler implements CommandExecutor {
                     }
                     BusinessPostCreatedEvent event1 = new BusinessPostCreatedEvent(b);
                     Bukkit.getPluginManager().callEvent(event1);
+                    if(!event1.isCancelled()) {
+                        Bukkit.getServer().broadcastMessage(Prefixes.POSITIVE + event1.getBusiness().getOwnerName() + " has just created " + event1.getBusiness().getName());
+                    }
                 } else {
                     sender.sendMessage(Prefixes.ERROR + "I need a player name to create a business. You aren't a player. OR You already have a business");
                 }
@@ -100,6 +103,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                             Bukkit.getServer().getPluginManager().callEvent(event);
                             if(!event.isCancelled()) {
                                 event.getBusiness().withdraw(event.getFinalAmount());
+                                Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
                             }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage(Prefixes.ERROR + "The amount must be less than the current balance.");
@@ -129,6 +134,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                             Bukkit.getServer().getPluginManager().callEvent(event);
                             if(!event.isCancelled()) {
                                 event.getBusiness().withdraw(event.getAbsoluteAmount());
+                                Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
                             }
                         } catch (InsufficientFundsException ex) {
                             sender.sendMessage("The amount must be less than the balance!");
@@ -163,6 +170,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                                      withdrawPlayer(sender.getName(),
                                      event
                                      .getAmount());
+                             Business.businessList.remove(event.getBusiness());
+                             Business.businessList.add(event.getBusiness());
                         }
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " +  Information.eco.currencyNamePlural());
                         return true;
@@ -191,6 +200,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         if(!event.isCancelled()) {
                              event.getBusiness().deposit(event.getAmount());
+                             Business.businessList.remove(event.getBusiness());
+                             Business.businessList.add(event.getBusiness());
                         }
                        Player owner = Bukkit.getPlayerExact(b.getOwnerName());
                        if(owner.isOnline() | owner != null) {
@@ -247,7 +258,19 @@ public class BusinessCommandHandler implements CommandExecutor {
                                                           ChatColor.GREEN + "  Balance: " + b.getBalance(),
                                                           ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null ? "N/A" : this.asString(b.getEmployeeIDs())};
                         sender.sendMessage(info);
+                    } else {
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
+                                                          ChatColor.GREEN + "1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
+                                                          ChatColor.GREEN + "5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
+                        sender.sendMessage(info);
                     }
+                } else if(!(sender instanceof Player) && args.length > 0) {
+
+                } else if(!(sender instanceof Player)) {
+
                 }
             //</editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Hire">
@@ -286,12 +309,16 @@ public class BusinessCommandHandler implements CommandExecutor {
                         Bukkit.getPluginManager().callEvent(event);
                         if(!event.isCancelled()) {
                             b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
                         }
                     } else {
                         event.setEmployee(EmployeeManager.getEmployee(name));
                         Bukkit.getPluginManager().callEvent(event);
                         if(!event.isCancelled()) {
                             b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                            Business.businessList.add(event.getBusiness());
                         }
                     }
                     Bukkit.getPlayerExact(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
