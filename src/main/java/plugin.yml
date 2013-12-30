@@ -1,5 +1,5 @@
 name: BusinessCore
-version: 1.0-Alpha
+version: 1.1-Alpha
 author: beastman3226
 main: me.beastman3226.bc.BusinessCore
 depend: [Vault]
