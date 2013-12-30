@@ -26,6 +26,7 @@ public enum Table {
         "CompletedJobs INTEGER",
         "JobID INTEGER"}),
     JOB("jobs", new String[]{"JobID INTEGER",
+        "PlayerName VARCHAR(65)",
         "JobDescription TEXT",
         "JobLocation VARCHAR(75)",
         "World VARCHAR(40)",

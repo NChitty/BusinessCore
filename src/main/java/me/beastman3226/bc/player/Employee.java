@@ -13,7 +13,7 @@ public class Employee {
 
     private final String employeeName;
     private final int id;
-    private Business business;
+    private int business;
     private int completedJobs;
     private int jobID;
 
@@ -33,21 +33,21 @@ public class Employee {
     }
 
     public Business getBusiness() {
-        return this.business;
+        return BusinessManager.getBusiness(this.business);
     }
 
     public Employee setBusiness(Business b) {
-        this.business = b;
+        this.business = b.getID();
         return this;
     }
 
     public Employee setBusiness(int id) {
-        this.business = BusinessManager.getBusiness(id);
+        this.business = BusinessManager.getBusiness(id).getID();
         return this;
     }
 
     public Employee setBusiness(String owner) {
-        this.business = BusinessManager.getBusiness(owner);
+        this.business = BusinessManager.getBusiness(owner).getID();
         return this;
     }
 

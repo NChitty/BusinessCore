@@ -1,4 +1,4 @@
-package me.beastman3226.bc.event;
+package me.beastman3226.bc.event.business;
 
 import me.beastman3226.bc.business.Business;
 

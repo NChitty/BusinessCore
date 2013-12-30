@@ -1,4 +1,4 @@
-package me.beastman3226.bc.event;
+package me.beastman3226.bc.event.business;
 
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.player.Employee;
@@ -8,15 +8,15 @@ import me.beastman3226.bc.player.EmployeeManager;
  *
  * @author beastman3226
  */
-public class BusinessHiredEmployeeEvent extends BusinessEvent {
+public class BusinessFiredEmployeeEvent extends BusinessEvent {
 
     private Employee employee;
-    public BusinessHiredEmployeeEvent(Business b, Employee e) {
+    public BusinessFiredEmployeeEvent(Business b, Employee e) {
         super(b);
         this.employee = e;
     }
 
-    public BusinessHiredEmployeeEvent(int b, int e) {
+    public BusinessFiredEmployeeEvent(int b, int e) {
         super(b);
         this.employee = EmployeeManager.getEmployee(e);
     }
@@ -33,7 +33,12 @@ public class BusinessHiredEmployeeEvent extends BusinessEvent {
         this.employee = e;
     }
 
-    public int[] getFinalList() {
-        return this.getBusiness().addEmployee(this.employee.getID()).getEmployeeIDs();
+    public int[] finalEmployeeList() {
+        return this.getBusiness().removeEmployee(employee.getID()).getEmployeeIDs();
     }
+
+    public void setEmployeeList(int[] ids) {
+        this.getBusiness().setEmployeeIDs(ids);
+    }
+
 }

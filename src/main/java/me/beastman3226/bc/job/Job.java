@@ -1,6 +1,12 @@
 package me.beastman3226.bc.job;
 
+import java.util.HashSet;
+import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
@@ -10,10 +16,13 @@ import org.bukkit.Location;
 public class Job {
 
     private final int id;
+    private String player;
     private String description;
     private Location loc;
     private double pay;
-    private Employee employee;
+    private int employeeid;
+    private boolean claimed = false;
+    public static HashSet<Job> jobList = new HashSet<Job>();
 
     /**
      * From command
@@ -22,8 +31,9 @@ public class Job {
      * @param loc location that the job was started
      * @param pay Payment that a business will recieve if it completed
      */
-    public Job(int id, String description, Location loc, double pay) {
+    public Job(int id, String name, String description, Location loc, double pay) {
         this.id = id;
+        this.player = name;
         this.description = description;
         this.loc = loc;
         this.pay = pay;
@@ -35,14 +45,14 @@ public class Job {
      * @param description the description of the job
      * @param loc location that the job was started
      * @param pay Payment that a business will recieve if it completed
-     * @param e Employee
+     * @param e Employeeid
      */
-    public Job(int id, String description, Location loc, double pay, Employee e) {
+    public Job(int id, String description, Location loc, double pay, int e) {
         this.id = id;
         this.description = description;
         this.loc = loc;
         this.pay = pay;
-        this.employee = e;
+        this.employeeid = e;
     }
 
     public int getID() {
@@ -61,13 +71,22 @@ public class Job {
         return this.pay;
     }
 
-    public Employee getEmployee() {
-        return this.employee;
+    public int getEmployee() {
+        return this.employeeid;
     }
 
     public void claim(Employee e) {
-        if(this.employee == null) {
-            this.employee = e;
+        if(this.employeeid == 0 && !claimed) {
+            this.employeeid = e.getID();
+            claimed = true;
         }
+    }
+
+    public void finish() {
+        String employee = EmployeeManager.getEmployee(this.employeeid).getName();
+        this.employeeid = 0;
+        Information.eco.withdrawPlayer(player, pay);
+        Business b = EmployeeManager.getEmployee(employee).getBusiness();
+        b.deposit(pay);
     }
 }

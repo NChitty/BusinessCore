@@ -2,7 +2,7 @@ package me.beastman3226.bc.listener;
 
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.event.BusinessHiredEmployeeEvent;
+import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
