@@ -1,8 +1,14 @@
 package me.beastman3226.bc.player;
 
 import java.util.HashSet;
+import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
+import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.data.EmployeeHandler;
+import me.beastman3226.bc.data.file.EmployeeFileManager;
+import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.errors.OpenJobException;
 
 /**
@@ -61,6 +67,11 @@ public class Employee {
             throw new OpenJobException();
         } else {
             this.jobID = id;
+            if(Information.database) {
+                EmployeeHandler.update("JobID", id, "EmployeeID", this.id);
+            } else {
+                EmployeeFileManager.editConfig(new FileData().add(this.employeeName + ".job", id));
+            }
         }
         return this;
     }
@@ -68,6 +79,12 @@ public class Employee {
     public Employee completeJob() {
         this.jobID = -1;
         this.completedJobs = this.completedJobs++;
+        if(Information.database) {
+                EmployeeHandler.update("JobID", -1, "EmployeeID", this.id);
+                EmployeeHandler.update("CompletedJobs", this.completedJobs, "EmployeeID", this.id);
+            } else {
+                EmployeeFileManager.editConfig(new FileData().add(this.employeeName + ".job", -1).add(this.employeeName + ".completed", this.completedJobs));
+            }
         return this;
     }
 
