@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.BusinessCore.Config;
+import me.beastman3226.bc.BusinessCore.FileFunctions;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;
@@ -21,6 +23,7 @@ import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import sun.security.provider.certpath.BuildStep;
 
 /**
  *
@@ -28,19 +31,18 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class BusinessManager {
 
-    public static ArrayList<String> names = new ArrayList<String>();
-
     /**
      * This creates a business from a pre-existing business in the database.
      */
     public static void createBusiness(ResultSet rs) {
         try {
             while(rs.next()) {
-                createBusiness(new Business.Builder(rs.getInt("BusinessID"))
+                Business b = new Business.Builder(rs.getInt("BusinessID"))
                         .balance(rs.getDouble("BusinessBalance"))
                         .name(rs.getString("BusinessName"))
                         .owner(rs.getString("BusinessOwner"))
-                        .ids(rs.getString("EmployeeIDs").split(",")));
+                        .ids(rs.getString("EmployeeIDs").split(",")).build();
+                Business.businessList.add(b);
             }
         } catch (SQLException ex) {
             Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -51,19 +53,23 @@ public class BusinessManager {
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
+        FileFunctions.reload(Config.BUSINESS);
+        FileConfiguration yml = Information.businessYml;
         for(String s : Information.businessYml.getKeys(false)) {
-            FileConfiguration yml = Information.businessYml;
             if(yml.getString(s + ".employeeIDs") != null) {
-                createBusiness(new Business.Builder(yml.getInt(s + ".id"))
+                Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
                         .name(s)
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance"))
                         .ids(yml.getString(s + ".employeeIDs").split(",")));
             } else {
-                createBusiness(new Business.Builder(yml.getInt(s + ".id"))
+                Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
                         .name(s)
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance")));
+                if(Information.debug) {
+                    Information.BusinessCore.getLogger().info("Loaded business " + b.getName() + " with owner as " + b.getOwnerName() + "!");
+                }
             }
           }
     }
@@ -75,7 +81,6 @@ public class BusinessManager {
      */
     public static Business createBusiness(Business.Builder build) {
         Business b = build.build();
-        names.add(b.getName());
         Business.businessList.add(b);
         if(Information.debug) {
             Information.log.log(Level.INFO, "Created a business with name {0}", build.getName());
@@ -108,14 +113,14 @@ public class BusinessManager {
      * @return The business
      */
     public static Business getBusiness(String name) {
-        Business business = null;
         for(Business b : Business.businessList) {
             if(b.getOwnerName().equalsIgnoreCase(name)) {
-                business = b;
-                break;
+                return b;
+            } else {
+                continue;
             }
         }
-        return business;
+        return null;
     }
 
     /**
@@ -150,13 +155,11 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void deleteBusiness(Business business) {
-        names.remove(business.getName());
         Business.businessList.remove(business);
         if(Information.database) {
             BusinessHandler.remove("BusinessID", business.getID());
         } else {
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
-            BusinessFileManager.editConfig(new FileData().add("names", names));
         }
         Bukkit.getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
     }
@@ -168,7 +171,14 @@ public class BusinessManager {
      * @return True if name has a business, false if not.
      */
     public static boolean isOwner(String name) {
-        return getBusiness(name) != null;
+        for(Business b : Business.businessList) {
+            if(b.getOwnerName().equalsIgnoreCase(name)) {
+                return true;
+            } else {
+                continue;
+            }
+        }
+        return false;
     }
 
     /**

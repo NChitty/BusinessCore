@@ -102,7 +102,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,-amount);
                             Bukkit.getServer().getPluginManager().callEvent(event);
                             if(!event.isCancelled()) {
-                                event.getBusiness().withdraw(event.getFinalAmount());
+                                event.getBusiness().withdraw(event.getAbsoluteAmount());
                                 Business.businessList.remove(event.getBusiness());
                                 Business.businessList.add(event.getBusiness());
                             }

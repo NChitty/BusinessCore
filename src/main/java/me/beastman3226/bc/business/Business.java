@@ -64,6 +64,8 @@ public class Business {
     public Business withdraw(double amount) throws InsufficientFundsException {
         if(amount > this.worth) {
             throw new InsufficientFundsException("Not enough funds. Missing " + (amount - worth));
+        } else {
+            this.worth =- amount;
         }
         return this;
     }

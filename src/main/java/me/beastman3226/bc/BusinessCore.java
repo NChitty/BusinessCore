@@ -59,7 +59,7 @@ public class BusinessCore extends JavaPlugin {
                 Information.database = false;
             }
             if (Information.database) {
-                Connection c = Database.instance().MySQL.getConnection();
+               Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
                     Statement s = c.createStatement();
                     BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
@@ -67,6 +67,7 @@ public class BusinessCore extends JavaPlugin {
                     Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
+                FileFunctions.load();
                 BusinessManager.createBusinesses();
             }
             EmployeeManager.loadEmployees();
@@ -75,7 +76,6 @@ public class BusinessCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.reloadConfig();
         this.saveConfig();
         Information.BusinessCore = null;
         FileFunctions.save();
