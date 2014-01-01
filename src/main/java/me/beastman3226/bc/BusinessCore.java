@@ -14,6 +14,7 @@ import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.listener.BusinessListener;
+import me.beastman3226.bc.listener.JobListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Time;
@@ -87,6 +88,7 @@ public class BusinessCore extends JavaPlugin {
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BusinessListener(), this);
+        getServer().getPluginManager().registerEvents(new JobListener(), this);
     }
 
     /**

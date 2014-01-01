@@ -4,6 +4,11 @@ import java.util.HashSet;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
+import me.beastman3226.bc.data.Data;
+import me.beastman3226.bc.data.DataHandler;
+import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.data.file.JobFileManager;
+import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import org.bukkit.Bukkit;
@@ -47,12 +52,28 @@ public class Job {
      * @param pay Payment that a business will recieve if it completed
      * @param e Employeeid
      */
-    public Job(int id, String description, Location loc, double pay, int e) {
+    public Job(int id, String playername, String description, Location loc, double pay, int e) {
         this.id = id;
+        this.player = playername;
         this.description = description;
         this.loc = loc;
         this.pay = pay;
         this.employeeid = e;
+        if(Information.database) {
+                DataHandler.add(Table.JOB, Data.JOB.add("JobID", id)
+                                                    .add("PlayerName", playername)
+                                                    .add("JobDescription", description)
+                                                    .add("JobLocation", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
+                                                    .add("World", loc.getWorld().getName())
+                                                    .add("JobPayment",pay));
+       } else {
+                JobFileManager.editConfig(new FileData().add(id + ".player", playername)
+                        .add(id + ".description", description)
+                        .add(id + ".location", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
+                        .add(id + ".world", loc.getWorld().getName())
+                        .add(id + ".payment", pay)
+                        .add(id + ".employee", e));
+            }
     }
 
     public int getID() {
@@ -88,5 +109,14 @@ public class Job {
         Information.eco.withdrawPlayer(player, pay);
         Business b = EmployeeManager.getEmployee(employee).getBusiness();
         b.deposit(pay);
+        if(Information.database) {
+            DataHandler.remove(Table.JOB, "JobID", this.getID());
+        } else {
+            JobFileManager.editConfig(new FileData().add("id", null));
+        }
+    }
+
+    public String getPlayer() {
+        return this.player;
     }
 }

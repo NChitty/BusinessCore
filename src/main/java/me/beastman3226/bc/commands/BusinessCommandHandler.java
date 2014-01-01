@@ -287,6 +287,10 @@ public class BusinessCommandHandler implements CommandExecutor {
                         return false;
                     }
                     Business b= BusinessManager.getBusiness(id);
+                    if(b == null) {
+                        Information.BusinessCore.getLogger().warning("That is not a valid id!");
+                        return false;
+                    }
                     String[] info = new String[]{ChatColor.DARK_GREEN + "|==========Business Info==========|",
                                                           ChatColor.GREEN + "  Name: " + b.getName(),
                                                           ChatColor.GREEN + "  ID: " + b.getID(),

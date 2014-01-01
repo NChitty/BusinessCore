@@ -28,6 +28,14 @@ public class JobEvent extends Event implements Cancellable{
     }
 
 
+    public Job getJob() {
+        return this.job;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;
