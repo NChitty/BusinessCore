@@ -19,6 +19,7 @@ import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -50,13 +51,19 @@ public class BusinessManager {
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
-        ArrayList<String> bnames = new ArrayList<String>(Information.businessYml.getStringList("names"));
-        for(String s : bnames) {
+        for(String s : Information.businessYml.getKeys(false)) {
             FileConfiguration yml = Information.businessYml;
             if(yml.getString(s + ".employeeIDs") != null) {
-                createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")).ids(yml.getString(s + ".employeeIDs").split(",")));
+                createBusiness(new Business.Builder(yml.getInt(s + ".id"))
+                        .name(s)
+                        .owner(yml.getString(s + ".ownerName"))
+                        .balance(yml.getDouble(s + ".balance"))
+                        .ids(yml.getString(s + ".employeeIDs").split(",")));
             } else {
-                createBusiness(new Business.Builder(yml.getInt(s + ".id")).name(s).owner(yml.getString(s + ".ownerName")).balance(yml.getDouble(s + ".balance")));
+                createBusiness(new Business.Builder(yml.getInt(s + ".id"))
+                        .name(s)
+                        .owner(yml.getString(s + ".ownerName"))
+                        .balance(yml.getDouble(s + ".balance")));
             }
           }
     }
@@ -180,8 +187,13 @@ public class BusinessManager {
      * @return The name of the business at said rank
      */
     public static String getIndex(int rank) {
-        Business b= Sorter.sort().get(rank);
-        return b.getName();
+        Business b = null;
+        try {
+            b = Sorter.sort().get(rank);
+        } catch (Exception e) {
+            return "You could be here.";
+        }
+        return b.getName() + ChatColor.GREEN + " ID: " + ChatColor.WHITE + b.getID();
     }
 
 }

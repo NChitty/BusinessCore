@@ -35,29 +35,29 @@ public class BusinessCore extends JavaPlugin {
     @Override
     public void onEnable() {
         Information.BusinessCore = this;
-        if (getConfig().getBoolean("firstrun")) {
-            saveDefaultConfig();
-        }
         Information.config = getConfig();
-        if (getConfig().getBoolean("debug-messages")) {
-            Information.debug = true;
-        } else {
-            Information.debug = false;
-        }
-        if (getConfig().getBoolean("database.enabled")) {
-            Database.instance();
-            Information.database = true;
-        } else {
-            Information.initFiles(this);
-            Information.database = false;
-        }
         this.getLogger().log(Level.INFO, "{0}", setupEconomy());
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        if (getConfig().getBoolean("firstrun") || !Information.businessYml.contains("names")) {
+        if (getConfig().getBoolean("firstrun") || !getConfig().contains("database.enabled")) {
+            saveDefaultConfig();
+            this.reloadConfig();
             getConfig().set("firstrun", false);
+            this.saveConfig();
         } else {
+            if (getConfig().getBoolean("debug-messages")) {
+                Information.debug = true;
+            } else {
+                Information.debug = false;
+            }
+            if (getConfig().getBoolean("database.enabled")) {
+                Database.instance();
+                Information.database = true;
+            } else {
+                Information.initFiles(this);
+                Information.database = false;
+            }
             if (Information.database) {
                 Connection c = Database.instance().MySQL.getConnection();
                 try {
@@ -99,7 +99,9 @@ public class BusinessCore extends JavaPlugin {
         getCommand("b.withdraw").setExecutor(bch);
         getCommand("b.deposit").setExecutor(bch);
         getCommand("b.balance").setExecutor(bch);
+        getCommand("b.info").setExecutor(bch);
         getCommand("hire").setExecutor(bch);
+        getCommand("fire").setExecutor(bch);
     }
 
     public boolean setupEconomy() {

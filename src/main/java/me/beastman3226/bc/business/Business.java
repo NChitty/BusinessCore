@@ -38,7 +38,7 @@ public class Business {
     }
 
     public int[] getEmployeeIDs() {
-        return this.employeeIDs;
+        return this.employeeIDs == null ? new int[]{} : this.employeeIDs;
     }
 
     public Business setName(String name) {

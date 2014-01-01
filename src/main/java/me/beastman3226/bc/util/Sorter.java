@@ -9,16 +9,17 @@ import me.beastman3226.bc.business.Business;
  */
 public class Sorter {
 
-    public static ArrayList<Business> sort() {
+    public static ArrayList<Business> sort() throws ArrayIndexOutOfBoundsException {
         ArrayList<Business> list = new ArrayList<Business>();
         for(Business b : Business.businessList) {
             int i = 0;
-            if(list.get(i) == null || list.get(i).getBalance() < b.getBalance()) {
-                list.set(i, b);
+            if(list.isEmpty()) {
+                list.add(b);
             } else {
                 while(b.getBalance() < list.get(i).getBalance()) {
                     i++;
                 }
+                i++;
                 list.set(i, b);
             }
         }

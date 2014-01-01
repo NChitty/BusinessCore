@@ -252,25 +252,36 @@ public class BusinessCommandHandler implements CommandExecutor {
                 if(sender instanceof Player) {
                     if(BusinessManager.isOwner(sender.getName())) {
                         Business b = BusinessManager.getBusiness(sender.getName());
-                        String[] info = new String[]{ChatColor.DARK_GREEN + "|==========Business Info==========|",
-                                                          ChatColor.GREEN + "  Name: " + b.getName(),
-                                                          ChatColor.GREEN + "  ID: " + b.getID(),
-                                                          ChatColor.GREEN + "  Balance: " + b.getBalance(),
-                                                          ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null ? "N/A" : this.asString(b.getEmployeeIDs())};
-                        sender.sendMessage(info);
+                        if(b == null) {
+                            System.out.println("For some odd reason the business returned null");
+                        }
+                        sender.sendMessage(ChatColor.DARK_GREEN + "|==========Business Info==========|");
+                        sender.sendMessage(ChatColor.GREEN + "  Name: " + b.getName());
+                        sender.sendMessage(ChatColor.GREEN + "  ID: " + b.getID());
+                        sender.sendMessage(ChatColor.GREEN + "  Balance: " + b.getBalance());
+                        if(b.getEmployeeIDs().length == 0) {
+                            sender.sendMessage(ChatColor.GREEN + "  Employees: N/A");
+                        } else {
+                            sender.sendMessage(ChatColor.GREEN + "  Employees: " + this.asString(b.getEmployeeIDs()));
+                        }
                     } else {
                         String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
-                                                          ChatColor.GREEN + "1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
-                                                          ChatColor.GREEN + "2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
-                                                          ChatColor.GREEN + "3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
-                                                          ChatColor.GREEN + "4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
-                                                          ChatColor.GREEN + "5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
-                        sender.sendMessage(info);
+                                                          ChatColor.GREEN + "  1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
+                                                          ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
+                        sender.sendMessage(info[0]);
+                        sender.sendMessage(info[1]);
+                        sender.sendMessage(info[2]);
+                        sender.sendMessage(info[3]);
+                        sender.sendMessage(info[4]);
+                        sender.sendMessage(info[5]);
                     }
                 } else if(!(sender instanceof Player) && args.length > 0) {
                     int id = 0;
                     try {
-                        id = Integer.parseInt(args[1]);
+                        id = Integer.parseInt(args[0]);
                     } catch (NumberFormatException e) {
                         sender.sendMessage("That is an invalid id!");
                         return false;
@@ -280,16 +291,21 @@ public class BusinessCommandHandler implements CommandExecutor {
                                                           ChatColor.GREEN + "  Name: " + b.getName(),
                                                           ChatColor.GREEN + "  ID: " + b.getID(),
                                                           ChatColor.GREEN + "  Balance: " + b.getBalance(),
-                                                          ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null ? "N/A" : this.asString(b.getEmployeeIDs())};
+                                                          ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null || b.getEmployeeIDs().length == 0 ? "N/A" : this.asString(b.getEmployeeIDs())};
                     sender.sendMessage(info);
                 } else if(!(sender instanceof Player)) {
                     String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
-                                                          ChatColor.GREEN + "1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
-                                                          ChatColor.GREEN + "2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
-                                                          ChatColor.GREEN + "3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
-                                                          ChatColor.GREEN + "4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
-                                                          ChatColor.GREEN + "5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
-                        sender.sendMessage(info);
+                                                          ChatColor.GREEN + "  1) " + ChatColor.WHITE + BusinessManager.getIndex(0),
+                                                          ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(4)};
+                        sender.sendMessage(info[0]);
+                        sender.sendMessage(info[1]);
+                        sender.sendMessage(info[2]);
+                        sender.sendMessage(info[3]);
+                        sender.sendMessage(info[4]);
+                        sender.sendMessage(info[5]);
                 }
             //</editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Hire">
@@ -300,10 +316,12 @@ public class BusinessCommandHandler implements CommandExecutor {
                     if(player != null & player.isOnline()) {
                         if(EmployeeManager.isEmployee(sender.getName())) {
                             player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + EmployeeManager.getEmployee(sender.getName()).getBusiness().getName() + " by " + sender.getName());
+                            sender.sendMessage(Prefixes.NOMINAL + "Invite to the business has been sent.");
                             EmployeeManager.pending.put(player.getName(), EmployeeManager.getEmployee(sender.getName()).getBusiness().getID());
                             Scheduler.runAcceptance();
                         } else if(BusinessManager.isOwner(sender.getName())) {
                             player.sendMessage(Prefixes.POSITIVE + "You have been invited to join " + BusinessManager.getBusiness(sender.getName()).getName() + " by " + sender.getName());
+                            sender.sendMessage(Prefixes.NOMINAL + "Invite to the business has been sent.");
                             EmployeeManager.pending.put(player.getName(), BusinessManager.getBusiness(sender.getName()).getID());
                             Scheduler.runAcceptance();
                         }
@@ -359,6 +377,7 @@ public class BusinessCommandHandler implements CommandExecutor {
         for(int j : a) {
             if(i == 0) {
                 string = j + "";
+                i++;
                 continue;
             }
             string = string.concat(", " + j);

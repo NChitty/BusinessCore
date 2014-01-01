@@ -40,4 +40,15 @@
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
     </repositories>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java/</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                    <include>config.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

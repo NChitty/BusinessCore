@@ -45,7 +45,6 @@ public class BusinessListener implements Listener {
                     .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
                     .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
                     .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
-            BusinessFileManager.editConfig(new FileData().add("names", BusinessManager.names));
         }
     }
 
