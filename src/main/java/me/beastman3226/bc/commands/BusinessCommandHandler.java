@@ -369,7 +369,7 @@ public class BusinessCommandHandler implements CommandExecutor {
             // </editor-fold>
             }
         } else {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
+            sender.sendMessage(Prefixes.ERROR + ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
             return false;
         }
         return true;

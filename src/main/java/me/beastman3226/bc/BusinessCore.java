@@ -110,6 +110,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("fire").setExecutor(bch);
         getCommand("j.open").setExecutor(jch);
         getCommand("j.claim").setExecutor(jch);
+        getCommand("j.list").setExecutor(jch);
     }
 
     public boolean setupEconomy() {

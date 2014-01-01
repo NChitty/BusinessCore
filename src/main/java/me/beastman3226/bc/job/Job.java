@@ -119,4 +119,8 @@ public class Job {
     public String getPlayer() {
         return this.player;
     }
+
+    public boolean isClaimed() {
+        return this.claimed;
+    }
 }

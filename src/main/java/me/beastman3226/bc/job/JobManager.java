@@ -2,6 +2,8 @@ package me.beastman3226.bc.job;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
@@ -15,6 +17,7 @@ import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.util.Prefixes;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -117,6 +120,16 @@ public class JobManager {
                 Job j = new Job(Integer.parseInt(string), Information.jobYml.getString(string + ".name"), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
             }
         }
+    }
+
+    public static String[] listJobs(int i) {
+        List<String> jobs = new ArrayList<String>();
+        for(Job j : Job.jobList) {
+            if(!j.isClaimed()) {
+                   jobs.add(ChatColor.AQUA + "#" + j.getID() + ": " + j.getDescription());
+            }
+        }
+        return jobs.subList(i*5, (i*5) + 5).toArray(new String[]{});
     }
 
 }
