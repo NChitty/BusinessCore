@@ -13,6 +13,7 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
+import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
 import me.beastman3226.bc.listener.PlayerListener;
@@ -72,6 +73,7 @@ public class BusinessCore extends JavaPlugin {
                 BusinessManager.createBusinesses();
             }
             EmployeeManager.loadEmployees();
+            JobManager.loadJobs();
         }
     }
 
