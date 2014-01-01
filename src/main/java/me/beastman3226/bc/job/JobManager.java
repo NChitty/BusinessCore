@@ -49,6 +49,9 @@ public class JobManager {
         JobClaimedEvent event = new JobClaimedEvent(j, e.getID());
         Bukkit.getPluginManager().callEvent(event);
         if(!event.isCancelled()) {
+            if(j == null) {
+                return false;
+            }
             j.claim(e);
             try {
                 e.startJob(j.getID());

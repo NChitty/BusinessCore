@@ -8,9 +8,9 @@ import org.bukkit.ChatColor;
  */
 public enum Prefixes {
 
-    ERROR(ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]: " + ChatColor.WHITE),
-    NOMINAL(ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]: " + ChatColor.WHITE),
-    POSITIVE(ChatColor.GRAY + "[" + ChatColor.DARK_GREEN + "BusinessCore" + ChatColor.GRAY + "]: " + ChatColor.WHITE);
+    ERROR(ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " "),
+    NOMINAL(ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " "),
+    POSITIVE(ChatColor.GRAY + "[" + ChatColor.DARK_GREEN + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ");
 
     private final String toString;
     Prefixes(String string) {
