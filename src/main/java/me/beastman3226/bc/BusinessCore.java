@@ -44,7 +44,6 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        FileFunctions.load();
         if (getConfig().getBoolean("firstrun") || !getConfig().contains("database.enabled")) {
             saveDefaultConfig();
             this.reloadConfig();
@@ -61,6 +60,7 @@ public class BusinessCore extends JavaPlugin {
                 Information.database = true;
             } else {
                 Information.initFiles(this);
+                FileFunctions.load();
                 Information.database = false;
             }
             if (Information.database) {
@@ -72,7 +72,6 @@ public class BusinessCore extends JavaPlugin {
                     Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-
                 BusinessManager.createBusinesses();
             }
             EmployeeManager.loadEmployees();
