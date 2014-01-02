@@ -137,7 +137,11 @@ public class JobManager {
             }
         }
         if(((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < (i*5)+5) {
-            return jobs.subList(i*5, jobs.size()).toArray(new String[]{});
+            try {
+                return jobs.subList(i*5, jobs.size()).toArray(new String[]{});
+            } catch(ArrayIndexOutOfBoundsException aioobe) {
+                return jobs.toArray(new String[]{});
+            }
         }
         if(i == 0 || i == 1) {
             return jobs.toArray(new String[]{});
