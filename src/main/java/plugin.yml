@@ -73,7 +73,7 @@ commands:
     description: Shows information on the job with specified id
     permission: business.job.id
     permission-message: "&4You do not have 'business.job.id' or the like, please talk to an adminstrator"
-    aliases: [j.i, id, j.id.info, id.ticket]
+    aliases: [id, j.id.info, id.ticket]
 permissions:
   business.create:
     default: true
