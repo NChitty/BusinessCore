@@ -101,3 +101,23 @@ permissions:
       business.info: true
       business.hire: true
       business.fire: true
+  business.job.open:
+    default: true
+  business.job.claim:
+    default: true
+  business.job.list:
+    default: true
+  business.job.complete:
+    default: true
+  business.job.me:
+    default: true
+  business.job.id:
+    default: true
+  business.job:
+    children:
+      business.job.open: true
+      business.job.claim: true
+      business.job.list: true
+      business.job.complete: true
+      business.job.me: true
+      business.job.id: true
