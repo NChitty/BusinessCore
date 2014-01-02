@@ -42,6 +42,8 @@ public class BusinessCore extends JavaPlugin {
         Information.BusinessCore = this;
         Information.config = getConfig();
         this.getLogger().log(Level.INFO, "{0}", setupEconomy());
+        Information.initFiles(this);
+        FileFunctions.load();
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
@@ -60,10 +62,11 @@ public class BusinessCore extends JavaPlugin {
                 Database.instance();
                 Information.database = true;
             } else {
-                Information.initFiles(this);
-                FileFunctions.load();
+
                 Information.database = false;
             }
+            EmployeeManager.loadEmployees();
+            JobManager.loadJobs();
             if (Information.database) {
                Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
@@ -75,8 +78,7 @@ public class BusinessCore extends JavaPlugin {
             } else {
                 BusinessManager.createBusinesses();
             }
-            EmployeeManager.loadEmployees();
-            JobManager.loadJobs();
+
         }
         Scheduler.runPayPeriod();
     }

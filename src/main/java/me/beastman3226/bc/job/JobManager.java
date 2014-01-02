@@ -121,6 +121,10 @@ public class JobManager {
                     World world = Bukkit.getWorld(Information.jobYml.getString(string + ".world"));
                     Location loc = new Location(world, x, y, z);
                 Job j = new Job(Integer.parseInt(string), Information.jobYml.getString(string + ".name"), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
+                Job.jobList.add(j);
+                if(Information.debug) {
+                    Information.log.info("Created job #" + j.getID() + " with description: " + j.getDescription());
+                }
             }
         }
     }
@@ -133,7 +137,7 @@ public class JobManager {
             }
         }
         if(((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < (i*5)+5) {
-            return jobs.subList(i*5, jobs.size()-1).toArray(new String[]{});
+            return jobs.subList(i*5, jobs.size()).toArray(new String[]{});
         }
         if(i == 0 || i == 1) {
             return jobs.toArray(new String[]{});
