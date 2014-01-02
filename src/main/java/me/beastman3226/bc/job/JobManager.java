@@ -120,10 +120,10 @@ public class JobManager {
                     }
                     World world = Bukkit.getWorld(Information.jobYml.getString(string + ".world"));
                     Location loc = new Location(world, x, y, z);
-                Job j = new Job(Integer.parseInt(string), Information.jobYml.getString(string + ".name"), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
+                Job j = new Job(Integer.parseInt(string), Information.jobYml.getString(string + ".player"), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
                 Job.jobList.add(j);
                 if(Information.debug) {
-                    Information.log.info("Created job #" + j.getID() + " with description: " + j.getDescription());
+                    Information.log.log(Level.INFO, "Created job #{0} with description: {1}", new Object[]{j.getID(), j.getDescription()});
                 }
             }
         }
@@ -148,8 +148,10 @@ public class JobManager {
 
     public static boolean isIssuer(String name) {
         for(Job j : Job.jobList) {
-            if(j.getPlayer().equalsIgnoreCase(name)) {
-                return true;
+            if(j != null) {
+                if(j.getPlayer().equalsIgnoreCase(name)) {
+                    return true;
+                }
             }
         }
         return false;
