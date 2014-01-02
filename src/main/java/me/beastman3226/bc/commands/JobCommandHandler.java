@@ -35,6 +35,9 @@ public class JobCommandHandler implements CommandExecutor {
                     }
                     String description = "";
                     for (String s : args) {
+                        if(s.equalsIgnoreCase(args[0])) {
+                            continue;
+                        }
                         description = description + " " + s;
                     }
                     JobManager.createJob((Player) sender, description, pay);

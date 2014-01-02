@@ -132,7 +132,14 @@ public class JobManager {
                    jobs.add(ChatColor.AQUA + "#" + j.getID() + ": " + j.getDescription());
             }
         }
-        return jobs.subList(i*5, (i*5) + 5).toArray(new String[]{});
+        if(((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < i*5) {
+            return jobs.toArray(new String[]{});
+        }
+        if(i == 0 || i == 1) {
+            return jobs.subList(0, 5).toArray(new String[]{});
+        } else {
+            return jobs.subList(i*5, (i*5) + 5).toArray(new String[]{});
+        }
     }
 
     public static boolean isIssuer(String name) {
