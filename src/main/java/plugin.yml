@@ -51,7 +51,29 @@ commands:
    aliases: [j.o, open, create.ticket]
   j.claim:
    description: Claims the job with specified job id
-   
+   permission: business.job.claim
+   permission-message: "&4You do not have 'business.job.claim' or the like, please talk to an adminstrator"
+   aliases: [j.cl, claim, claim.ticket]
+  j.list:
+    description: Shows a list of open jobs.
+    permission: business.job.list
+    permission-message: "&4You do not have 'business.job.list' or the like, please talk to an adminstrator"
+    aliases: [list, j.l, list.tickets]
+  j.complete:
+    description: Completes a job with specified ID or at random from your open jobs
+    permission: business.job.complete
+    permission-message: "&4You do not have 'business.job.complete' or the like, please talk to an adminstrator"
+    aliases: [complete, j.co, complete.ticket]
+  j.me:
+    description: Shows information pertaining to you and the job portion of BusinessCore
+    permission: business.job.me
+    permission-message: "&4You do not have 'business.job.me' or the like, please talk to an adminstrator"
+    aliases: [j.m, j.info, j.i, ticket.info]
+  j.id:
+    description: Shows information on the job with specified id
+    permission: business.job.id
+    permission-message: "&4You do not have 'business.job.id' or the like, please talk to an adminstrator"
+    aliases: [j.i, id, j.id.info, id.ticket]
 permissions:
   business.create:
     default: true
