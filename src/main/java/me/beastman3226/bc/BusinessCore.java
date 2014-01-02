@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
+import me.beastman3226.bc.commands.MiscCommandHandler;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.job.JobManager;
@@ -101,6 +102,7 @@ public class BusinessCore extends JavaPlugin {
     public void registerCommands() {
         BusinessCommandHandler bch = new BusinessCommandHandler();
         JobCommandHandler jch = new JobCommandHandler();
+        MiscCommandHandler mch = new MiscCommandHandler();
         getCommand("b.create").setExecutor(bch);
         getCommand("b.delete").setExecutor(bch);
         getCommand("b.withdraw").setExecutor(bch);
@@ -115,6 +117,8 @@ public class BusinessCore extends JavaPlugin {
         getCommand("j.complete").setExecutor(jch);
         getCommand("j.me").setExecutor(jch);
         getCommand("j.id").setExecutor(jch);
+        getCommand("businesscore").setExecutor(mch);
+        getCommand("bc.help").setExecutor(mch);
     }
 
     public boolean setupEconomy() {

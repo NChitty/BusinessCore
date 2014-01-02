@@ -74,6 +74,12 @@ commands:
     permission: business.job.id
     permission-message: "&4You do not have 'business.job.id' or the like, please talk to an adminstrator"
     aliases: [id, j.id.info, id.ticket]
+  businesscore:
+    description: Displays information about the plugin you are running
+    aliases: [bc]
+  bc.help:
+    description: Shows the help pages
+    aliases: [help.bc, businesscore.help]
 permissions:
   business.create:
     default: true
