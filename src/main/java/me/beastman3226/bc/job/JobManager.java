@@ -66,7 +66,7 @@ public class JobManager {
         return true;
     }
 
-    public static void completeJob(Employee e, Job j) {
+    public static boolean completeJob(Employee e, Job j) {
         EconomyResponse r = Information.eco.withdrawPlayer(j.getPlayer(), j.getPayment());
         if(r.transactionSuccess()) {
             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(e.getBusiness(), j.getPayment());
@@ -80,6 +80,7 @@ public class JobManager {
             Bukkit.getPlayer(j.getPlayer()).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
         }
         Job.jobList.remove(j);
+        return r.transactionSuccess();
     }
 
     public static void loadJobs() {
@@ -130,6 +131,34 @@ public class JobManager {
             }
         }
         return jobs.subList(i*5, (i*5) + 5).toArray(new String[]{});
+    }
+
+    public static boolean isIssuer(String name) {
+        for(Job j : Job.jobList) {
+            if(j.getPlayer().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static Job getJob(String name) {
+        for(Job j : Job.jobList) {
+            if(j.getPlayer().equalsIgnoreCase(name)) {
+                return j;
+            }
+        }
+        return null;
+    }
+
+    public static Job[] getJobs(String issuer) {
+        ArrayList<Job> jobs = new ArrayList<Job>();
+        for(Job j : Job.jobList) {
+            if(j.getPlayer().equalsIgnoreCase(issuer)) {
+                jobs.add(j);
+            }
+        }
+        return jobs.toArray(new Job[]{});
     }
 
 }
