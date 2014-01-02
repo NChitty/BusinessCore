@@ -44,6 +44,14 @@ commands:
    permission: business.fire
    permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
    aliases: [b.f, f]
+  j.open:
+   description: Opens a job with pay and description
+   permission: business.job.open
+   permission-message: "&4You do not have 'business.job.open' or the like, please talk to an adminstrator"
+   aliases: [j.o, open, create.ticket]
+  j.claim:
+   description: Claims the job with specified job id
+   
 permissions:
   business.create:
     default: true

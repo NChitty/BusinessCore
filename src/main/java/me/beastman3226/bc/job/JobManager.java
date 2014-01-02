@@ -8,12 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.errors.OpenJobException;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCreatedEvent;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -159,6 +161,20 @@ public class JobManager {
             }
         }
         return jobs.toArray(new Job[]{});
+    }
+
+    public static boolean doesBelongToBusiness(Employee employee, Job j) {
+        Business b = employee.getBusiness();
+        ArrayList<Employee> employees = new ArrayList<Employee>();
+        for(int id : b.getEmployeeIDs()) {
+            employees.add(EmployeeManager.getEmployee(id));
+        }
+        for(Employee e : employees) {
+            if(j.getPlayer().equalsIgnoreCase(e.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
