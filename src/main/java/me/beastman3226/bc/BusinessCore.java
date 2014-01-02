@@ -20,6 +20,7 @@ import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,6 +78,7 @@ public class BusinessCore extends JavaPlugin {
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
         }
+        Scheduler.runPayPeriod();
     }
 
     @Override

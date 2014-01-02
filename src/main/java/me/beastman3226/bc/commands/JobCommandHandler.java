@@ -1,5 +1,6 @@
 package me.beastman3226.bc.commands;
 
+import java.util.ArrayList;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.BusinessManager;
@@ -35,7 +36,7 @@ public class JobCommandHandler implements CommandExecutor {
                     }
                     String description = "";
                     for (String s : args) {
-                        if(s.equalsIgnoreCase(args[0])) {
+                        if (s.equalsIgnoreCase(args[0])) {
                             continue;
                         }
                         description = description + " " + s;
@@ -55,7 +56,7 @@ public class JobCommandHandler implements CommandExecutor {
                         sender.sendMessage(Prefixes.ERROR + "Your first argument must be a number.");
                         return false;
                     }
-                    if(JobManager.isIssuer(sender.getName()) || JobManager.doesBelongToBusiness(EmployeeManager.getEmployee(sender.getName()), JobManager.getJob(id))) {
+                    if (JobManager.isIssuer(sender.getName()) || JobManager.doesBelongToBusiness(EmployeeManager.getEmployee(sender.getName()), JobManager.getJob(id))) {
                         sender.sendMessage(Prefixes.ERROR + "You cannot claim job from your own business!");
                         return false;
                     }
@@ -119,20 +120,25 @@ public class JobCommandHandler implements CommandExecutor {
                 } else if (JobManager.isIssuer(sender.getName())) {
                     if (args.length == 0) {
                         sender.sendMessage(ChatColor.DARK_BLUE + "|==========Your Jobs==========|");
-                        String s = "";
+                        ArrayList<String> info = new ArrayList<String>();
                         for (Job j : JobManager.getJobs(sender.getName())) {
-                            s = ChatColor.BLUE + "#" + j.getID() + ":" + ChatColor.WHITE + " " + j.getDescription() + "/n";
+                            info.add(ChatColor.BLUE + "#" + j.getID() + ":" + ChatColor.WHITE + " " + j.getDescription());
                         }
-                        sender.sendMessage(s.split("/n"));
+                        for (String s : info) {
+                            sender.sendMessage(s);
+                        }
                     } else if (args.length >= 1) {
                         int id = 0;
                         try {
                             id = Integer.parseInt(args[0]);
                         } catch (NumberFormatException nfe) {
                             sender.sendMessage(ChatColor.DARK_BLUE + "|==========Your Jobs==========|");
-                            String s = "";
+                            ArrayList<String> info = new ArrayList<String>();
                             for (Job j : JobManager.getJobs(sender.getName())) {
-                                s = ChatColor.BLUE + "#" + j.getID() + ":" + ChatColor.WHITE + " " + j.getDescription() + "/n";
+                                info.add(ChatColor.BLUE + "#" + j.getID() + ":" + ChatColor.WHITE + " " + j.getDescription());
+                            }
+                            for (String s : info) {
+                                sender.sendMessage(s);
                             }
                             return true;
                         }

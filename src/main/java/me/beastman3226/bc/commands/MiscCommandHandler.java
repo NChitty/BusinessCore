@@ -22,7 +22,7 @@ public class MiscCommandHandler implements CommandExecutor {
             sender.sendMessage(ChatColor.AQUA + "Author:" + ChatColor.WHITE + " beastman3226");
             sender.sendMessage(ChatColor.BLUE + "To see the help pages type /bc.help");
         } else if (cmd.getName().equalsIgnoreCase("bc.help") && args.length >= 0) {
-            if (args[0] == null) {
+            if (args.length <= 0) {
                 sender.sendMessage(ChatColor.RED + "/==========BusinessCore Help==========\\");
                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "Type /bc.help job for a list of job commands");
                 sender.sendMessage(ChatColor.LIGHT_PURPLE + "Type /bc.help business for a list of business commands");
