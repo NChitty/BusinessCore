@@ -71,7 +71,7 @@ public class JobCommandHandler implements CommandExecutor {
                 }
             } else if (cmd.getName().equalsIgnoreCase("j.list") && args.length >= 0) {
                 int page = 0;
-                if (args[0] != null) {
+                if (args.length > 0) {
                     try {
                         page = Integer.valueOf(args[0]);
                     } catch (NumberFormatException nfe) {
