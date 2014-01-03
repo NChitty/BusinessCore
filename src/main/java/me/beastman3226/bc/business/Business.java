@@ -163,7 +163,11 @@ public class Business {
         }
 
         public Builder ids(int[] ids) {
-            this.employeeIDs = ids;
+            if(ids != null) {
+                this.employeeIDs = ids;
+            } else {
+                this.employeeIDs = new int[]{};
+            }
             return this;
         }
 
