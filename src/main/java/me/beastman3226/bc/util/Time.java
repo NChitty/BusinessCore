@@ -7,7 +7,7 @@ package me.beastman3226.bc.util;
 public enum Time {
 
     DAY('d', 1728000),
-    HOUR('h', 7200),
+    HOUR('h', 72000),
     MINUTE('m', 1200),
     SECOND('s', 20);
 
