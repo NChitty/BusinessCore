@@ -33,7 +33,7 @@ public class BusinessHiredEmployeeEvent extends BusinessEvent {
         this.employee = e;
     }
 
-    public int[] getFinalList() {
+    public Object[] getFinalList() {
         return this.getBusiness().addEmployee(this.employee.getID()).getEmployeeIDs();
     }
 }

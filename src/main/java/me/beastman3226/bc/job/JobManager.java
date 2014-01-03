@@ -183,8 +183,8 @@ public class JobManager {
     public static boolean doesBelongToBusiness(Employee employee, Job j) {
         Business b = employee.getBusiness();
         ArrayList<Employee> employees = new ArrayList<Employee>();
-        for(int id : b.getEmployeeIDs()) {
-            employees.add(EmployeeManager.getEmployee(id));
+        for(Object id : b.getEmployeeIDs()) {
+            employees.add(EmployeeManager.getEmployee((Integer) id));
         }
         for(Employee e : employees) {
             if(j.getPlayer().equalsIgnoreCase(e.getName())) {

@@ -10,7 +10,7 @@ public class Business {
     private String name;
     private String ownerName;
     private double worth;
-    private int[] employeeIDs;
+    private HashSet<Integer> employeeIDs = new HashSet<Integer>();
     public static HashSet<Business> businessList = new HashSet<Business>();
 
     private Business(Builder build) {
@@ -18,7 +18,7 @@ public class Business {
         this.name = build.name;
         this.ownerName = build.ownerName;
         this.worth = build.worth;
-        this.employeeIDs = build.employeeIDs;
+        this.employeeIDs = build.toHashSet(build.employeeIDs);
     }
 
     public int getID() {
@@ -37,8 +37,8 @@ public class Business {
         return this.worth;
     }
 
-    public int[] getEmployeeIDs() {
-        return this.employeeIDs == null ? new int[]{} : this.employeeIDs;
+    public Object[] getEmployeeIDs() {
+        return this.employeeIDs.toArray();
     }
 
     public Business setName(String name) {
@@ -71,22 +71,12 @@ public class Business {
     }
 
     public Business setEmployeeIDs(int[] ids) {
-        this.employeeIDs = ids;
+        this.employeeIDs = this.toHashSet(ids);
         return this;
     }
 
     public Business removeEmployee(int id) {
-        int[] newList = new int[(this.employeeIDs.length - 1)];
-        int i = 0;
-        for(int k : this.employeeIDs) {
-            if(k != id) {
-                newList[i] = k;
-            } else {
-                continue;
-            }
-            i++;
-        }
-        this.employeeIDs = newList;
+        this.employeeIDs.remove(id);
         return this;
     }
 
@@ -96,17 +86,7 @@ public class Business {
      * @return this instance of the business
      */
     public Business addEmployee(int id) {
-        int[] newList = new int[(this.employeeIDs.length+1)];
-        int i = 0;
-        for(int k : this.employeeIDs) {
-            if(i != this.employeeIDs.length) {
-                newList[i] = k;
-            } else {
-                newList[i] = id;
-                break;
-            }
-        }
-        this.employeeIDs = newList;
+        this.employeeIDs.add(id);
         return this;
     }
 
@@ -116,17 +96,7 @@ public class Business {
      * @return this instance of the business
      */
     public Business addEmployee(Employee employee) {
-        int[] newList = new int[(this.employeeIDs.length+1)];
-        int i = 0;
-        for(int k : this.employeeIDs) {
-            if(i != this.employeeIDs.length) {
-                newList[i] = k;
-            } else {
-                newList[i] = employee.getID();
-                break;
-            }
-        }
-        this.employeeIDs = newList;
+        this.employeeIDs.add(employee.getID());
         return this;
     }
 
@@ -134,6 +104,14 @@ public class Business {
     public String toString() {
         return this.name;
     }
+
+    private HashSet<Integer> toHashSet(int[] employeeIDs) {
+            HashSet<Integer> returnThis = new HashSet<Integer>();
+            for(int i : employeeIDs) {
+                returnThis.add(i);
+            }
+            return returnThis;
+        }
 
     public static class Builder {
         private int id;
@@ -201,6 +179,14 @@ public class Business {
 
         public Business build() {
             return new Business(this);
+        }
+
+        private HashSet<Integer> toHashSet(int[] employeeIDs) {
+            HashSet<Integer> returnThis = new HashSet<Integer>();
+            for(int i : employeeIDs) {
+                returnThis.add(i);
+            }
+            return returnThis;
         }
     }
 }

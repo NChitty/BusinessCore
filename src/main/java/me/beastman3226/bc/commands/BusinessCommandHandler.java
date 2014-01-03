@@ -377,10 +377,10 @@ public class BusinessCommandHandler implements CommandExecutor {
         return true;
     }
 
-    private String asString(int[] a) {
+    private String asString(Object[] a) {
         String string = "";
         int i = 0;
-        for(int j : a) {
+        for(Object j : a) {
             if(i == 0) {
                 string = j + "";
                 i++;

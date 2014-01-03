@@ -36,9 +36,9 @@ public class Scheduler {
             @Override
             public void run() {
                 for (Business b : Business.businessList) {
-                    int[] employees = b.getEmployeeIDs();
-                    for (int id : employees) {
-                        Employee e = EmployeeManager.getEmployee(id);
+                    Object[] employees = b.getEmployeeIDs();
+                    for (Object id : employees) {
+                        Employee e = EmployeeManager.getEmployee((Integer) id);
                         if (e != null) {
 
                             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -((b.getBalance() / employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs() ^ -1));

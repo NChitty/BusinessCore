@@ -33,7 +33,7 @@ public class BusinessFiredEmployeeEvent extends BusinessEvent {
         this.employee = e;
     }
 
-    public int[] finalEmployeeList() {
+    public Object[] finalEmployeeList() {
         return this.getBusiness().removeEmployee(employee.getID()).getEmployeeIDs();
     }
 
