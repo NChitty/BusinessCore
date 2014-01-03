@@ -49,7 +49,7 @@ public class Scheduler {
                                 try {
                                     b.withdraw(event.getAbsoluteAmount());
                                 } catch (InsufficientFundsException ex) {
-                                    Logger.getLogger(Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+                                    Information.BusinessCore.getLogger().warning(ex.getLocalizedMessage());
                                 }
                             }
 

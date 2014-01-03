@@ -356,7 +356,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                                 Business.businessList.add(event.getBusiness());
                         }
                     } else {
-                        event.setEmployee(EmployeeManager.getEmployee(name));
+                        String ename = Bukkit.getPlayer(name).getName();
+                        event.setEmployee(EmployeeManager.getEmployee(ename));
                         Bukkit.getPluginManager().callEvent(event);
                         if(!event.isCancelled()) {
                             b.removeEmployee(event.getEmployee().getID());
@@ -364,7 +365,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                             Business.businessList.add(event.getBusiness());
                         }
                     }
-                    Bukkit.getPlayerExact(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
+                    Bukkit.getPlayer(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
                 } else if(!(sender instanceof Player)) {
                     sender.sendMessage(Prefixes.ERROR + "I am having issues finding the correct business and employee");
                 }

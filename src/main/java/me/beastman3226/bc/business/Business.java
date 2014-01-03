@@ -18,7 +18,9 @@ public class Business {
         this.name = build.name;
         this.ownerName = build.ownerName;
         this.worth = build.worth;
-        this.employeeIDs = build.toHashSet(build.employeeIDs);
+        if(build.employeeIDs != null) {
+            this.employeeIDs = build.toHashSet(build.employeeIDs);
+        }
     }
 
     public int getID() {

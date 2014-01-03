@@ -111,6 +111,9 @@ public class JobCommandHandler implements CommandExecutor {
             } else if (cmd.getName().equalsIgnoreCase("j.me")) {
                 if (EmployeeManager.isEmployee(sender.getName())) {
                     Job j = JobManager.getJob(EmployeeManager.getEmployee(sender.getName()).getCurrentJob());
+                    if(j == null) {
+                        return false;
+                    }
                     sender.sendMessage(ChatColor.DARK_GREEN + "|==========Current Job==========|");
                     sender.sendMessage(ChatColor.GREEN + "Job ID:" + ChatColor.WHITE + " " + j.getID());
                     sender.sendMessage(ChatColor.GREEN + "Issued By:" + ChatColor.WHITE + " " + j.getPlayer());
