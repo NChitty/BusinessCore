@@ -60,8 +60,9 @@ public class EmployeeManager {
         }
     }
 
-    public static Employee addEmployee(String name) {
+    public static Employee addEmployee(String name, int BID) {
         Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
+        employee.setBusiness(BID);
         Employee.employeeList.add(employee);
         if(Information.database) {
             EmployeeHandler.add(Data.EMPLOYEE.add("EmployeeID", employee.getID())
@@ -73,8 +74,8 @@ public class EmployeeManager {
             EmployeeFileManager.editConfig(new FileData().add(name + ".name", name)
                     .add(name + ".id", employee.getID())
                     .add(name + ".business", employee.getBusiness().getID())
-                    .add(name + ".completed", employee.getCompletedJobs())
-                    .add(name + ".job", employee.getCurrentJob()));
+                    .add(name + ".completed", 0)
+                    .add(name + ".job", -1));
 
         }
         return employee;

@@ -3,6 +3,7 @@ package me.beastman3226.bc.listener;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
+import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
@@ -23,7 +24,8 @@ public class PlayerListener implements Listener {
             if(Scheduler.playerMilli.get(e.getPlayer().getName()) >= (System.currentTimeMillis() - 10000)) {
                 Business b = BusinessManager.getBusiness(EmployeeManager.pending.get(e.getPlayer().getName()));
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, null);
-                event.setEmployee(EmployeeManager.addEmployee(e.getPlayer().getName()));
+                Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer().getName(), b.getID());
+                event.setEmployee(newEmployee);
                 Bukkit.getPluginManager().callEvent(event);
                 if(!event.isCancelled()) {
                     event.getBusiness().addEmployee(event.getEmployee());
