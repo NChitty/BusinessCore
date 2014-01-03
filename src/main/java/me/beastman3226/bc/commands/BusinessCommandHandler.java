@@ -312,6 +312,8 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(info[5]);
                 }
             //</editor-fold>
+            } else if (cmnd.getName().equalsIgnoreCase("b.top") && args.length >= 0) {
+
             // <editor-fold defaultstate="collapsed" desc="Hire">
             } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {

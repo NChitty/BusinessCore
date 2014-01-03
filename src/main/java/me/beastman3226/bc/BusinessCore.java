@@ -81,7 +81,7 @@ public class BusinessCore extends JavaPlugin {
 
         }
         Scheduler.runPayPeriod();
-        getLogger().info("Do /businesscore for infor about this plugin");
+        getLogger().info("Do /businesscore for information about this plugin");
     }
 
     @Override

@@ -19,7 +19,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if(Scheduler.playerMilli.containsKey(e.getPlayer().getName()) && e.getMessage().equalsIgnoreCase("yes")) {
+        if(Scheduler.playerMilli.containsKey(e.getPlayer().getName()) && e.getMessage().contains("yes")) {
             if(Scheduler.playerMilli.get(e.getPlayer().getName()) >= (System.currentTimeMillis() - 10000)) {
                 Business b = BusinessManager.getBusiness(EmployeeManager.pending.get(e.getPlayer().getName()));
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, null);
@@ -30,6 +30,7 @@ public class PlayerListener implements Listener {
                     EmployeeManager.pending.remove(e.getPlayer().getName());
                     Business.businessList.remove(event.getBusiness());
                     Business.businessList.add(event.getBusiness());
+                    e.getPlayer().sendMessage(Prefixes.POSITIVE + "You have been hired to work for " + event.getBusiness().getName());
                     e.setCancelled(true);
                 }
             } else {

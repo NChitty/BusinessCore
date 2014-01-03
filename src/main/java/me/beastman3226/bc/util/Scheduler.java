@@ -22,35 +22,30 @@ public class Scheduler {
     public static HashMap<String, Long> playerMilli = new HashMap<String, Long>();
 
     public static void runAcceptance() {
-        BukkitTask id = Bukkit.getServer().getScheduler().runTask(Information.BusinessCore, new Runnable() {
-            @Override
-            public void run() {
-                for (String name : EmployeeManager.pending.keySet()) {
-                    Player player = Bukkit.getPlayer(name);
-                    if(player != null && player.isOnline()) {
-                        player.sendMessage(Prefixes.NOMINAL + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
-                        playerMilli.put(name, System.currentTimeMillis());
-                    }
-                }
+        for (String name : EmployeeManager.pending.keySet()) {
+            Player player = Bukkit.getPlayer(name);
+            if (player != null && player.isOnline()) {
+                player.sendMessage(Prefixes.NOMINAL + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
+                playerMilli.put(name, System.currentTimeMillis());
             }
-        });
+        }
     }
 
     public static void runPayPeriod() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Information.BusinessCore, new Runnable() {
             @Override
             public void run() {
-                for(Business b : Business.businessList) {
+                for (Business b : Business.businessList) {
                     int[] employees = b.getEmployeeIDs();
-                    for(int id : employees) {
+                    for (int id : employees) {
                         Employee e = EmployeeManager.getEmployee(id);
-                        if(e != null) {
+                        if (e != null) {
 
-                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -((b.getBalance()/employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs()^-1));
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -((b.getBalance() / employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs() ^ -1));
                             Bukkit.getPluginManager().callEvent(event);
-                            if(!event.isCancelled()) {
+                            if (!event.isCancelled()) {
                                 Bukkit.getPlayerExact(e.getName()).sendMessage("You have been payed!");
-                                Information.eco.depositPlayer(e.getName(), ((b.getBalance()/employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs()^-1));
+                                Information.eco.depositPlayer(e.getName(), ((b.getBalance() / employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs() ^ -1));
                                 try {
                                     b.withdraw(event.getAbsoluteAmount());
                                 } catch (InsufficientFundsException ex) {
@@ -63,7 +58,5 @@ public class Scheduler {
                 }
             }
         }, Information.getTime().getTicks(Information.getValue()), Information.getTime().getTicks(Information.getValue()));
-
     }
-
 }
