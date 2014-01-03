@@ -10,6 +10,8 @@ import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -20,12 +22,15 @@ public class Scheduler {
     public static HashMap<String, Long> playerMilli = new HashMap<String, Long>();
 
     public static void runAcceptance() {
-        Bukkit.getServer().getScheduler().runTask(Information.BusinessCore, new Runnable() {
+        BukkitTask id = Bukkit.getServer().getScheduler().runTask(Information.BusinessCore, new Runnable() {
             @Override
             public void run() {
                 for (String name : EmployeeManager.pending.keySet()) {
-                    Bukkit.getPlayerExact(name).sendMessage(Prefixes.NOMINAL + "Say yes in chat within 10 seconds to accept your current job offer.");
-                    playerMilli.put(name, System.currentTimeMillis());
+                    Player player = Bukkit.getPlayer(name);
+                    if(player != null && player.isOnline()) {
+                        player.sendMessage(Prefixes.NOMINAL + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
+                        playerMilli.put(name, System.currentTimeMillis());
+                    }
                 }
             }
         });

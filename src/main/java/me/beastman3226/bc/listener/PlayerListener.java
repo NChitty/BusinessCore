@@ -4,6 +4,7 @@ import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -32,6 +33,7 @@ public class PlayerListener implements Listener {
                     e.setCancelled(true);
                 }
             } else {
+                e.getPlayer().sendMessage(Prefixes.ERROR + "Timed out.");
                 Scheduler.playerMilli.remove(e.getPlayer().getName());
             }
         }
