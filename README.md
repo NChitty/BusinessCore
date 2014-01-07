@@ -4,6 +4,4 @@ BusinessCore is a very cool plugin that implements a lot of new economic feature
 
 Commands
 ========
-Business Commands:
-*create [name]: Creates a new business with the specified name
-*delete: Deletes your business
+Updating
