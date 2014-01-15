@@ -65,8 +65,6 @@ public class BusinessCore extends JavaPlugin {
 
                 Information.database = false;
             }
-            EmployeeManager.loadEmployees();
-            JobManager.loadJobs();
             if (Information.database) {
                Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
@@ -78,6 +76,9 @@ public class BusinessCore extends JavaPlugin {
             } else {
                 BusinessManager.createBusinesses();
             }
+            EmployeeManager.loadEmployees();
+            JobManager.loadJobs();
+
 
         }
         Scheduler.runPayPeriod();

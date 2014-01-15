@@ -50,11 +50,36 @@ public class EmployeeManager {
                     int bID = Information.employeeYml.getInt(key + ".business");
                     int completed = Information.employeeYml.getInt(key + ".completed");
                     int jID = Information.employeeYml.getInt(key + ".job");
+                if(id == 0 || bID == 0 || completed == 0 || jID == 0) {
+                    if(Information.debug) {
+                        Logger log = Information.log;
+                        log.severe("Name: " + name);
+                        log.severe("ID: " + id);
+                        log.severe("Business: " + bID);
+                        log.severe("Completed: " + completed);
+                        log.severe("Current Job: " + jID);
+                    }
+                }
                 try {
                     Employee e = new Employee(name, id).setBusiness(bID).setCompletedJobs(completed).startJob(jID);
                     Employee.employeeList.add(e);
                 } catch (OpenJobException ex) {
                    continue;
+                } catch (NullPointerException npe) {
+                    if(Information.debug) {
+                        Logger log = Information.log;
+                        log.log(Level.SEVERE, "Name: {0}", name);
+                        log.log(Level.SEVERE, "ID: {0}", id);
+                        log.log(Level.SEVERE, "Business: {0}", bID);
+                        log.log(Level.SEVERE, "Completed: {0}", completed);
+                        log.log(Level.SEVERE, "Current Job: {0}", jID);
+                    }
+                        Logger log = Information.log;
+                        log.log(Level.SEVERE, "Name: {0}", name);
+                        log.log(Level.SEVERE, "ID: {0}", id);
+                        log.log(Level.SEVERE, "Business: {0}", bID);
+                        log.log(Level.SEVERE, "Completed: {0}", completed);
+                        log.log(Level.SEVERE, "Current Job: {0}", jID);
                 }
             }
         }

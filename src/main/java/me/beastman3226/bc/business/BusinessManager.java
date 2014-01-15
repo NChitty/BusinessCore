@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
@@ -56,19 +57,20 @@ public class BusinessManager {
         FileFunctions.reload(Config.BUSINESS);
         FileConfiguration yml = Information.businessYml;
         for(String s : Information.businessYml.getKeys(false)) {
-            if(yml.getString(s + ".employeeIDs") != null) {
+            if(yml.getList(s + ".employeeIDs") != null) {
+                List<String> list = yml.getStringList(s + ".employeeIDs");
                 Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
                         .name(s)
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance"))
-                        .ids(yml.getString(s + ".employeeIDs").split(",")));
+                        .ids(list.toArray(new String[]{})));
             } else {
                 Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
                         .name(s)
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance")));
                 if(Information.debug) {
-                    Information.BusinessCore.getLogger().info("Loaded business " + b.getName() + " with owner as " + b.getOwnerName() + "!");
+                    Information.BusinessCore.getLogger().log(Level.INFO, "Loaded business {0} with owner as {1}!", new Object[]{b.getName(), b.getOwnerName()});
                 }
             }
           }
