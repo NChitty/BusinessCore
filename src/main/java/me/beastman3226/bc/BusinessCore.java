@@ -53,7 +53,7 @@ public class BusinessCore extends JavaPlugin {
             getConfig().set("firstrun", false);
             this.saveConfig();
         } else {
-            if (getConfig().getBoolean("debug-messages")) {
+            if (getConfig().getBoolean("debug-message")) {
                 Information.debug = true;
             } else {
                 Information.debug = false;
