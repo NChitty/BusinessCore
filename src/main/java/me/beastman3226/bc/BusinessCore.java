@@ -28,6 +28,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 /**
  *
@@ -66,7 +67,7 @@ public class BusinessCore extends JavaPlugin {
                 Information.database = false;
             }
             if (Information.database) {
-               Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
+                Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
                     Statement s = c.createStatement();
                     BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
@@ -78,8 +79,12 @@ public class BusinessCore extends JavaPlugin {
             }
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
-
-
+        }
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            this.getLogger().severe("Failed to send stats :-(");
         }
         Scheduler.runPayPeriod();
         getLogger().info("Do /businesscore for information about this plugin");
@@ -138,7 +143,7 @@ public class BusinessCore extends JavaPlugin {
             System.out.println("Economy plugin not detected");
             rsp = (RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         }
-        if(rsp == null) {
+        if (rsp == null) {
             return false;
         }
         Information.eco = rsp.getProvider();
@@ -147,7 +152,7 @@ public class BusinessCore extends JavaPlugin {
     }
 
     public static void log(Level level, String message) {
-        if(Information.debug) {
+        if (Information.debug) {
             Information.log.log(level, message);
         }
     }
@@ -268,30 +273,30 @@ public class BusinessCore extends JavaPlugin {
             try {
                 Information.businessYml.load(Information.businessFile);
             } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (IOException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (InvalidConfigurationException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            }
             try {
                 Information.employeeYml.load(Information.employeeFile);
-           } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
+            } catch (FileNotFoundException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (IOException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (InvalidConfigurationException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            }
             try {
                 Information.jobYml.load(Information.jobFile);
             } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (IOException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            } catch (InvalidConfigurationException ex) {
+                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+            }
         }
 
         /**
