@@ -34,6 +34,11 @@ commands:
     permission: business.info
     permission-message: "&4You do not have 'business.info' or the like, please talk to an adminstrator"
     aliases: [business.info, b.i, info]
+  b.top:
+    description: Shows the top businesses
+    permission: business.top
+    permission-message: "&4You do not have 'business.top' or the like, please talk to an adminstrator"
+    aliases: [b.t, business.top, business.t]
   hire:
     description: Hires the specified player
     permission: business.hire
@@ -97,6 +102,8 @@ permissions:
     default: true
   business.fire:
     default: true
+  business.top:
+    default: true
   business.business:
     children:
       business.create: true
@@ -105,6 +112,7 @@ permissions:
       business.deposit: true
       business.balance: true
       business.info: true
+      business.top: true
       business.hire: true
       business.fire: true
   business.job.open:

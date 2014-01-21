@@ -114,6 +114,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("b.deposit").setExecutor(bch);
         getCommand("b.balance").setExecutor(bch);
         getCommand("b.info").setExecutor(bch);
+        getCommand("b.top").setExecutor(bch);
         getCommand("hire").setExecutor(bch);
         getCommand("fire").setExecutor(bch);
         getCommand("j.open").setExecutor(jch);
