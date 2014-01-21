@@ -344,11 +344,11 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(info[5]);
                     } else {
                         String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
-                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 1 + ") "  + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 1),
-                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 2 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 2),
-                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 3 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 3),
-                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 4 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 4),
-                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 5 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 5)};
+                                                          ChatColor.GREEN + "  " + (((index*5) - 5) + 1) + ") "  + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 1),
+                                                          ChatColor.GREEN + "  " + (((index*5) - 5) + 2) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 2),
+                                                          ChatColor.GREEN + "  " + (((index*5) - 5) + 3) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 3),
+                                                          ChatColor.GREEN + "  " + (((index*5) - 5) + 4) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 4),
+                                                          ChatColor.GREEN + "  " + (((index*5) - 5) + 5) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 5)};
                         sender.sendMessage(info[0]);
                         sender.sendMessage(info[1]);
                         sender.sendMessage(info[2]);
