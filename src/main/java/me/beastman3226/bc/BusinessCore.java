@@ -145,6 +145,12 @@ public class BusinessCore extends JavaPlugin {
 
     }
 
+    public static void log(Level level, String message) {
+        if(Information.debug) {
+            Information.log.log(level, message);
+        }
+    }
+
     /**
      * This class turns normally protected, private or other information that
      * isn't in scope and puts it out there for everyone to use; information

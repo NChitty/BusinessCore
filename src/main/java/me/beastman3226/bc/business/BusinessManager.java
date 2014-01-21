@@ -44,9 +44,11 @@ public class BusinessManager {
                         .owner(rs.getString("BusinessOwner"))
                         .ids(rs.getString("EmployeeIDs").split(",")).build();
                 Business.businessList.add(b);
+                BusinessCore.log(Level.INFO, "Created business " + b.getName() + " from database.");
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+            BusinessCore.log(Level.SEVERE, ex.getMessage());
+            Information.log.severe(ex.getLocalizedMessage());
         }
     }
 
@@ -64,6 +66,7 @@ public class BusinessManager {
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance"))
                         .ids(list.toArray(new String[]{})));
+               BusinessCore.log(Level.INFO, "Loaded business " + b.getName() + " from file");
             } else {
                 Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
                         .name(s)
@@ -163,6 +166,7 @@ public class BusinessManager {
         } else {
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
         }
+        BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
         Bukkit.getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
     }
 
@@ -201,7 +205,7 @@ public class BusinessManager {
     public static String getIndex(int rank) {
         Business b = null;
         try {
-            b = Sorter.sort().get(rank);
+            b = Sorter.sort().get(--rank);
         } catch (Exception e) {
             return "You could be here.";
         }

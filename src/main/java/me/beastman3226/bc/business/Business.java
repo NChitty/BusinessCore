@@ -1,6 +1,8 @@
 package me.beastman3226.bc.business;
 
 import java.util.HashSet;
+import java.util.logging.Level;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.player.Employee;
 
@@ -60,6 +62,7 @@ public class Business {
 
     public Business deposit(double amount) {
         this.worth = this.worth + amount;
+        BusinessCore.log(Level.INFO, "Depositing " + amount + " into " + this.getName());
         return this;
     }
 
@@ -68,6 +71,7 @@ public class Business {
             throw new InsufficientFundsException("Not enough funds. Missing " + (amount - worth));
         } else {
             this.worth =- amount;
+            BusinessCore.log(Level.INFO, "Withdrawing " + amount + " from " + this.worth + " in business " + this.getName());
         }
         return this;
     }
@@ -79,6 +83,7 @@ public class Business {
 
     public Business removeEmployee(int id) {
         this.employeeIDs.remove(id);
+        BusinessCore.log(Level.INFO, "Fired employee " + id + " from " + this.getName() );
         return this;
     }
 
@@ -89,6 +94,7 @@ public class Business {
      */
     public Business addEmployee(int id) {
         this.employeeIDs.add(id);
+        BusinessCore.log(Level.INFO, "Added employee " + id + " to " + this.getName());
         return this;
     }
 
@@ -99,6 +105,7 @@ public class Business {
      */
     public Business addEmployee(Employee employee) {
         this.employeeIDs.add(employee.getID());
+        BusinessCore.log(Level.INFO, "Added employee " + employee.getID() + " to " + this.getName());
         return this;
     }
 

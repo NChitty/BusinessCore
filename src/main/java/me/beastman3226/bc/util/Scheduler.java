@@ -3,6 +3,7 @@ package me.beastman3226.bc.util;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.errors.InsufficientFundsException;
@@ -35,12 +36,12 @@ public class Scheduler {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Information.BusinessCore, new Runnable() {
             @Override
             public void run() {
+                BusinessCore.log(Level.INFO, "Started paying operation.");
                 for (Business b : Business.businessList) {
                     Object[] employees = b.getEmployeeIDs();
                     for (Object id : employees) {
                         Employee e = EmployeeManager.getEmployee((Integer) id);
                         if (e != null) {
-
                             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -((b.getBalance() / employees.length) + e.getCompletedJobs() > 15 ? e.getCompletedJobs() : e.getCompletedJobs() ^ -1));
                             Bukkit.getPluginManager().callEvent(event);
                             if (!event.isCancelled()) {

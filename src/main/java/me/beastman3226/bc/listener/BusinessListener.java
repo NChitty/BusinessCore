@@ -1,5 +1,7 @@
 package me.beastman3226.bc.listener;
 
+import java.util.logging.Level;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.BusinessHandler;
@@ -30,6 +32,7 @@ public class BusinessListener implements Listener {
         } else if(!Information.database && !e.isCancelled()) {
             BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
         }
+        BusinessCore.log(Level.INFO, e.getBusiness() + "'s balance has changed to " + e.getFinalAmount());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -62,6 +65,7 @@ public class BusinessListener implements Listener {
         } else if(!Information.database && !e.isCancelled()) {
             BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.getFinalList()));
         }
+        BusinessCore.log(Level.INFO, e.getBusiness() + " has hired an employee.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

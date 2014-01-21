@@ -1,5 +1,7 @@
 package me.beastman3226.bc.listener;
 
+import java.util.logging.Level;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.Data;
 import me.beastman3226.bc.data.DataHandler;
@@ -32,6 +34,7 @@ public class JobListener implements Listener {
                         .add(e.getID() + ".payment", e.getPayment()));
             }
         }
+        BusinessCore.log(Level.INFO, "Job #" + e.getID() + " has been created.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -42,6 +45,7 @@ public class JobListener implements Listener {
             } else{
                 JobFileManager.editConfig(new FileData().add(e.getID() + ".employee", e.getEmployee().getID()));
             }
+            BusinessCore.log(Level.INFO, e.getEmployee().getCurrentJob() + " has been claimed by " + e.getEmployee().getName());
         }
     }
 

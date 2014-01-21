@@ -299,11 +299,11 @@ public class BusinessCommandHandler implements CommandExecutor {
                     sender.sendMessage(info);
                 } else if(!(sender instanceof Player)) {
                     String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
-                                                          ChatColor.GREEN + "  1) " + ChatColor.WHITE + BusinessManager.getIndex(0),
-                                                          ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(1),
-                                                          ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(2),
-                                                          ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(3),
-                                                          ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(4)};
+                                                          ChatColor.GREEN + "  1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
+                                                          ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
                         sender.sendMessage(info[0]);
                         sender.sendMessage(info[1]);
                         sender.sendMessage(info[2]);
@@ -312,8 +312,52 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(info[5]);
                 }
             //</editor-fold>
+            //<editor-fold desc="Business top" defaultstate="collapsed">
             } else if (cmnd.getName().equalsIgnoreCase("b.top") && args.length >= 0) {
-
+                if(args.length == 0) {
+                String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
+                                                          ChatColor.GREEN + "  1) " + ChatColor.WHITE + BusinessManager.getIndex(1),
+                                                          ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
+                                                          ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
+                                                          ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
+                                                          ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
+                        sender.sendMessage(info[0]);
+                        sender.sendMessage(info[1]);
+                        sender.sendMessage(info[2]);
+                        sender.sendMessage(info[3]);
+                        sender.sendMessage(info[4]);
+                        sender.sendMessage(info[5]);
+                } else {
+                    int index = Integer.parseInt(args[0]);
+                    if(index == 2) {
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
+                                                          ChatColor.GREEN + "  6) " + ChatColor.WHITE + BusinessManager.getIndex(6),
+                                                          ChatColor.GREEN + "  7) " + ChatColor.WHITE + BusinessManager.getIndex(7),
+                                                          ChatColor.GREEN + "  8) " + ChatColor.WHITE + BusinessManager.getIndex(8),
+                                                          ChatColor.GREEN + "  9) " + ChatColor.WHITE + BusinessManager.getIndex(9),
+                                                          ChatColor.GREEN + "  10) " + ChatColor.WHITE + BusinessManager.getIndex(10)};
+                        sender.sendMessage(info[0]);
+                        sender.sendMessage(info[1]);
+                        sender.sendMessage(info[2]);
+                        sender.sendMessage(info[3]);
+                        sender.sendMessage(info[4]);
+                        sender.sendMessage(info[5]);
+                    } else {
+                        String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
+                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 1 + ") "  + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 1),
+                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 2 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 2),
+                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 3 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 3),
+                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 4 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 4),
+                                                          ChatColor.GREEN + "  " + ((index*5) - 5) + 5 + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index*5) - 5) + 5)};
+                        sender.sendMessage(info[0]);
+                        sender.sendMessage(info[1]);
+                        sender.sendMessage(info[2]);
+                        sender.sendMessage(info[3]);
+                        sender.sendMessage(info[4]);
+                        sender.sendMessage(info[5]);
+                    }
+                }
+            // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Hire">
             } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
