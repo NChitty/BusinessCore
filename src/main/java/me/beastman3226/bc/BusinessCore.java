@@ -9,12 +9,14 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
 import me.beastman3226.bc.commands.MiscCommandHandler;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
+import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
@@ -29,6 +31,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 /**
  *
@@ -82,6 +85,23 @@ public class BusinessCore extends JavaPlugin {
         }
         try {
             Metrics metrics = new Metrics(this);
+
+            Graph businessesCreated = metrics.createGraph("Number of Businesses Created");
+            businessesCreated.addPlotter(new Metrics.Plotter("Businesses") {
+                @Override
+                public int getValue() {
+                    return Business.businessList.size();
+                }
+            });
+
+            Graph jobsCompleted = metrics.createGraph("Number of Jobs Completed");
+            jobsCompleted.addPlotter(new Metrics.Plotter("Jobs") {
+                @Override
+                public int getValue() {
+                    return Job.jobList.size();
+                }
+            });
+            
             metrics.start();
         } catch (IOException e) {
             this.getLogger().severe("Failed to send stats :-(");
