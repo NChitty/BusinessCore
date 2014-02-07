@@ -1,0 +1,137 @@
+name: BusinessCore
+version: 1.3-Beta
+author: beastman3226
+main: me.beastman3226.bc.BusinessCore
+depend: [Vault]
+commands:
+  b.create:
+    description: Creates a business
+    permission: business.create
+    permission-message: "&4You do not have 'business.create' or the like, please talk to an adminstrator"
+    aliases: [business.create, create, b.c]
+  b.delete:
+    description: Delete your business, or (from console) someone elses
+    permission: business.delete
+    permission-message: "&4You do not have 'business.delete' or the like, please talk to an adminstrator"
+    aliases: [business.delete, delete, b.d]
+  b.withdraw:
+    description: Withdraws money from your business
+    permission: business.withdraw
+    permission-message: "&4You do not have 'business.withdraw' or the like, please talk to an adminstrator"
+    aliases: [business.withdraw, withdraw, b.w]
+  b.deposit:
+    description: Deposits money into the bank
+    permission: business.deposit
+    permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
+    aliases: [business.deposit, deposit, b.de]
+  b.balance:
+    description: Shows you your balance
+    permission: business.balance
+    permission-message: "&4You do not have 'business.balance' or the like, please talk to an adminstrator"
+    aliases: [business.balance, balance, b.b]
+  b.info:
+    description: Shows info on businesses
+    permission: business.info
+    permission-message: "&4You do not have 'business.info' or the like, please talk to an adminstrator"
+    aliases: [business.info, b.i, info]
+  b.top:
+    description: Shows the top businesses
+    permission: business.top
+    permission-message: "&4You do not have 'business.top' or the like, please talk to an adminstrator"
+    aliases: [b.t, business.top, business.t]
+  hire:
+    description: Hires the specified player
+    permission: business.hire
+    permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
+    aliases: [b.h, h]
+  fire:
+   description: Fires the specified player.
+   permission: business.fire
+   permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
+   aliases: [b.f, f]
+  j.open:
+   description: Opens a job with pay and description
+   permission: business.job.open
+   permission-message: "&4You do not have 'business.job.open' or the like, please talk to an adminstrator"
+   aliases: [j.o, open, create.ticket]
+  j.claim:
+   description: Claims the job with specified job id
+   permission: business.job.claim
+   permission-message: "&4You do not have 'business.job.claim' or the like, please talk to an adminstrator"
+   aliases: [j.cl, claim, claim.ticket]
+  j.list:
+    description: Shows a list of open jobs.
+    permission: business.job.list
+    permission-message: "&4You do not have 'business.job.list' or the like, please talk to an adminstrator"
+    aliases: [list, j.l, list.tickets]
+  j.complete:
+    description: Completes a job with specified ID or at random from your open jobs
+    permission: business.job.complete
+    permission-message: "&4You do not have 'business.job.complete' or the like, please talk to an adminstrator"
+    aliases: [complete, j.co, complete.ticket]
+  j.me:
+    description: Shows information pertaining to you and the job portion of BusinessCore
+    permission: business.job.me
+    permission-message: "&4You do not have 'business.job.me' or the like, please talk to an adminstrator"
+    aliases: [j.m, j.info, j.i, ticket.info]
+  j.id:
+    description: Shows information on the job with specified id
+    permission: business.job.id
+    permission-message: "&4You do not have 'business.job.id' or the like, please talk to an adminstrator"
+    aliases: [id, j.id.info, id.ticket]
+  businesscore:
+    description: Displays information about the plugin you are running
+    aliases: [bc]
+  bc.help:
+    description: Shows the help pages
+    aliases: [help.bc, businesscore.help]
+permissions:
+  business.create:
+    default: true
+  business.delete:
+    default: true
+  business.withdraw:
+    default: true
+  business.deposit:
+    default: true
+  business.balance:
+    default: true
+  business.info:
+    default: true
+  business.hire:
+    default: true
+  business.fire:
+    default: true
+  business.top:
+    default: true
+  business.business:
+    children:
+      business.create: true
+      business.delete: true
+      business.withdraw: true
+      business.deposit: true
+      business.balance: true
+      business.info: true
+      business.top: true
+      business.hire: true
+      business.fire: true
+  business.job.open:
+    default: true
+  business.job.claim:
+    default: true
+  business.job.list:
+    default: true
+  business.job.complete:
+    default: true
+  business.job.me:
+    default: true
+  business.job.id:
+    default: true
+  business.job:
+    children:
+      business.job.open: true
+      business.job.claim: true
+      business.job.list: true
+      business.job.complete: true
+      business.job.me: true
+      business.job.id: true
