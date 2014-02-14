@@ -2,7 +2,6 @@ package me.beastman3226.bc.util;
 
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
@@ -12,7 +11,6 @@ import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  *
@@ -39,6 +37,24 @@ public class Scheduler {
                 BusinessCore.log(Level.INFO, "Started paying operation.");
                 for (Business b : Business.businessList) {
                     Object[] employees = b.getEmployeeIDs();
+                    if(b.isSalary()) {
+                        for(Object id : employees) {
+                            Employee e = EmployeeManager.getEmployee((Integer) id);
+                            if(e != null) {
+                                BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -b.getSalary());
+                                Bukkit.getPluginManager().callEvent(event);
+                                if(!event.isCancelled()) {
+                                    Bukkit.getPlayer(e.getName()).sendMessage("You have been payed!");
+                                    Information.eco.depositPlayer(e.getName(), b.getSalary());
+                                    try {
+                                        b.withdraw(b.getSalary());
+                                    } catch (InsufficientFundsException ex) {
+                                        Information.BusinessCore.getLogger().warning(ex.getLocalizedMessage());
+                                    }
+                                }
+                            }
+                        }
+                    } else {
                     for (Object id : employees) {
                         Employee e = EmployeeManager.getEmployee((Integer) id);
                         if (e != null) {
@@ -55,6 +71,7 @@ public class Scheduler {
                             }
 
                         }
+                    }
                     }
                 }
             }

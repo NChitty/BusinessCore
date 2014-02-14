@@ -1,10 +1,17 @@
 package me.beastman3226.bc.commands;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.db.Database;
+import me.beastman3226.bc.db.Table;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 /**
  * Handles communicative commands and admin/higher level commands
@@ -41,6 +48,13 @@ public class MiscCommandHandler implements CommandExecutor {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "/b.deposit <amount>; /b.withdraw <amount>; /b.balance");
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "/hire <playername>; /fire <playername>");
                 }
+            }
+        } else if(cmd.getName().equalsIgnoreCase("data update") && sender instanceof ConsoleCommandSender) {
+            try {
+                Statement s = Database.instance().MySQL.getConnection().createStatement();
+                s.execute("ALTER TABLE" + Table.BUSINESS + "\n ADD Salary BOOLEAN \n\n ALTER TABLE" + Table.BUSINESS + "\n ADD Payment Float \n\n UPDATE " + Table.BUSINESS + " SET Salary=FALSE,Payment=0.0;");
+            } catch (SQLException ex) {
+                Logger.getLogger(MiscCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return true;

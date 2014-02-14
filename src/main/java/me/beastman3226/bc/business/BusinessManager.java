@@ -35,7 +35,9 @@ public class BusinessManager {
                         .balance(rs.getDouble("BusinessBalance"))
                         .name(rs.getString("BusinessName"))
                         .owner(rs.getString("BusinessOwner"))
-                        .ids(rs.getString("EmployeeIDs").split(",")).build();
+                        .ids(rs.getString("EmployeeIDs").split(","))
+                        .salary(rs.getBoolean("Salary"))
+                        .pay(rs.getDouble("Payment")).build();
                 Business.businessList.add(b);
                 BusinessCore.log(Level.INFO, "Created business " + b.getName() + " from database.");
             }
@@ -58,7 +60,9 @@ public class BusinessManager {
                         .name(s)
                         .owner(yml.getString(s + ".ownerName"))
                         .balance(yml.getDouble(s + ".balance"))
-                        .ids(list.toArray(new String[]{})));
+                        .ids(list.toArray(new String[]{}))
+                        .salary(yml.getBoolean(s + ".salary"))
+                        .pay(yml.getDouble(s + ".pay")));
                BusinessCore.log(Level.INFO, "Loaded business " + b.getName() + " from file");
             } else {
                 Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))

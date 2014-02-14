@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static me.beastman3226.bc.BusinessCore.Information.initManagers;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
@@ -57,20 +58,16 @@ public class BusinessCore extends JavaPlugin {
             getConfig().set("firstrun", false);
             this.saveConfig();
         } else {
-            if (getConfig().getBoolean("debug-message")) {
-                Information.debug = true;
-            } else {
-                Information.debug = false;
-            }
+            Information.debug = getConfig().getBoolean("debug-message");
             if (getConfig().getBoolean("database.enabled")) {
                 Database.instance();
                 Information.database = true;
             } else {
-
                 Information.database = false;
             }
             if(getConfig().getBoolean("managers")) {
                 Information.managers = true;
+                initManagers(this);
             } else {
                 Information.managers = false;
             }
@@ -159,6 +156,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("j.id").setExecutor(jch);
         getCommand("businesscore").setExecutor(mch);
         getCommand("bc.help").setExecutor(mch);
+        getCommand("update data").setExecutor(mch);
     }
 
     public boolean setupEconomy() {
@@ -204,12 +202,24 @@ public class BusinessCore extends JavaPlugin {
         public static Logger log;
         public static boolean managers;
         
+        public static void initManagers(Plugin p) {
+            if(managers) {
+                managerFile = new File(p.getDataFolder(), "manager.yml");
+                if(!managerFile.exists()) {
+                    try {
+                        managerFile.createNewFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                managerYml = YamlConfiguration.loadConfiguration(managerFile);
+            }
+        }
         
         public static void initFiles(Plugin p) {
             businessFile = new File(p.getDataFolder(), "business.yml");
             jobFile = new File(p.getDataFolder(), "jobs.yml");
             employeeFile = new File(p.getDataFolder(), "employee.yml");
-            managerFile = new File(p.getDataFolder(), "manager.yml");
             
             if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
                 businessFile.getParentFile().mkdirs();
@@ -227,7 +237,7 @@ public class BusinessCore extends JavaPlugin {
             businessYml = YamlConfiguration.loadConfiguration(businessFile);
             employeeYml = YamlConfiguration.loadConfiguration(employeeFile);
             jobYml = YamlConfiguration.loadConfiguration(jobFile);
-            managerYml = YamlConfiguration.loadConfiguration(managerFile);
+            initManagers(p);
         }
 
         public static Time getTime() {

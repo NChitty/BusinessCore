@@ -14,12 +14,17 @@ public class Business {
     private double worth;
     private HashSet<Integer> employeeIDs = new HashSet<Integer>();
     public static HashSet<Business> businessList = new HashSet<Business>();
-
+    private boolean salary = true;
+    private double pay;
+    
+    
     private Business(Builder build) {
         this.id = build.id;
         this.name = build.name;
         this.ownerName = build.ownerName;
         this.worth = build.worth;
+        this.salary = build.salary;
+        this.pay = build.pay;
         if(build.employeeIDs != null) {
             this.employeeIDs = build.toHashSet(build.employeeIDs);
         }
@@ -121,18 +126,40 @@ public class Business {
             }
             return returnThis;
         }
-
+    public boolean toggleSalary() {
+            return (this.salary = !salary);
+    }
+    
+    public boolean isSalary() {
+        return this.salary;
+    }
+    
+    public double getSalary() {
+        return this.pay;
+    }
+    
+    public void setSalary(double salary) {
+        this.pay = salary;
+    }
+    
     public static class Builder {
         private int id;
         private String name;
         private String ownerName;
         private double worth;
         private int[] employeeIDs;
-
+        private double pay;
+        private boolean salary;
+        
         public int getID() {
             return this.id;
         }
-
+        
+        public Builder salary(boolean sal) {
+            this.salary = sal;
+            return this;
+        }
+        
         public String getName() {
             return this.name;
         }
@@ -177,7 +204,12 @@ public class Business {
             }
             return this;
         }
-
+        
+        public Builder pay(double pay) {
+            this.pay = pay;
+            return this;
+        }
+        
         public Builder ids(String[] ids) {
             int i = 0;
             int k;
@@ -201,5 +233,8 @@ public class Business {
             }
             return returnThis;
         }
+        
+        
     }
+    
 }
