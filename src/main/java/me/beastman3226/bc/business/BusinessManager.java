@@ -120,7 +120,18 @@ public class BusinessManager {
         }
         return null;
     }
-
+    
+    public static int getID(String bname) {
+        int id = -1;
+        for(Business b : Business.businessList) {
+            if(b.getName().equalsIgnoreCase(bname)) {
+                id = b.getID();
+                break;
+            }
+        }
+        return id;
+    }
+    
     /**
      * Finds an open business ID for a newly created business
      * @return The open id

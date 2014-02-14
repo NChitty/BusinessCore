@@ -39,6 +39,16 @@ commands:
     permission: business.top
     permission-message: "&4You do not have 'business.top' or the like, please talk to an adminstrator"
     aliases: [b.t, business.top, business.t]
+  b.promote:
+    description: Promotes an employee to a manager
+    permission: business.promote
+    permission-message: "&4You do not have 'business.promote' or the like, please talk to an adminstrator"
+    aliases: [b.p, promote, business.promote]
+  b.demote:
+    description: Demotes a manager to an employee
+    permission: business.demote
+    permission-message: "&4You do not have 'business.demote' or the like, please talk to an adminstrator"
+    aliases: [b.dem, demote, business.demote]
   hire:
     description: Hires the specified player
     permission: business.hire
@@ -104,6 +114,10 @@ permissions:
     default: true
   business.top:
     default: true
+  business.promote:
+    default: true
+  business.demote:
+    default: true
   business.business:
     children:
       business.create: true
@@ -115,6 +129,8 @@ permissions:
       business.top: true
       business.hire: true
       business.fire: true
+      business.promote: true
+      business.demote: true
   business.job.open:
     default: true
   business.job.claim:

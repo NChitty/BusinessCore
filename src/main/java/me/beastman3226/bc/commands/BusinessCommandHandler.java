@@ -12,6 +12,7 @@ import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessPreCreatedEvent;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.player.Manager;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
@@ -412,6 +413,15 @@ public class BusinessCommandHandler implements CommandExecutor {
                     Bukkit.getPlayer(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
                 } else if(!(sender instanceof Player)) {
                     sender.sendMessage(Prefixes.ERROR + "I am having issues finding the correct business and employee");
+                }
+            // </editor-fold>
+            // <editor-fold desc="Business promote" defaultstate="collapsed">
+            } else if(cmnd.getName().equalsIgnoreCase("b.promote") && args.length > 0) {
+                Player p = Bukkit.getPlayer(args[0]);
+                if(p != null && BusinessManager.isOwner(sender.getName())) {
+                    Manager.addManager(p.getName(), BusinessManager.getBusiness(sender.getName()).getName());
+                } else if(Manager.isManager(sender.getName()) && p != null) {
+                    Manager.addManager(p.getName(), Manager.getBusiness(sender.getName()).getName());
                 }
             // </editor-fold>
             }

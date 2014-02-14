@@ -69,6 +69,11 @@ public class BusinessCore extends JavaPlugin {
 
                 Information.database = false;
             }
+            if(getConfig().getBoolean("managers")) {
+                Information.managers = true;
+            } else {
+                Information.managers = false;
+            }
             if (Information.database) {
                 Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
@@ -140,6 +145,10 @@ public class BusinessCore extends JavaPlugin {
         getCommand("b.balance").setExecutor(bch);
         getCommand("b.info").setExecutor(bch);
         getCommand("b.top").setExecutor(bch);
+        if(Information.managers) {
+            getCommand("b.promote").setExecutor(bch);
+            getCommand("b.demote").setExecutor(bch);
+        }
         getCommand("hire").setExecutor(bch);
         getCommand("fire").setExecutor(bch);
         getCommand("j.open").setExecutor(jch);
@@ -184,21 +193,24 @@ public class BusinessCore extends JavaPlugin {
      */
     public static class Information {
 
-        private static File businessFile, jobFile, employeeFile;
+        private static File businessFile, jobFile, employeeFile, managerFile;
         public static FileConfiguration config;
-        public static FileConfiguration businessYml, employeeYml, jobYml;
+        public static FileConfiguration businessYml, employeeYml, jobYml, managerYml;
         public static boolean database;
         public static BusinessCore BusinessCore;
         public static Connection connection;
         public static net.milkbowl.vault.economy.Economy eco;
         public static boolean debug;
         public static Logger log;
-
+        public static boolean managers;
+        
+        
         public static void initFiles(Plugin p) {
             businessFile = new File(p.getDataFolder(), "business.yml");
             jobFile = new File(p.getDataFolder(), "jobs.yml");
             employeeFile = new File(p.getDataFolder(), "employee.yml");
-
+            managerFile = new File(p.getDataFolder(), "manager.yml");
+            
             if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
                 businessFile.getParentFile().mkdirs();
                 jobFile.getParentFile().mkdirs();
@@ -215,6 +227,7 @@ public class BusinessCore extends JavaPlugin {
             businessYml = YamlConfiguration.loadConfiguration(businessFile);
             employeeYml = YamlConfiguration.loadConfiguration(employeeFile);
             jobYml = YamlConfiguration.loadConfiguration(jobFile);
+            managerYml = YamlConfiguration.loadConfiguration(managerFile);
         }
 
         public static Time getTime() {
@@ -282,6 +295,15 @@ public class BusinessCore extends JavaPlugin {
                         Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
                     }
                     break;
+                case MANAGER:
+                    try {
+                        Information.managerYml.load(Information.managerFile);
+                    } catch (IOException ex) {
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvalidConfigurationException ex) {
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    break;
             }
         }
 
@@ -317,6 +339,13 @@ public class BusinessCore extends JavaPlugin {
             } catch (InvalidConfigurationException ex) {
                 Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
             }
+            try {
+                Information.managerYml.load(Information.managerFile);
+            } catch (IOException ex) {
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidConfigurationException ex) {
+                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         /**
@@ -348,6 +377,13 @@ public class BusinessCore extends JavaPlugin {
                         Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     break;
+                case MANAGER:
+                    try {
+                        Information.managerYml.save(Information.managerFile);
+                    } catch (IOException ex) {
+                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
+                    }
+                    break;
             }
         }
 
@@ -360,6 +396,7 @@ public class BusinessCore extends JavaPlugin {
                 Information.businessYml.save(Information.businessFile);
                 Information.employeeYml.save(Information.employeeFile);
                 Information.jobYml.save(Information.jobFile);
+                Information.managerYml.save(Information.managerFile);
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -371,6 +408,6 @@ public class BusinessCore extends JavaPlugin {
      */
     public static enum Config {
 
-        BUSINESS, EMPLOYEE, JOB;
+        BUSINESS, EMPLOYEE, JOB, MANAGER;
     }
 }

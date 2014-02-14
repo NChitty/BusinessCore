@@ -1,11 +1,9 @@
 package me.beastman3226.bc.player;
 
 import java.util.HashSet;
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.data.Data;
 import me.beastman3226.bc.data.EmployeeHandler;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
