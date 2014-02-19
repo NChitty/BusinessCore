@@ -149,7 +149,7 @@ public class BusinessCommandHandler implements CommandExecutor {
             // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Business Deposit">
             } else if(cmnd.getName().equalsIgnoreCase("b.deposit") && args.length > 0) {
-                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())){
+                if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || Manager.isManager(sender.getName()))){
                     boolean caught = false;
                     double amount = 0.0;
                     try {
@@ -161,6 +161,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                         sender.sendMessage(Prefixes.ERROR + args[0] + " is not the proper format for a deposit");
                         return false;
                     } else {
+                        if(BusinessManager.isOwner(sender.getName())) {
                         Business b = BusinessManager.getBusiness(sender.getName());
                         BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
                         Bukkit.getServer().getPluginManager().callEvent(event);
@@ -176,6 +177,23 @@ public class BusinessCommandHandler implements CommandExecutor {
                         }
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " +  Information.eco.currencyNamePlural());
                         return true;
+                        } else {
+                            Business b = Manager.getBusiness(sender.getName());
+                            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b,amount);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                             event.getBusiness().deposit(event.getAmount());
+                             Information.
+                                     eco.
+                                     withdrawPlayer(sender.getName(),
+                                     event
+                                     .getAmount());
+                             Business.businessList.remove(event.getBusiness());
+                             Business.businessList.add(event.getBusiness());
+                        }
+                        sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " +  Information.eco.currencyNamePlural());
+                        return true;
+                        }
                     }
                 } else {
                    int id = 0;
@@ -214,7 +232,7 @@ public class BusinessCommandHandler implements CommandExecutor {
             // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Business balance">
             } else if(cmnd.getName().equalsIgnoreCase("b.balance")) {
-                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())) {
+                if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || Manager.isManager(sender.getName()))) {
                     sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + BusinessManager.getBusiness(sender.getName()).getName() + " is " + BusinessManager.getBusiness(sender.getName()).getBalance());
                     return true;
                 } else if(!(sender instanceof Player) && args.length > 0) {
@@ -230,6 +248,10 @@ public class BusinessCommandHandler implements CommandExecutor {
                         name = args[0];
                         if(BusinessManager.isOwner(name)) {
                             Business b = BusinessManager.getBusiness(name);
+                            sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance());
+                            return true;
+                        } else if(Manager.isManager(sender.getName())) {
+                            Business b = Manager.getBusiness(sender.getName());
                             sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance());
                             return true;
                         } else {
@@ -253,6 +275,20 @@ public class BusinessCommandHandler implements CommandExecutor {
                 if(sender instanceof Player) {
                     if(BusinessManager.isOwner(sender.getName())) {
                         Business b = BusinessManager.getBusiness(sender.getName());
+                        if(b == null) {
+                            System.out.println("For some odd reason the business returned null");
+                        }
+                        sender.sendMessage(ChatColor.DARK_GREEN + "|==========Business Info==========|");
+                        sender.sendMessage(ChatColor.GREEN + "  Name: " + b.getName());
+                        sender.sendMessage(ChatColor.GREEN + "  ID: " + b.getID());
+                        sender.sendMessage(ChatColor.GREEN + "  Balance: " + b.getBalance());
+                        if(b.getEmployeeIDs().length == 0) {
+                            sender.sendMessage(ChatColor.GREEN + "  Employees: N/A");
+                        } else {
+                            sender.sendMessage(ChatColor.GREEN + "  Employees: " + this.asString(b.getEmployeeIDs()));
+                        }
+                    } else if(Manager.isManager(sender.getName())) {
+                        Business b = Manager.getBusiness(sender.getName());
                         if(b == null) {
                             System.out.println("For some odd reason the business returned null");
                         }
@@ -381,7 +417,7 @@ public class BusinessCommandHandler implements CommandExecutor {
             // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Fire">
             } else if(cmnd.getName().equalsIgnoreCase("fire") && args.length > 0) {
-                if(sender instanceof Player && BusinessManager.isOwner(sender.getName())) {
+                if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || Manager.isManager(sender.getName()))) {
                     boolean caught = false;
                     int id = 0;
                     String name = args[0];
@@ -390,6 +426,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                     } catch (NumberFormatException e) {
                         caught = true;
                     }
+                    if(BusinessManager.isOwner(sender.getName())) {
                     Business b = BusinessManager.getBusiness(sender.getName());
                     BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, null);
                     if(!caught) {
@@ -411,6 +448,28 @@ public class BusinessCommandHandler implements CommandExecutor {
                         }
                     }
                     Bukkit.getPlayer(name).sendMessage(Prefixes.NOMINAL + "You have been fired from " + b.getName() + "!");
+                } else if(Manager.isManager(sender.getName())) {
+                    Business b = Manager.getBusiness(sender.getName());
+                    BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, null);
+                    if(!caught) {
+                        event.setEmployee(id);
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                                Business.businessList.add(event.getBusiness());
+                        }
+                    } else {
+                        String ename = Bukkit.getPlayer(name).getName();
+                        event.setEmployee(EmployeeManager.getEmployee(ename));
+                        Bukkit.getPluginManager().callEvent(event);
+                        if(!event.isCancelled()) {
+                            b.removeEmployee(event.getEmployee().getID());
+                            Business.businessList.remove(event.getBusiness());
+                            Business.businessList.add(event.getBusiness());
+                        }
+                    }
+                }
                 } else if(!(sender instanceof Player)) {
                     sender.sendMessage(Prefixes.ERROR + "I am having issues finding the correct business and employee");
                 }
@@ -420,10 +479,34 @@ public class BusinessCommandHandler implements CommandExecutor {
                 Player p = Bukkit.getPlayer(args[0]);
                 if(p != null && BusinessManager.isOwner(sender.getName())) {
                     Manager.addManager(p.getName(), BusinessManager.getBusiness(sender.getName()).getName());
+                    sender.sendMessage(Prefixes.POSITIVE + "You have just promoted " + p.getName() + " to manager.");
                 } else if(Manager.isManager(sender.getName()) && p != null) {
                     Manager.addManager(p.getName(), Manager.getBusiness(sender.getName()).getName());
+                    sender.sendMessage(Prefixes.POSITIVE + "You have just promoted " + p.getName() + " to manager.");
                 }
             // </editor-fold>
+            // <editor-fold desc="Business demote" defaultstate="collapsed">
+            } else if(cmnd.getName().equalsIgnoreCase("b.demote") && args.length > 0) {
+                Player p = Bukkit.getPlayer(args[0]);
+                if(p!= null && BusinessManager.isOwner(sender.getName())) {
+                    if(Manager.isManager(p.getName(), BusinessManager.getBusiness(sender.getName()).getName())) {
+                        Manager.removeManager(p.getName(), string);
+                        sender.sendMessage(Prefixes.ERROR + "You have just fired " + p.getName() + "!");
+                    }
+                }
+            // </editor-fold>
+            // <editor-fold desc="Toggle" defaultstate="collapsed">
+            } else if(cmnd.getName().equalsIgnoreCase("b.toggle")) {
+                if(BusinessManager.isOwner(sender.getName())) {
+                    sender.sendMessage(Prefixes.NOMINAL + "Current status of salary pay: " + BusinessManager.getBusiness(sender.getName()).toggleSalary());
+                }
+            // </editor-fold>
+            } else if(cmnd.getName().equalsIgnoreCase("b.salary")) {
+                if(BusinessManager.isOwner(sender.getName()) && args.length>0) {
+                    double newsal = Double.parseDouble(args[0]);
+                    BusinessManager.getBusiness(sender.getName()).setSalary(newsal);
+                    sender.sendMessage(Prefixes.NOMINAL + "Current salary: " + newsal);
+                }
             }
         } else {
             sender.sendMessage(Prefixes.ERROR + ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
