@@ -49,6 +49,16 @@ commands:
     permission: business.demote
     permission-message: "&4You do not have 'business.demote' or the like, please talk to an adminstrator"
     aliases: [b.dem, demote, business.demote]
+  b.toggle:
+    description: Toggles the status of salary
+    permission: business.toggle
+    permission-message: "&4You do not have 'business.toggle' or the like, please talk to an adminstrator"
+    aliases: [b.t, toggle, salary-toggle]
+  b.salary:
+    description: Sets the value of the salary
+    permission: business.salary
+    permission-message: "&4You do not have 'business.salary' or the like, please talk to an adminstrator"
+    aliases: [b.s, salary, setpay]
   hire:
     description: Hires the specified player
     permission: business.hire
@@ -95,7 +105,7 @@ commands:
   bc.help:
     description: Shows the help pages
     aliases: [help.bc, businesscore.help]
-  'update data':
+  update:
       description: Updates the data for the newest version
 permissions:
   business.create:
@@ -120,6 +130,10 @@ permissions:
     default: true
   business.demote:
     default: true
+  business.toggle:
+    default: true
+  business.salary: 
+    default: true
   business.business:
     children:
       business.create: true
@@ -133,6 +147,9 @@ permissions:
       business.fire: true
       business.promote: true
       business.demote: true
+      business.toggle: true
+      business.salary: true
+    default: true
   business.job.open:
     default: true
   business.job.claim:

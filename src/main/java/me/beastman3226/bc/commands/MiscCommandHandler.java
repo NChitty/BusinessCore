@@ -49,13 +49,16 @@ public class MiscCommandHandler implements CommandExecutor {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "/hire <playername>; /fire <playername>");
                 }
             }
-        } else if(cmd.getName().equalsIgnoreCase("data update") && sender instanceof ConsoleCommandSender) {
+        } else if(cmd.getName().equalsIgnoreCase("update") && sender instanceof ConsoleCommandSender) {
             try {
                 Statement s = Database.instance().MySQL.getConnection().createStatement();
                 s.execute("ALTER TABLE" + Table.BUSINESS + "\n ADD Salary BOOLEAN \n\n ALTER TABLE" + Table.BUSINESS + "\n ADD Payment Float \n\n UPDATE " + Table.BUSINESS + " SET Salary=FALSE,Payment=0.0;");
             } catch (SQLException ex) {
-                Logger.getLogger(MiscCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                sender.sendMessage("Failed update for this reason: " + ex.getLocalizedMessage());
+                return false;
             }
+            sender.sendMessage("Update successful.");
+            return true;
         }
         return true;
     }
