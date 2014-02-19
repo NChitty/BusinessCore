@@ -1,5 +1,5 @@
 name: BusinessCore
-version: 1.4-Beta
+version: 1.4.1-Beta
 author: beastman3226
 main: me.beastman3226.bc.BusinessCore
 depend: [Vault]
@@ -18,22 +18,22 @@ commands:
     description: Withdraws money from your business
     permission: business.withdraw
     permission-message: "&4You do not have 'business.withdraw' or the like, please talk to an adminstrator"
-    aliases: [business.withdraw, withdraw, b.w]
+    aliases: [business.withdraw, b.w]
   b.deposit:
     description: Deposits money into the bank
     permission: business.deposit
     permission-message: "&4You do not have 'business.deposit' or the like, please talk to an adminstrator"
-    aliases: [business.deposit, deposit, b.de]
+    aliases: [business.deposit, b.de]
   b.balance:
     description: Shows you your balance
     permission: business.balance
     permission-message: "&4You do not have 'business.balance' or the like, please talk to an adminstrator"
-    aliases: [business.balance, balance, b.b]
+    aliases: [business.balance, b.b]
   b.info:
     description: Shows info on businesses
     permission: business.info
     permission-message: "&4You do not have 'business.info' or the like, please talk to an adminstrator"
-    aliases: [business.info, b.i, info]
+    aliases: [business.info, b.i]
   b.top:
     description: Shows the top businesses
     permission: business.top
@@ -43,22 +43,22 @@ commands:
     description: Promotes an employee to a manager
     permission: business.promote
     permission-message: "&4You do not have 'business.promote' or the like, please talk to an adminstrator"
-    aliases: [b.p, promote, business.promote]
+    aliases: [b.p, business.promote]
   b.demote:
     description: Demotes a manager to an employee
     permission: business.demote
     permission-message: "&4You do not have 'business.demote' or the like, please talk to an adminstrator"
-    aliases: [b.dem, demote, business.demote]
+    aliases: [b.dem, business.demote]
   b.toggle:
     description: Toggles the status of salary
     permission: business.toggle
     permission-message: "&4You do not have 'business.toggle' or the like, please talk to an adminstrator"
-    aliases: [b.tg, toggle, salary-toggle]
+    aliases: [b.tg, salary-toggle]
   b.salary:
     description: Sets the value of the salary
     permission: business.salary
     permission-message: "&4You do not have 'business.salary' or the like, please talk to an adminstrator"
-    aliases: [b.s, salary, setpay]
+    aliases: [b.s]
   hire:
     description: Hires the specified player
     permission: business.hire
@@ -73,22 +73,22 @@ commands:
    description: Opens a job with pay and description
    permission: business.job.open
    permission-message: "&4You do not have 'business.job.open' or the like, please talk to an adminstrator"
-   aliases: [j.o, open, create.ticket]
+   aliases: [j.o, create.ticket]
   j.claim:
    description: Claims the job with specified job id
    permission: business.job.claim
    permission-message: "&4You do not have 'business.job.claim' or the like, please talk to an adminstrator"
-   aliases: [j.cl, claim, claim.ticket]
+   aliases: [j.cl, claim.ticket]
   j.list:
     description: Shows a list of open jobs.
     permission: business.job.list
     permission-message: "&4You do not have 'business.job.list' or the like, please talk to an adminstrator"
-    aliases: [list, j.l, list.tickets]
+    aliases: [j.l, list.tickets]
   j.complete:
     description: Completes a job with specified ID or at random from your open jobs
     permission: business.job.complete
     permission-message: "&4You do not have 'business.job.complete' or the like, please talk to an adminstrator"
-    aliases: [complete, j.co, complete.ticket]
+    aliases: [j.co, complete.ticket]
   j.me:
     description: Shows information pertaining to you and the job portion of BusinessCore
     permission: business.job.me
@@ -98,7 +98,7 @@ commands:
     description: Shows information on the job with specified id
     permission: business.job.id
     permission-message: "&4You do not have 'business.job.id' or the like, please talk to an adminstrator"
-    aliases: [id, j.id.info, id.ticket]
+    aliases: [j.id.info, id.ticket]
   businesscore:
     description: Displays information about the plugin you are running
     aliases: [bc]
