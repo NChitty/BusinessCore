@@ -53,7 +53,7 @@ commands:
     description: Toggles the status of salary
     permission: business.toggle
     permission-message: "&4You do not have 'business.toggle' or the like, please talk to an adminstrator"
-    aliases: [b.t, toggle, salary-toggle]
+    aliases: [b.tg, toggle, salary-toggle]
   b.salary:
     description: Sets the value of the salary
     permission: business.salary
