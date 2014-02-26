@@ -352,7 +352,9 @@ public class BusinessCore extends JavaPlugin {
                 Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
             }
             try {
-                Information.managerYml.load(Information.managerFile);
+                if(Information.managerFile.exists()) {
+                    Information.managerYml.load(Information.managerFile);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvalidConfigurationException ex) {
@@ -408,7 +410,9 @@ public class BusinessCore extends JavaPlugin {
                 Information.businessYml.save(Information.businessFile);
                 Information.employeeYml.save(Information.employeeFile);
                 Information.jobYml.save(Information.jobFile);
+                if(Information.managerFile.exists()) {
                 Information.managerYml.save(Information.managerFile);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
