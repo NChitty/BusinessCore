@@ -158,7 +158,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("j.id").setExecutor(jch);
         getCommand("businesscore").setExecutor(mch);
         getCommand("bc.help").setExecutor(mch);
-        getCommand("update data").setExecutor(mch);
+        getCommand("update").setExecutor(mch);
     }
 
     public boolean setupEconomy() {
