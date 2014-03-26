@@ -351,14 +351,19 @@ public class BusinessCore extends JavaPlugin {
             } catch (InvalidConfigurationException ex) {
                 Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
             }
+            if(Information.managers) {
             try {
-                if(Information.managerFile.exists()) {
+                if(!Information.managerFile.exists()) {
+                    Information.managerFile.createNewFile();
+                    Information.managerYml.load(Information.managerFile);
+                } else {
                     Information.managerYml.load(Information.managerFile);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvalidConfigurationException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+            }
             }
         }
 
