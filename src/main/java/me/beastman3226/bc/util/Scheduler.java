@@ -5,11 +5,14 @@ import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.player.Manager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -77,4 +80,25 @@ public class Scheduler {
             }
         }, Information.getTime().getTicks(Information.getValue()), Information.getTime().getTicks(Information.getValue()));
     }
+
+    public static void runPrefixUpdater() {
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Information.BusinessCore, new Runnable() {
+            public void run() {
+                String prefix;
+                for(Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    if(BusinessManager.isOwner(player.getName())) {
+                        prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
+                        Information.chat.setPlayerPrefix(player, Information.chat.getPlayerPrefix(player) + ChatColor.translateAlternateColorCodes('&', prefix));
+                    } else if (Manager.isManager(player.getName())) {
+                        prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.manager") + Manager.getBusiness(player.getName()).getName() +ChatColor.GRAY+ "]";
+                        Information.chat.setPlayerPrefix(player, Information.chat.getPlayerPrefix(player) + ChatColor.translateAlternateColorCodes('&', prefix));
+                    } else if (EmployeeManager.isEmployee(player.getName())) {
+                        prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.employee") + EmployeeManager.getEmployee(player.getName()).getBusiness().getName() +ChatColor.GRAY+ "]";
+                        Information.chat.setPlayerPrefix(player, Information.chat.getPlayerPrefix(player) + ChatColor.translateAlternateColorCodes('&', prefix));
+                    }
+                }
+            }
+        }, 10, 10);
+    }
+
 }

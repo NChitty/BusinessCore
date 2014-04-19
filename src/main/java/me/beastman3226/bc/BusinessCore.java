@@ -25,6 +25,7 @@ import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,7 +47,8 @@ public class BusinessCore extends JavaPlugin {
     public void onEnable() {
         Information.BusinessCore = this;
         Information.config = getConfig();
-        this.getLogger().log(Level.INFO, "{0}", setupEconomy());
+        this.getLogger().log(Level.INFO, "Loaded Economy: {0}", setupEconomy());
+        this.getLogger().log(Level.INFO, "Loaded Chat: {0}", setupChat());
         Information.initFiles(this);
         FileFunctions.load();
         registerListeners();
@@ -71,6 +73,7 @@ public class BusinessCore extends JavaPlugin {
             } else {
                 Information.managers = false;
             }
+            Information.prefix = getConfig().getBoolean("prefixes.enabled");
             if (Information.database) {
                 Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
                 try {
@@ -109,6 +112,7 @@ public class BusinessCore extends JavaPlugin {
             this.getLogger().severe("Failed to send stats :-(");
         }
         Scheduler.runPayPeriod();
+        Scheduler.runPrefixUpdater();
         getLogger().info("Do /businesscore for information about this plugin");
     }
 
@@ -179,7 +183,13 @@ public class BusinessCore extends JavaPlugin {
         return Information.eco != null;
 
     }
-
+    
+    private boolean setupChat() {
+        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        Information.chat = rsp.getProvider();
+        return Information.chat != null;
+    }
+    
     public static void log(Level level, String message) {
         if (Information.debug) {
             Information.log.log(level, message);
@@ -203,6 +213,9 @@ public class BusinessCore extends JavaPlugin {
         public static boolean debug;
         public static Logger log;
         public static boolean managers;
+        public static boolean prefix;
+        public static Chat chat;
+        
         
         public static void initManagers(Plugin p) {
             if(managers) {

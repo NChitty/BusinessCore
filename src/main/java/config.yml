@@ -10,3 +10,9 @@ database:
   password: pass
 payperiod: 1h
 managers: false
+prefixes:
+    enabled: false
+    colorcodes:
+        owner: '&c'
+        manager: '&e'
+        employee: '&f'

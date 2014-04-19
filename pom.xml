@@ -12,7 +12,7 @@
     <name>BusinessCore</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkitVersion>1.7.2-R0.3-SNAPSHOT</bukkitVersion>
+        <bukkitVersion>LATEST</bukkitVersion>
         <vaultVersion>1.2.30</vaultVersion>
     </properties>
 
