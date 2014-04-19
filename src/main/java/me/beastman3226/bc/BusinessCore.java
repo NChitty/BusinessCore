@@ -186,7 +186,10 @@ public class BusinessCore extends JavaPlugin {
     
     private boolean setupChat() {
         RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        Information.chat = rsp.getProvider();
+        if(rsp == null) {
+            return false;
+        }
+        Information.chat = rsp.getProvider();  
         return Information.chat != null;
     }
     
