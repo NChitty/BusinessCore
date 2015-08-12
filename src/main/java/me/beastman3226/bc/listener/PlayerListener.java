@@ -7,15 +7,19 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.player.Manager;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -26,14 +30,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if(Scheduler.playerMilli.containsKey(e.getPlayer().getName()) && e.getMessage().contains("yes")) {
-            if(Scheduler.playerMilli.get(e.getPlayer().getName()) >= (System.currentTimeMillis() - 10000)) {
+        if (Scheduler.playerMilli.containsKey(e.getPlayer().getName()) && e.getMessage().contains("yes")) {
+            if (Scheduler.playerMilli.get(e.getPlayer().getName()) >= (System.currentTimeMillis() - 10000)) {
                 Business b = BusinessManager.getBusiness(EmployeeManager.pending.get(e.getPlayer().getName()));
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, null);
                 Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer().getName(), b.getID());
                 event.setEmployee(newEmployee);
                 Bukkit.getPluginManager().callEvent(event);
-                if(!event.isCancelled()) {
+                if (!event.isCancelled()) {
                     event.getBusiness().addEmployee(event.getEmployee());
                     EmployeeManager.pending.remove(e.getPlayer().getName());
                     Business.businessList.remove(event.getBusiness());
@@ -52,16 +56,32 @@ public class PlayerListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent e) {
         String command = e.getMessage();
         boolean another = hasPartner(command);
-        if(another) {
+        if (another) {
             PluginCommand cmd = (PluginCommand) (Command) getPartner(command).getDescription().getCommands().get(command);
             Information.BusinessCore.getCommand(command).setExecutor(cmd.getExecutor());
         }
 
     }
 
+    @EventHandler
+    public void onLogin(PlayerJoinEvent e) {
+        Player player = e.getPlayer();
+        String prefix = "";
+        if (BusinessManager.isOwner(player.getName())) {
+            prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
+        } else if (Manager.isManager(player.getName()) && BusinessCore.Information.managers) {
+            prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.manager") + Manager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
+        } else if (EmployeeManager.isEmployee(player.getName())) {
+            prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.employee") + EmployeeManager.getEmployee(player.getName()).getBusiness().getName() + ChatColor.GRAY + "]";
+        }
+        if(!Information.chat.getPlayerPrefix(player).equals(prefix + Information.chat.getPlayerPrefix(player))) {
+            Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix) + Information.chat.getPlayerPrefix(player));
+        }
+    }
+
     private boolean hasPartner(String command) {
-        for(Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
-            if(p.getDescription().getCommands().get(command) != null && p != Information.BusinessCore) {
+        for (Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
+            if (p.getDescription().getCommands().get(command) != null && p != Information.BusinessCore) {
                 return true;
             }
         }
@@ -69,8 +89,8 @@ public class PlayerListener implements Listener {
     }
 
     private Plugin getPartner(String command) {
-        for(Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
-            if(p.getDescription().getCommands().get(command) != null) {
+        for (Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
+            if (p.getDescription().getCommands().get(command) != null) {
                 return p;
             }
         }
