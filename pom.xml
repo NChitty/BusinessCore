@@ -6,7 +6,7 @@
 
     <groupId>me.beastman3226</groupId>
     <artifactId>BusinessCore</artifactId>
-    <version>1.4.3-BETA</version>
+    <version>1.5.0-BETA</version>
     <packaging>jar</packaging>
 
     <name>BusinessCore</name>
@@ -21,8 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
+            <artifactId>bukkit</artifactId>
             <version>${bukkitVersion}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
