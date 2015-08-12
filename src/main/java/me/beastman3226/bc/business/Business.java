@@ -15,7 +15,7 @@ import me.beastman3226.bc.player.Employee;
 
 public class Business {
 
-    private int id;
+    private final int id;
     private String name;
     private String ownerName;
     private double worth;

@@ -3,7 +3,6 @@ package me.beastman3226.bc.listener;
 import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.Data;
 import me.beastman3226.bc.data.EmployeeHandler;
@@ -56,7 +55,7 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onHire(BusinessHiredEmployeeEvent e) {
         for(Object o : e.getBusiness().getEmployeeIDs()) {
-            if(((Integer) o).intValue() == e.getEmployee().getID()) {
+            if(((Integer) o) == e.getEmployee().getID()) {
                 e.setCancelled(true);
             }
         }
@@ -72,7 +71,7 @@ public class BusinessListener implements Listener {
     public void onFire(BusinessFiredEmployeeEvent e) {
         boolean onList = false;
         for(Object o : e.getBusiness().getEmployeeIDs()) {
-            int id = ((Integer) o).intValue();
+            int id = ((Integer) o);
             if(e.getEmployee().getID() == id) {
                 onList = true;
                 break;

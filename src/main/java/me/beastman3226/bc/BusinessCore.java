@@ -112,7 +112,6 @@ public class BusinessCore extends JavaPlugin {
             this.getLogger().severe("Failed to send stats :-(");
         }
         Scheduler.runPayPeriod();
-        Scheduler.runPrefixUpdater();
         getLogger().info("Do /businesscore for information about this plugin");
     }
 
@@ -185,8 +184,14 @@ public class BusinessCore extends JavaPlugin {
     }
     
     private boolean setupChat() {
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        Plugin p = this.getServer().getPluginManager().getPlugin("Vault");
+        if(p == null) {
+            return false;
+        }
+        RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> rsp = null;
+        rsp = getServer().getServicesManager().getRegistration(Chat.class);
         if(rsp == null) {
+            System.out.println("Chat plugin not detected");
             return false;
         }
         Information.chat = rsp.getProvider();  
