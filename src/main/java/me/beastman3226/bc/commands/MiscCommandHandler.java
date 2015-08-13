@@ -2,8 +2,6 @@ package me.beastman3226.bc.commands;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.db.Database;
 import me.beastman3226.bc.db.Table;
@@ -19,7 +17,15 @@ import org.bukkit.command.ConsoleCommandSender;
  * @author beastman3226
  */
 public class MiscCommandHandler implements CommandExecutor {
-
+    private static MiscCommandHandler instance = null;
+    protected MiscCommandHandler(){}
+    public static MiscCommandHandler getInstance() {
+        if(instance == null) {
+            instance = new MiscCommandHandler();
+        }
+        return instance;
+    }
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         if (cmd.getName().equalsIgnoreCase("businesscore")) {
@@ -46,7 +52,7 @@ public class MiscCommandHandler implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "/==========BusinessCore Help==========\\");
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "/b.create <name>; /b.delete");
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "/b.deposit <amount>; /b.withdraw <amount>; /b.balance");
-                    sender.sendMessage(ChatColor.LIGHT_PURPLE + "/hire <playername>; /fire <playername>");
+                    sender.sendMessage(ChatColor.LIGHT_PURPLE + "/b.hire <playername>; /b.fire <playername>");
                 }
             }
         } else if(cmd.getName().equalsIgnoreCase("update") && sender instanceof ConsoleCommandSender) {

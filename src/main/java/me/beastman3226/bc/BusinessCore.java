@@ -135,9 +135,9 @@ public class BusinessCore extends JavaPlugin {
      * Method to avoid clutter inside onEnable for commands.
      */
     public void registerCommands() {
-        BusinessCommandHandler bch = new BusinessCommandHandler();
-        JobCommandHandler jch = new JobCommandHandler();
-        MiscCommandHandler mch = new MiscCommandHandler();
+        BusinessCommandHandler bch = BusinessCommandHandler.getInstance();
+        JobCommandHandler jch = JobCommandHandler.getInstance();
+        MiscCommandHandler mch = MiscCommandHandler.getInstance();
         getCommand("b.create").setExecutor(bch);
         getCommand("b.delete").setExecutor(bch);
         getCommand("b.withdraw").setExecutor(bch);
@@ -151,8 +151,8 @@ public class BusinessCore extends JavaPlugin {
         }
         getCommand("b.toggle").setExecutor(bch);
         getCommand("b.salary").setExecutor(bch);
-        getCommand("hire").setExecutor(bch);
-        getCommand("fire").setExecutor(bch);
+        getCommand("b.hire").setExecutor(bch);
+        getCommand("b.fire").setExecutor(bch);
         getCommand("j.open").setExecutor(jch);
         getCommand("j.claim").setExecutor(jch);
         getCommand("j.list").setExecutor(jch);

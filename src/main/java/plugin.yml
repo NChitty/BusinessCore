@@ -59,12 +59,12 @@ commands:
     permission: business.salary
     permission-message: "&4You do not have 'business.salary' or the like, please talk to an adminstrator"
     aliases: [b.s]
-  hire:
+  b.hire:
     description: Hires the specified player
     permission: business.hire
     permission-message: "&4You do not have 'business.hire' or the like, please talk to an adminstrator"
     aliases: [b.h, h]
-  fire:
+  b.fire:
    description: Fires the specified player.
    permission: business.fire
    permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"

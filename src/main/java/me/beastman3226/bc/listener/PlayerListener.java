@@ -12,15 +12,11 @@ import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -53,17 +49,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent e) {
-        String command = e.getMessage();
-        boolean another = hasPartner(command);
-        if (another) {
-            PluginCommand cmd = (PluginCommand) (Command) getPartner(command).getDescription().getCommands().get(command);
-            Information.BusinessCore.getCommand(command).setExecutor(cmd.getExecutor());
-        }
-
-    }
-
-    @EventHandler
     public void onLogin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         String prefix = "";
@@ -74,26 +59,17 @@ public class PlayerListener implements Listener {
         } else if (EmployeeManager.isEmployee(player.getName())) {
             prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.employee") + EmployeeManager.getEmployee(player.getName()).getBusiness().getName() + ChatColor.GRAY + "]";
         }
-        if(!Information.chat.getPlayerPrefix(player).equals(prefix + Information.chat.getPlayerPrefix(player))) {
+        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+                
+        if(!Information.chat.getPlayerPrefix(player).contains(prefix)) {
             Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix) + Information.chat.getPlayerPrefix(player));
-        }
-    }
-
-    private boolean hasPartner(String command) {
-        for (Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
-            if (p.getDescription().getCommands().get(command) != null && p != Information.BusinessCore) {
-                return true;
+        } else if(Information.chat.getPlayerPrefix(player).contains(prefix)) {
+            int first = Information.chat.getPlayerPrefix(player).indexOf(prefix);
+            int last = Information.chat.getPlayerPrefix(player).lastIndexOf(prefix);
+            if(first != last) {
+                prefix = Information.chat.getPlayerPrefix(player).replace(Information.chat.getPlayerPrefix(player).subSequence(first, last + prefix.length()), prefix);
+                Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix));
             }
         }
-        return false;
-    }
-
-    private Plugin getPartner(String command) {
-        for (Plugin p : Information.BusinessCore.getServer().getPluginManager().getPlugins()) {
-            if (p.getDescription().getCommands().get(command) != null) {
-                return p;
-            }
-        }
-        return null;
     }
 }

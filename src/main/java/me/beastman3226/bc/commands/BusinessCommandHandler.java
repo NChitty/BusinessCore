@@ -28,6 +28,15 @@ import org.bukkit.entity.Player;
  */
 public class BusinessCommandHandler implements CommandExecutor {
 
+   private static BusinessCommandHandler instance = null;
+   protected BusinessCommandHandler() {}
+   public static BusinessCommandHandler getInstance() {
+      if(instance == null) {
+         instance = new BusinessCommandHandler();
+      }
+      return instance;
+   }
+   
     @Override
     public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
         if(Information.eco == null) {
@@ -396,7 +405,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                 }
             // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Hire">
-            } else if(cmnd.getName().equalsIgnoreCase("hire") && args.length > 0) {
+            } else if(cmnd.getName().equalsIgnoreCase("b.hire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || EmployeeManager.isEmployee(sender.getName()))) {
                     String name = args[0];
                     Player player = Bukkit.getPlayer(name);
@@ -416,7 +425,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                 }
             // </editor-fold>
             // <editor-fold defaultstate="collapsed" desc="Fire">
-            } else if(cmnd.getName().equalsIgnoreCase("fire") && args.length > 0) {
+            } else if(cmnd.getName().equalsIgnoreCase("b.fire") && args.length > 0) {
                 if(sender instanceof Player && (BusinessManager.isOwner(sender.getName()) || Manager.isManager(sender.getName()))) {
                     boolean caught = false;
                     int id = 0;

@@ -1,9 +1,7 @@
 package me.beastman3226.bc.commands;
 
 import java.util.ArrayList;
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.EmployeeManager;
@@ -21,7 +19,16 @@ import org.bukkit.entity.Player;
  * @author beastman3226
  */
 public class JobCommandHandler implements CommandExecutor {
-
+    
+   private static JobCommandHandler instance = null;
+   protected JobCommandHandler() {}
+   public static JobCommandHandler getInstance() {
+      if(instance == null) {
+         instance = new JobCommandHandler();
+      }
+      return instance;
+   }
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         if (sender.hasPermission(cmd.getPermission())) {
