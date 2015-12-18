@@ -1,8 +1,11 @@
 package me.beastman3226.bc.job;
 
+import com.evilmidget38.UUIDFetcher;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.errors.OpenJobException;
@@ -74,7 +77,11 @@ public class JobManager {
                 j.finish();
             }
         } else {
-            Bukkit.getPlayer(j.getPlayer()).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
+            try {
+                Bukkit.getPlayer(UUIDFetcher.getUUIDOf(j.getPlayer())).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
+            } catch (Exception ex) {
+                Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         Job.jobList.remove(j);
         return r.transactionSuccess();
@@ -93,7 +100,11 @@ public class JobManager {
             }
             World world = Bukkit.getWorld(Information.jobYml.getString(string + ".world"));
             Location loc = new Location(world, x, y, z);
-            Job j = new Job(Integer.parseInt(string), Information.jobYml.getString(string + ".player"), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
+            String issuer = Bukkit.getPlayer(UUID.fromString(Information.jobYml.getString(string + ".UUID"))).getName();
+            if(issuer == null) {
+                issuer = Bukkit.getOfflinePlayer(UUID.fromString(Information.jobYml.getString(string + ".UUID"))).getName();
+            }
+            Job j = new Job(Integer.parseInt(string), issuer, Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
             Job.jobList.add(j);
             if (Information.debug) {
                 Information.log.log(Level.INFO, "Created job #{0} with description: {1}", new Object[]{j.getID(), j.getDescription()});

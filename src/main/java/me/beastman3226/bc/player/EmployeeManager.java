@@ -2,12 +2,14 @@ package me.beastman3226.bc.player;
 
 import com.evilmidget38.UUIDFetcher;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.errors.OpenJobException;
+import org.bukkit.Bukkit;
 
 /**
  *
@@ -20,7 +22,10 @@ public class EmployeeManager {
     public static void loadEmployees() {
             for(String key : Information.employeeYml.getKeys(false)) {
                     int id = Information.employeeYml.getInt(key + ".id");
-                    String name = key;
+                    String name = Bukkit.getOfflinePlayer(UUID.fromString(Information.employeeYml.getString(key + ".UUID"))).getName();
+                    if(name == null) {
+                        name = Bukkit.getPlayer(UUID.fromString(Information.employeeYml.getString(key + ".UUID"))).getName();
+                    }
                     int bID = Information.employeeYml.getInt(key + ".business");
                     int completed = Information.employeeYml.getInt(key + ".completed");
                     int jID = Information.employeeYml.getInt(key + ".job");
