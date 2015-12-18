@@ -4,7 +4,6 @@ import com.evilmidget38.UUIDFetcher;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
@@ -37,7 +36,7 @@ public class BusinessListener implements Listener {
             try {
                 String ownerName = e.getBusiness().getOwnerName();
                 BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".name", e.getBusiness().getName())
-                        .add(e.getBusiness().getName() + ".ownerUUID", UUIDFetcher.getUUIDOf(ownerName))
+                        .add(e.getBusiness().getName() + ".ownerUUID", "" + UUIDFetcher.getUUIDOf(ownerName).toString())
                         .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
                         .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
                         .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));

@@ -1,8 +1,9 @@
 package me.beastman3226.bc.listener;
 
+import com.evilmidget38.UUIDFetcher;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.data.file.JobFileManager;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
@@ -16,11 +17,15 @@ public class JobListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onCreate(JobCreatedEvent e) {
         if(!e.isCancelled()) {
-                JobFileManager.editConfig(new FileData().add(e.getID() + ".player", e.getName())
+            try {
+                JobFileManager.editConfig(new FileData().add(e.getID() + ".UUID", UUIDFetcher.getUUIDOf(e.getName()))
                         .add(e.getID() + ".description", e.getDescription())
                         .add(e.getID() + ".location", e.getLocation().getBlockX() + "," + e.getLocation().getBlockY() + "," + e.getLocation().getBlockZ())
                         .add(e.getID() + ".world", e.getLocation().getWorld().getName())
                         .add(e.getID() + ".payment", e.getPayment()));
+            } catch (Exception ex) {
+                Logger.getLogger(JobListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         BusinessCore.log(Level.INFO, "Job #" + e.getID() + " has been created.");
     }

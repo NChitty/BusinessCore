@@ -1,11 +1,8 @@
 package me.beastman3226.bc.job;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.errors.OpenJobException;

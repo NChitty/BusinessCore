@@ -24,7 +24,6 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -60,31 +59,58 @@ public class BusinessCore extends JavaPlugin {
             this.saveConfig();
         } else {
             Information.debug = getConfig().getBoolean("debug-message");
-            if(getConfig().getBoolean("managers")) {
+            if (getConfig().getBoolean("managers")) {
                 Information.managers = true;
                 initManagers(this);
             } else {
                 Information.managers = false;
             }
             Information.prefix = getConfig().getBoolean("prefixes.enabled");
-                for(String path : Information.businessYml.getKeys(true)) {
-                    System.out.print(path);
-                    if(path.contains(".ownerName")) {
-                        System.out.print("Matched");
-                        try {
-                            String name = Information.businessYml.getString(path);
-                            System.out.println(name + " got the name");
-                            UUID owner = UUIDFetcher.getUUIDOf(name);
-                            System.out.println("Got UUID of owner " + owner);
-                            Information.businessYml.set(path.replace("ownerName", "ownerUUID"), "" + owner.toString());
-                            Information.businessYml.set(path, null);
-                            Information.businessYml.save(Information.businessFile);
-                        } catch (Exception ex) {
-                            Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                        }
+            for (String path : Information.businessYml.getKeys(true)) {
+                System.out.print(path);
+                if (path.contains(".ownerName")) {
+                    System.out.print("Matched");
+                    try {
+                        String name = Information.businessYml.getString(path);
+                        System.out.println(name + " got the name");
+                        UUID owner = UUIDFetcher.getUUIDOf(name);
+                        System.out.println("Got UUID of owner " + owner);
+                        Information.businessYml.set(path.replace("ownerName", "ownerUUID"), "" + owner.toString());
+                        Information.businessYml.set(path, null);
+                        Information.businessYml.save(Information.businessFile);
+                    } catch (Exception ex) {
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
-            
+            }
+            for (String path : Information.jobYml.getKeys(true)) {
+                if (path.contains(".player")) {
+                    try {
+                        String name = Information.jobYml.getString(path);
+                        UUID employer = UUIDFetcher.getUUIDOf(name);
+                        Information.jobYml.set(path.replace("player", "UUID"), "" + employer.toString());
+                        Information.jobYml.set(path, null);
+                        Information.jobYml.save(Information.jobFile);
+                    } catch (Exception ex) {
+                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+            for (String path : Information.employeeYml.getKeys(false)) {
+                try {
+                    UUID employeeUUID = UUIDFetcher.getUUIDOf(path);
+                    if(employeeUUID == null) {
+                        Information.employeeYml.set(path, null);
+                        Information.employeeYml.save(Information.employeeFile);
+                    } else {
+                        Information.employeeYml.set(path + ".UUID", "" + employeeUUID.toString());
+                    }
+                    
+                } catch (Exception ex) {
+                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             BusinessManager.createBusinesses();
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
@@ -107,7 +133,7 @@ public class BusinessCore extends JavaPlugin {
                     return Job.jobList.size();
                 }
             });
-            
+
             metrics.start();
         } catch (IOException e) {
             this.getLogger().severe("Failed to send stats :-(");
@@ -146,7 +172,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("b.balance").setExecutor(bch);
         getCommand("b.info").setExecutor(bch);
         getCommand("b.top").setExecutor(bch);
-        if(Information.managers) {
+        if (Information.managers) {
             getCommand("b.promote").setExecutor(bch);
             getCommand("b.demote").setExecutor(bch);
         }
@@ -184,22 +210,22 @@ public class BusinessCore extends JavaPlugin {
         return Information.eco != null;
 
     }
-    
+
     private boolean setupChat() {
         Plugin p = this.getServer().getPluginManager().getPlugin("Vault");
-        if(p == null) {
+        if (p == null) {
             return false;
         }
         RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> rsp = null;
         rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if(rsp == null) {
+        if (rsp == null) {
             System.out.println("Chat plugin not detected");
             return false;
         }
-        Information.chat = rsp.getProvider();  
+        Information.chat = rsp.getProvider();
         return Information.chat != null;
     }
-    
+
     public static void log(Level level, String message) {
         if (Information.debug) {
             Information.log.log(level, message);
@@ -224,12 +250,11 @@ public class BusinessCore extends JavaPlugin {
         public static boolean managers;
         public static boolean prefix;
         public static Chat chat;
-        
-        
+
         public static void initManagers(Plugin p) {
-            if(managers) {
+            if (managers) {
                 managerFile = new File(p.getDataFolder(), "manager.yml");
-                if(!managerFile.exists()) {
+                if (!managerFile.exists()) {
                     try {
                         managerFile.createNewFile();
                     } catch (IOException ex) {
@@ -239,12 +264,12 @@ public class BusinessCore extends JavaPlugin {
                 managerYml = YamlConfiguration.loadConfiguration(managerFile);
             }
         }
-        
+
         public static void initFiles(Plugin p) {
             businessFile = new File(p.getDataFolder(), "business.yml");
             jobFile = new File(p.getDataFolder(), "jobs.yml");
             employeeFile = new File(p.getDataFolder(), "employee.yml");
-            
+
             if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
                 businessFile.getParentFile().mkdirs();
                 jobFile.getParentFile().mkdirs();
@@ -373,19 +398,19 @@ public class BusinessCore extends JavaPlugin {
             } catch (InvalidConfigurationException ex) {
                 Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
             }
-            if(Information.managers) {
-            try {
-                if(!Information.managerFile.exists()) {
-                    Information.managerFile.createNewFile();
-                    Information.managerYml.load(Information.managerFile);
-                } else {
-                    Information.managerYml.load(Information.managerFile);
+            if (Information.managers) {
+                try {
+                    if (!Information.managerFile.exists()) {
+                        Information.managerFile.createNewFile();
+                        Information.managerYml.load(Information.managerFile);
+                    } else {
+                        Information.managerYml.load(Information.managerFile);
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidConfigurationException ex) {
+                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvalidConfigurationException ex) {
-                Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
             }
         }
 
@@ -437,8 +462,8 @@ public class BusinessCore extends JavaPlugin {
                 Information.businessYml.save(Information.businessFile);
                 Information.employeeYml.save(Information.employeeFile);
                 Information.jobYml.save(Information.jobFile);
-                if(Information.managerFile.exists()) {
-                Information.managerYml.save(Information.managerFile);
+                if (Information.managerFile.exists()) {
+                    Information.managerYml.save(Information.managerFile);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);

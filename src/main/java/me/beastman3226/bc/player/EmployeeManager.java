@@ -1,11 +1,9 @@
 package me.beastman3226.bc.player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.evilmidget38.UUIDFetcher;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
@@ -61,17 +59,22 @@ public class EmployeeManager {
     }
 
     public static Employee addEmployee(String name, int BID) {
-        Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
-        employee.setBusiness(BID);
-        Employee.employeeList.add(employee);
-            EmployeeFileManager.editConfig(new FileData().add(name + ".name", name)
+        try {
+            Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
+            employee.setBusiness(BID);
+            Employee.employeeList.add(employee);
+            EmployeeFileManager.editConfig(new FileData().add(name + ".UUID", UUIDFetcher.getUUIDOf(name))
                     .add(name + ".id", employee.getID())
                     .add(name + ".business", employee.getBusiness().getID())
                     .add(name + ".completed", 0)
                     .add(name + ".job", -1));
-
-        
-        return employee;
+            
+            
+            return employee;
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public static Employee getEmployee(String name) {
