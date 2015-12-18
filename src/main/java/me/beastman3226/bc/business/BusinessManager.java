@@ -1,15 +1,15 @@
 package me.beastman3226.bc.business;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.evilmidget38.UUIDFetcher;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Config;
 import me.beastman3226.bc.BusinessCore.FileFunctions;
 import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.errors.NoOpenIDException;
@@ -26,49 +26,40 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class BusinessManager {
 
     /**
-     * This creates a business from a pre-existing business in the database.
-     */
-    public static void createBusiness(ResultSet rs) {
-        try {
-            while(rs.next()) {
-                Business b = new Business.Builder(rs.getInt("BusinessID"))
-                        .balance(rs.getDouble("BusinessBalance"))
-                        .name(rs.getString("BusinessName"))
-                        .owner(rs.getString("BusinessOwner"))
-                        .ids(rs.getString("EmployeeIDs").split(","))
-                        .salary(rs.getBoolean("Salary"))
-                        .pay(rs.getDouble("Payment")).build();
-                Business.businessList.add(b);
-                BusinessCore.log(Level.INFO, "Created business " + b.getName() + " from database.");
-            }
-        } catch (SQLException ex) {
-            BusinessCore.log(Level.SEVERE, ex.getMessage());
-            Information.log.severe(ex.getLocalizedMessage());
-        }
-    }
-
-    /**
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
         FileFunctions.reload(Config.BUSINESS);
         FileConfiguration yml = Information.businessYml;
+        int id;
+        String name, owner;
+        boolean salary = false;
+        double pay = 0, balance;
         for(String s : Information.businessYml.getKeys(false)) {
-            if(yml.getList(s + ".employeeIDs") != null) {
-                List<String> list = yml.getStringList(s + ".employeeIDs");
-                Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
-                        .name(s)
-                        .owner(yml.getString(s + ".ownerName"))
-                        .balance(yml.getDouble(s + ".balance"))
+            List<String> list = yml.getStringList(s + ".employeeIDs");
+            id = yml.getInt(s + ".id");
+            name = s;
+            owner = Bukkit.getOfflinePlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
+            if(owner == null) owner = Bukkit.getPlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
+            balance = yml.getDouble(s + ".balance");
+            if(!yml.contains(s + ".pay") || !yml.contains(s + ".salary")) {
+                pay = yml.getDouble(s + ".pay");
+                salary = yml.getBoolean(s + ".salary");
+            }
+            if(!list.isEmpty()) {
+                Business b = createBusiness(new Business.Builder(id)
+                        .name(name)
+                        .owner(owner)
+                        .balance(balance)
                         .ids(list.toArray(new String[]{}))
-                        .salary(yml.getBoolean(s + ".salary"))
-                        .pay(yml.getDouble(s + ".pay")));
+                        .salary(salary)
+                        .pay(pay));
                BusinessCore.log(Level.INFO, "Loaded business " + b.getName() + " from file");
             } else {
-                Business b = createBusiness(new Business.Builder(yml.getInt(s + ".id"))
+                Business b = createBusiness(new Business.Builder(id)
                         .name(s)
-                        .owner(yml.getString(s + ".ownerName"))
-                        .balance(yml.getDouble(s + ".balance")));
+                        .owner(owner)
+                        .balance(balance));
                 if(Information.debug) {
                     Information.BusinessCore.getLogger().log(Level.INFO, "Loaded business {0} with owner as {1}!", new Object[]{b.getName(), b.getOwnerName()});
                 }
@@ -168,14 +159,16 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void deleteBusiness(Business business) {
-        Business.businessList.remove(business);
-        if(Information.database) {
-            BusinessHandler.remove("BusinessID", business.getID());
-        } else {
+        try {
+            Business.businessList.remove(business);
+            
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
+            
+            BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
+            Bukkit.getPlayer(UUIDFetcher.getUUIDOf(business.getOwnerName())).sendMessage(Prefixes.ERROR + "Your business has been deleted");
+        } catch (Exception ex) {
+            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
-        Bukkit.getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
     }
 
     /**

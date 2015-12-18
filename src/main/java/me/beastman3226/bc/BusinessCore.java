@@ -1,12 +1,12 @@
 package me.beastman3226.bc;
 
+import com.evilmidget38.UUIDFetcher;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static me.beastman3226.bc.BusinessCore.Information.initManagers;
@@ -15,8 +15,6 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
 import me.beastman3226.bc.commands.MiscCommandHandler;
-import me.beastman3226.bc.db.Database;
-import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
@@ -26,6 +24,7 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.chat.Chat;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,19 +53,13 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        if (getConfig().getBoolean("firstrun") || !getConfig().contains("database.enabled")) {
+        if (getConfig().getBoolean("firstrun")) {
             saveDefaultConfig();
             this.reloadConfig();
             getConfig().set("firstrun", false);
             this.saveConfig();
         } else {
             Information.debug = getConfig().getBoolean("debug-message");
-            if (getConfig().getBoolean("database.enabled")) {
-                Database.instance();
-                Information.database = true;
-            } else {
-                Information.database = false;
-            }
             if(getConfig().getBoolean("managers")) {
                 Information.managers = true;
                 initManagers(this);
@@ -74,17 +67,25 @@ public class BusinessCore extends JavaPlugin {
                 Information.managers = false;
             }
             Information.prefix = getConfig().getBoolean("prefixes.enabled");
-            if (Information.database) {
-                Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
-                try {
-                    Statement s = c.createStatement();
-                    BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
-                } catch (SQLException ex) {
-                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
+                for(String path : Information.businessYml.getKeys(true)) {
+                    System.out.print(path);
+                    if(path.contains(".ownerName")) {
+                        System.out.print("Matched");
+                        try {
+                            String name = Information.businessYml.getString(path);
+                            System.out.println(name + " got the name");
+                            UUID owner = UUIDFetcher.getUUIDOf(name);
+                            System.out.println("Got UUID of owner " + owner);
+                            Information.businessYml.set(path.replace("ownerName", "ownerUUID"), "" + owner.toString());
+                            Information.businessYml.set(path, null);
+                            Information.businessYml.save(Information.businessFile);
+                        } catch (Exception ex) {
+                            Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                        }
+                    }
                 }
-            } else {
-                BusinessManager.createBusinesses();
-            }
+            
+            BusinessManager.createBusinesses();
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
         }
@@ -153,6 +154,7 @@ public class BusinessCore extends JavaPlugin {
         getCommand("b.salary").setExecutor(bch);
         getCommand("b.hire").setExecutor(bch);
         getCommand("b.fire").setExecutor(bch);
+        getCommand("b.employee").setExecutor(bch);
         getCommand("j.open").setExecutor(jch);
         getCommand("j.claim").setExecutor(jch);
         getCommand("j.list").setExecutor(jch);
@@ -214,7 +216,6 @@ public class BusinessCore extends JavaPlugin {
         private static File businessFile, jobFile, employeeFile, managerFile;
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml, managerYml;
-        public static boolean database;
         public static BusinessCore BusinessCore;
         public static Connection connection;
         public static net.milkbowl.vault.economy.Economy eco;

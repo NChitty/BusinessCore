@@ -36,7 +36,7 @@ public class Scheduler {
             public void run() {
                 BusinessCore.log(Level.INFO, "Started paying operation.");
                 for (Business b : Business.businessList) {
-                    Object[] employees = b.getEmployeeIDs();
+                    int[] employees = b.getEmployeeIDs();
                     if(b.isSalary()) {
                         for(Object id : employees) {
                             Employee e = EmployeeManager.getEmployee((Integer) id);

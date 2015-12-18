@@ -516,6 +516,13 @@ public class BusinessCommandHandler implements CommandExecutor {
                     BusinessManager.getBusiness(sender.getName()).setSalary(newsal);
                     sender.sendMessage(Prefixes.NOMINAL + "Current salary: " + newsal);
                 }
+            } else if (cmnd.getName().equalsIgnoreCase("b.employee")) {
+                if(args.length == 0) {
+                    sender.sendMessage("/============Employees in Business============\\");
+                    for(int id : BusinessManager.getBusiness(sender.getName()).getEmployeeIDs()) {
+                        sender.sendMessage(ChatColor.AQUA + "[" + id + "]: " + EmployeeManager.getEmployee(id).getName());
+                    }
+                }
             }
         } else {
             sender.sendMessage(Prefixes.ERROR + ChatColor.translateAlternateColorCodes('&', cmnd.getPermissionMessage()));
@@ -524,10 +531,10 @@ public class BusinessCommandHandler implements CommandExecutor {
         return true;
     }
 
-    private String asString(Object[] a) {
+    private String asString(int[] a) {
         String string = "";
         int i = 0;
-        for(Object j : a) {
+        for(int j : a) {
             if(i == 0) {
                 string = j + "";
                 i++;

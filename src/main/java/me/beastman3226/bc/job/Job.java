@@ -1,17 +1,12 @@
 package me.beastman3226.bc.job;
 
 import java.util.HashSet;
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
-import me.beastman3226.bc.data.Data;
-import me.beastman3226.bc.data.DataHandler;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.data.file.JobFileManager;
-import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
@@ -31,6 +26,7 @@ public class Job {
 
     /**
      * From command
+     *
      * @param id The id
      * @param description the description of the job
      * @param loc location that the job was started
@@ -46,6 +42,7 @@ public class Job {
 
     /**
      * From file/database
+     *
      * @param id The id
      * @param description the description of the job
      * @param loc location that the job was started
@@ -59,21 +56,12 @@ public class Job {
         this.loc = loc;
         this.pay = pay;
         this.employeeid = e;
-        if(Information.database) {
-                DataHandler.add(Table.JOB, Data.JOB.add("JobID", id)
-                                                    .add("PlayerName", playername)
-                                                    .add("JobDescription", description)
-                                                    .add("JobLocation", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
-                                                    .add("World", loc.getWorld().getName())
-                                                    .add("JobPayment",pay));
-       } else {
-                JobFileManager.editConfig(new FileData().add(id + ".player", playername)
-                        .add(id + ".description", description)
-                        .add(id + ".location", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
-                        .add(id + ".world", loc.getWorld().getName())
-                        .add(id + ".payment", pay)
-                        .add(id + ".employee", e));
-            }
+        JobFileManager.editConfig(new FileData().add(id + ".player", playername)
+                .add(id + ".description", description)
+                .add(id + ".location", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
+                .add(id + ".world", loc.getWorld().getName())
+                .add(id + ".payment", pay)
+                .add(id + ".employee", e));
     }
 
     public int getID() {
@@ -97,7 +85,7 @@ public class Job {
     }
 
     public void claim(Employee e) {
-        if(this.employeeid == 0 && !claimed) {
+        if (this.employeeid == 0 && !claimed) {
             this.employeeid = e.getID();
             claimed = true;
         }
@@ -109,11 +97,7 @@ public class Job {
         Information.eco.withdrawPlayer(player, pay);
         Business b = EmployeeManager.getEmployee(employee).getBusiness();
         b.deposit(pay);
-        if(Information.database) {
-            DataHandler.remove(Table.JOB, "JobID", this.getID());
-        } else {
-            JobFileManager.editConfig(new FileData().add("id", null));
-        }
+        JobFileManager.editConfig(new FileData().add("id", null));
     }
 
     public String getPlayer() {

@@ -69,6 +69,11 @@ commands:
    permission: business.fire
    permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
    aliases: [b.f, f]
+  b.employee:
+    description: Shows list of all employees
+    permission: business.employee
+    permission-message: "&4You do not have 'business.fire' or the like, please talk to an adminstrator"
+    aliases: [b.e, employees, employee.list]
   j.open:
    description: Opens a job with pay and description
    permission: business.job.open
@@ -134,6 +139,8 @@ permissions:
     default: true
   business.salary: 
     default: true
+  business.employee:
+    default: true
   business.business:
     children:
       business.create: true
@@ -149,6 +156,7 @@ permissions:
       business.demote: true
       business.toggle: true
       business.salary: true
+      business.employee: true
     default: true
   business.job.open:
     default: true
