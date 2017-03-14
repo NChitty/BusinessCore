@@ -12,7 +12,6 @@ import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.BusinessHandler;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
@@ -139,25 +138,14 @@ public class BusinessManager {
     /**
      * Finds an open business ID for a newly created business
      * @return The open id
-     * @throws NoOpenIDException
      */
-    public static int openID() throws NoOpenIDException {
+    public static int openID() {
         int id = 1000;
         Random r = new Random();
         id = (r.nextInt(1000) + 1000);
         for(Business b : Business.businessList) {
             if(b.getID() == id) {
-                id = (r.nextInt(5000) + 5000);
-                for(Business b1 : Business.businessList) {
-                    if(b1.getID() == id) {
-                        id = (r.nextInt(10000) + 10000);
-                        for(Business b2 : Business.businessList) {
-                            if(b2.getID() == id) {
-                                throw new NoOpenIDException(id);
-                            }
-                        }
-                    }
-                }
+                return openID();
             }
         }
         return id;

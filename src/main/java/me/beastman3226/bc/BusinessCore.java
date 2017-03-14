@@ -347,44 +347,20 @@ public class BusinessCore extends JavaPlugin {
         public static void load() {
             try {
                 Information.businessYml.load(Information.businessFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            try {
                 Information.employeeYml.load(Information.employeeFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            try {
                 Information.jobYml.load(Information.jobFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            if(Information.managers) {
-            try {
-                if(!Information.managerFile.exists()) {
-                    Information.managerFile.createNewFile();
-                    Information.managerYml.load(Information.managerFile);
-                } else {
-                    Information.managerYml.load(Information.managerFile);
+                if (Information.managers) {
+                    if (!Information.managerFile.exists()) {
+                        Information.managerFile.createNewFile();
+                        Information.managerYml.load(Information.managerFile);
+                    } else {
+                        Information.managerYml.load(Information.managerFile);
+                    }
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InvalidConfigurationException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-            }
             }
         }
 
@@ -448,7 +424,7 @@ public class BusinessCore extends JavaPlugin {
     /**
      * Simple class for finding which config is being referred to.
      */
-    public static enum Config {
+    public enum Config {
 
         BUSINESS, EMPLOYEE, JOB, MANAGER;
     }

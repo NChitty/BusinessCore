@@ -32,7 +32,6 @@ public class Scheduler {
 
     public static void runPayPeriod() {
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Information.BusinessCore, new Runnable() {
-            @Override
             public void run() {
                 BusinessCore.log(Level.INFO, "Started paying operation.");
                 for (Business b : Business.businessList) {

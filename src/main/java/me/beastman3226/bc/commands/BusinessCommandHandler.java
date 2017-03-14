@@ -1,12 +1,9 @@
 package me.beastman3226.bc.commands;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
-import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessPostCreatedEvent;
@@ -48,12 +45,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                 if(sender instanceof Player && !BusinessManager.isOwner(sender.getName())) {
                     BusinessPreCreatedEvent event = new BusinessPreCreatedEvent(sender, args);
                     Bukkit.getPluginManager().callEvent(event);
-                    Business b = null;
-                    try {
-                        b = BusinessManager.createBusiness(new Business.Builder(BusinessManager.openID()).name(event.getName()).owner(event.getSender().getName()));
-                    } catch (NoOpenIDException ex) {
-                        Logger.getLogger(BusinessCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    Business b = BusinessManager.createBusiness(new Business.Builder(BusinessManager.openID()).name(event.getName()).owner(event.getSender().getName()));
                     BusinessPostCreatedEvent event1 = new BusinessPostCreatedEvent(b);
                     Bukkit.getPluginManager().callEvent(event1);
                     if(!event1.isCancelled()) {
