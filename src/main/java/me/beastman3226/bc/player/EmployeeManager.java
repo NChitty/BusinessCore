@@ -1,18 +1,15 @@
 package me.beastman3226.bc.player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.evilmidget38.UUIDFetcher;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.data.Data;
-import me.beastman3226.bc.data.EmployeeHandler;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.OpenJobException;
+import org.bukkit.Bukkit;
 
 /**
  *
@@ -23,30 +20,12 @@ public class EmployeeManager {
     public static HashMap<String, Integer> pending = new HashMap<String, Integer>(50);
 
     public static void loadEmployees() {
-        if(Information.database) {
-            try {
-                ResultSet rs = BusinessCore.Information.connection.createStatement().executeQuery("SELECT * FROM " + Table.EMPLOYEE);
-                while(rs.next()) {
-                    String name = rs.getString("EmployeeName");
-                    int id = rs.getInt("EmployeeID");
-                    int bID = rs.getInt("BusinessID");
-                    Employee e = null;
-                    try {
-                        e = new Employee(name, id).setBusiness(bID).setCompletedJobs(rs.getInt("CompletedJobs")).startJob(rs.getInt("JobID"));
-                    } catch (OpenJobException ex) {
-                        continue;
-                    }
-                    if(e != null) {
-                        Employee.employeeList.add(e);
-                    }
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(EmployeeManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
             for(String key : Information.employeeYml.getKeys(false)) {
                     int id = Information.employeeYml.getInt(key + ".id");
-                    String name = key;
+                    String name = Bukkit.getOfflinePlayer(UUID.fromString(Information.employeeYml.getString(key + ".UUID"))).getName();
+                    if(name == null) {
+                        name = Bukkit.getPlayer(UUID.fromString(Information.employeeYml.getString(key + ".UUID"))).getName();
+                    }
                     int bID = Information.employeeYml.getInt(key + ".business");
                     int completed = Information.employeeYml.getInt(key + ".completed");
                     int jID = Information.employeeYml.getInt(key + ".job");
@@ -64,7 +43,6 @@ public class EmployeeManager {
                     Employee e = new Employee(name, id).setBusiness(bID).setCompletedJobs(completed).startJob(jID);
                     Employee.employeeList.add(e);
                 } catch (OpenJobException ex) {
-                   continue;
                 } catch (NullPointerException npe) {
                     if(Information.debug) {
                         Logger log = Information.log;
@@ -81,29 +59,27 @@ public class EmployeeManager {
                         log.log(Level.SEVERE, "Completed: {0}", completed);
                         log.log(Level.SEVERE, "Current Job: {0}", jID);
                 }
-            }
+            
         }
     }
 
     public static Employee addEmployee(String name, int BID) {
-        Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
-        employee.setBusiness(BID);
-        Employee.employeeList.add(employee);
-        if(Information.database) {
-            EmployeeHandler.add(Data.EMPLOYEE.add("EmployeeID", employee.getID())
-                                             .add("EmployeeName", name)
-                                             .add("BusinessID", employee.getBusiness().getID())
-                                             .add("CompletedJobs", employee.getCompletedJobs())
-                                             .add("JobID", employee.getCurrentJob()));
-        } else {
-            EmployeeFileManager.editConfig(new FileData().add(name + ".name", name)
+        try {
+            Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
+            employee.setBusiness(BID);
+            Employee.employeeList.add(employee);
+            EmployeeFileManager.editConfig(new FileData().add(name + ".UUID", UUIDFetcher.getUUIDOf(name))
                     .add(name + ".id", employee.getID())
                     .add(name + ".business", employee.getBusiness().getID())
                     .add(name + ".completed", 0)
                     .add(name + ".job", -1));
-
+            
+            
+            return employee;
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return employee;
+        return null;
     }
 
     public static Employee getEmployee(String name) {

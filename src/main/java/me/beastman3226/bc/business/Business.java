@@ -1,15 +1,9 @@
 package me.beastman3226.bc.business;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.db.Database;
-import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.player.Employee;
 
@@ -53,8 +47,14 @@ public class Business {
         return this.worth;
     }
 
-    public Object[] getEmployeeIDs() {
-        return this.employeeIDs.toArray();
+    public int[] getEmployeeIDs() {
+        int[] toReturn = new int[this.employeeIDs.size()];
+        int i = 0;
+        for(Integer id : this.employeeIDs) {
+            toReturn[i] = id.intValue();
+            i++;
+        }
+        return toReturn;
     }
 
     public Business setName(String name) {
@@ -134,17 +134,9 @@ public class Business {
             return returnThis;
         }
     public boolean toggleSalary() {
-        if(Information.database) {
-            Connection c = Database.instance().MySQL.getConnection();
-            try {
-                Statement s = c.createStatement();
-                s.execute("UPDATE " + Table.BUSINESS + "\n SET Salary='" + !this.salary + "' \n" + "WHERE BusinessID='" + this.id + "';");
-            } catch (SQLException ex) {
-                Logger.getLogger(Business.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            Information.businessYml.set(this.name + ".salary", !this.salary);
-        }
+        
+        Information.businessYml.set(this.name + ".salary", !this.salary);
+        
         return (this.salary = !salary);
     }
     
@@ -158,17 +150,8 @@ public class Business {
     
     public void setSalary(double salary) {
         this.pay = salary;
-        if(Information.database) {
-            Connection c = Database.instance().MySQL.getConnection();
-            try {
-                Statement s = c.createStatement();
-                s.execute("UPDATE " + Table.BUSINESS + "\n SET Payment='" + this.pay + "' \n" + "WHERE BusinessID='" + this.id + "';");
-            } catch (SQLException ex) {
-                Logger.getLogger(Business.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            Information.businessYml.set(this.name + ".payment", this.pay);
-        }
+        Information.businessYml.set(this.name + ".payment", this.pay);
+        
     }
     
     public static class Builder {
@@ -214,7 +197,12 @@ public class Business {
             name = anme;
             return this;
         }
-
+        
+        /**
+         * 
+         * @param owner Name of owner
+         * @return 
+         */
         public Builder owner(String owner) {
             this.ownerName = owner;
             return this;

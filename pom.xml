@@ -6,7 +6,7 @@
 
     <groupId>me.beastman3226</groupId>
     <artifactId>BusinessCore</artifactId>
-    <version>1.5.0-BETA</version>
+    <version>1.6.0-BETA</version>
     <packaging>jar</packaging>
 
     <name>BusinessCore</name>

@@ -2,6 +2,7 @@ package me.beastman3226.bc.commands;
 
 import java.util.ArrayList;
 import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.EmployeeManager;
@@ -55,7 +56,7 @@ public class JobCommandHandler implements CommandExecutor {
                     return false;
                 }
             } else if (cmd.getName().equalsIgnoreCase("j.claim") && args.length > 0) {
-                if (sender instanceof Player && EmployeeManager.isEmployee(sender.getName())) {
+                if (sender instanceof Player && (EmployeeManager.isEmployee(sender.getName()) || BusinessManager.isOwner(sender.getName()))) {
                     int id = 0;
                     try {
                         id = Integer.parseInt(args[0]);
@@ -63,9 +64,11 @@ public class JobCommandHandler implements CommandExecutor {
                         sender.sendMessage(Prefixes.ERROR + "Your first argument must be a number.");
                         return false;
                     }
-                    if (JobManager.isIssuer(sender.getName()) || JobManager.doesBelongToBusiness(EmployeeManager.getEmployee(sender.getName()), JobManager.getJob(id))) {
-                        sender.sendMessage(Prefixes.ERROR + "You cannot claim job from your own business!");
-                        return false;
+                    if (JobManager.isIssuer(sender.getName()) 
+                        || JobManager.doesBelongToBusiness(EmployeeManager.getEmployee(sender.getName()), JobManager.getJob(id))
+                        || JobManager.doesBelongToBusiness(BusinessManager.getBusiness(sender.getName()), JobManager.getJob(id))) {
+                            sender.sendMessage(Prefixes.ERROR + "You cannot claim job from your own business!");
+                            return false;
                     }
                     if (JobManager.claimJob(EmployeeManager.getEmployee(sender.getName()), JobManager.getJob(id))) {
                         sender.sendMessage(Prefixes.NOMINAL + "Successfully claimed job " + id + " with description: " + JobManager.getJob(id).getDescription());
