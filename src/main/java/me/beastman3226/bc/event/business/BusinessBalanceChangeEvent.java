@@ -20,11 +20,6 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
         this.change = change;
     }
 
-    public BusinessBalanceChangeEvent(int id, double change) {
-        super(id);
-        this.change = change;
-    }
-
     /**
      *
      * @return Returns a double positive or negative

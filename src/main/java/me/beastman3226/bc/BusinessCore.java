@@ -3,9 +3,6 @@ package me.beastman3226.bc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,8 +12,6 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
 import me.beastman3226.bc.commands.MiscCommandHandler;
-import me.beastman3226.bc.db.Database;
-import me.beastman3226.bc.db.Table;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
@@ -41,8 +36,6 @@ import org.mcstats.Metrics.Graph;
  */
 public class BusinessCore extends JavaPlugin {
 
-    HashMap<String, String> hm = new HashMap<String, String>();
-
     @Override
     public void onEnable() {
         Information.BusinessCore = this;
@@ -54,19 +47,13 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         Information.log = this.getLogger();
-        if (getConfig().getBoolean("firstrun") || !getConfig().contains("database.enabled")) {
+        if (getConfig().getBoolean("firstrun")) {
             saveDefaultConfig();
             this.reloadConfig();
             getConfig().set("firstrun", false);
             this.saveConfig();
         } else {
             Information.debug = getConfig().getBoolean("debug-message");
-            if (getConfig().getBoolean("database.enabled")) {
-                Database.instance();
-                Information.database = true;
-            } else {
-                Information.database = false;
-            }
             if(getConfig().getBoolean("managers")) {
                 Information.managers = true;
                 initManagers(this);
@@ -74,17 +61,8 @@ public class BusinessCore extends JavaPlugin {
                 Information.managers = false;
             }
             Information.prefix = getConfig().getBoolean("prefixes.enabled");
-            if (Information.database) {
-                Connection c = (Database.instance().MySQL.checkConnection() ? Database.instance().MySQL.getConnection() : Database.instance().MySQL.openConnection());
-                try {
-                    Statement s = c.createStatement();
-                    BusinessManager.createBusiness(s.executeQuery("SELECT * FROM " + Table.BUSINESS));
-                } catch (SQLException ex) {
-                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
+
                 BusinessManager.createBusinesses();
-            }
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
         }
@@ -214,9 +192,7 @@ public class BusinessCore extends JavaPlugin {
         private static File businessFile, jobFile, employeeFile, managerFile;
         public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml, managerYml;
-        public static boolean database;
         public static BusinessCore BusinessCore;
-        public static Connection connection;
         public static net.milkbowl.vault.economy.Economy eco;
         public static boolean debug;
         public static Logger log;
