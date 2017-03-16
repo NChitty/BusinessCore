@@ -41,7 +41,7 @@ public class BusinessManager {
             owner = Bukkit.getOfflinePlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
             if(owner == null) owner = Bukkit.getPlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
             balance = yml.getDouble(s + ".balance");
-            if(!yml.contains(s + ".pay") || !yml.contains(s + ".salary")) {
+            if(yml.contains(s + ".pay") || yml.contains(s + ".salary")) {
                 pay = yml.getDouble(s + ".pay");
                 salary = yml.getBoolean(s + ".salary");
             }

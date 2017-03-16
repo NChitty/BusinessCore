@@ -21,6 +21,7 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.chat.Chat;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,7 +40,7 @@ public class BusinessCore extends JavaPlugin {
     @Override
     public void onEnable() {
         Information.BusinessCore = this;
-        Information.config = getConfig();
+        Information.config = this.getConfig();
         this.getLogger().log(Level.INFO, "Loaded Economy: {0}", setupEconomy());
         this.getLogger().log(Level.INFO, "Loaded Chat: {0}", setupChat());
         Information.initFiles(this);
@@ -62,7 +63,7 @@ public class BusinessCore extends JavaPlugin {
             }
             Information.prefix = getConfig().getBoolean("prefixes.enabled");
 
-                BusinessManager.createBusinesses();
+            BusinessManager.createBusinesses();
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
         }
