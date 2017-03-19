@@ -3,7 +3,6 @@ package me.beastman3226.bc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static me.beastman3226.bc.BusinessCore.Information.initManagers;
@@ -21,7 +20,6 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import me.beastman3226.bc.util.Time;
 import net.milkbowl.vault.chat.Chat;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -104,7 +102,7 @@ public class BusinessCore extends JavaPlugin {
     /**
      * A method to condense the clutter inside the onEnable method.
      */
-    public void registerListeners() {
+    private void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BusinessListener(), this);
         getServer().getPluginManager().registerEvents(new JobListener(), this);
@@ -113,7 +111,7 @@ public class BusinessCore extends JavaPlugin {
     /**
      * Method to avoid clutter inside onEnable for commands.
      */
-    public void registerCommands() {
+    private void registerCommands() {
         BusinessCommandHandler bch = BusinessCommandHandler.getInstance();
         JobCommandHandler jch = JobCommandHandler.getInstance();
         MiscCommandHandler mch = MiscCommandHandler.getInstance();
@@ -148,11 +146,10 @@ public class BusinessCore extends JavaPlugin {
         if (p == null) {
             return false;
         }
-        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = null;
-        rsp = (RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (rsp == null) {
             System.out.println("Economy plugin not detected");
-            rsp = (RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+            rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         }
         if (rsp == null) {
             return false;
@@ -167,8 +164,7 @@ public class BusinessCore extends JavaPlugin {
         if(p == null) {
             return false;
         }
-        RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> rsp = null;
-        rsp = getServer().getServicesManager().getRegistration(Chat.class);
+        RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
         if(rsp == null) {
             System.out.println("Chat plugin not detected");
             return false;
@@ -202,7 +198,7 @@ public class BusinessCore extends JavaPlugin {
         public static Chat chat;
         
         
-        public static void initManagers(Plugin p) {
+        static void initManagers(Plugin p) {
             if(managers) {
                 managerFile = new File(p.getDataFolder(), "manager.yml");
                 if(!managerFile.exists()) {
@@ -216,7 +212,7 @@ public class BusinessCore extends JavaPlugin {
             }
         }
         
-        public static void initFiles(Plugin p) {
+        private static void initFiles(Plugin p) {
             businessFile = new File(p.getDataFolder(), "business.yml");
             jobFile = new File(p.getDataFolder(), "jobs.yml");
             employeeFile = new File(p.getDataFolder(), "employee.yml");
@@ -321,7 +317,7 @@ public class BusinessCore extends JavaPlugin {
          * This is a method for loading all the files at startup
          *
          */
-        public static void load() {
+        static void load() {
             try {
                 Information.businessYml.load(Information.businessFile);
                 Information.employeeYml.load(Information.employeeFile);
@@ -389,8 +385,8 @@ public class BusinessCore extends JavaPlugin {
                 Information.businessYml.save(Information.businessFile);
                 Information.employeeYml.save(Information.employeeFile);
                 Information.jobYml.save(Information.jobFile);
-                if(Information.managerFile.exists()) {
-                Information.managerYml.save(Information.managerFile);
+                if(Information.managerFile != null) {
+                    if(Information.managerFile.exists()) Information.managerYml.save(Information.managerFile);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
@@ -403,6 +399,6 @@ public class BusinessCore extends JavaPlugin {
      */
     public enum Config {
 
-        BUSINESS, EMPLOYEE, JOB, MANAGER;
+        BUSINESS, EMPLOYEE, JOB, MANAGER
     }
 }
