@@ -4,14 +4,14 @@ import com.evilmidget38.UUIDFetcher;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
-import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
-import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
-import me.beastman3226.bc.event.business.BusinessPostCreatedEvent;
+import me.beastman3226.bc.event.business.*;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.util.Prefixes;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,6 +28,23 @@ public class BusinessListener implements Listener {
             BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
         }
         BusinessCore.log(Level.INFO, e.getBusiness() + "'s balance has changed to " + e.getFinalAmount());
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onDeleted(BusinessDeletedEvent e) {
+        if(!e.isCancelled()) {
+            Business business = e.getBusiness();
+            Business.businessList.remove(business);
+
+            BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
+
+            BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
+            try {
+                Bukkit.getPlayer(UUIDFetcher.getUUIDOf(business.getOwnerName())).sendMessage(Prefixes.ERROR + "Your business has been deleted");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

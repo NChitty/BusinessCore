@@ -12,6 +12,7 @@ import me.beastman3226.bc.BusinessCore.FileFunctions;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.event.business.BusinessDeletedEvent;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
@@ -147,16 +148,8 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void deleteBusiness(Business business) {
-        try {
-            Business.businessList.remove(business);
-            
-            BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
-            
-            BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
-            Bukkit.getPlayer(UUIDFetcher.getUUIDOf(business.getOwnerName())).sendMessage(Prefixes.ERROR + "Your business has been deleted");
-        } catch (Exception ex) {
-            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        BusinessDeletedEvent event = new BusinessDeletedEvent(business);
+        Bukkit.getServer().getPluginManager().callEvent(event);
     }
 
     /**

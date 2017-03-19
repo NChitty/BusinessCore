@@ -315,7 +315,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                             ChatColor.GREEN + "  Owner:" + b.getOwnerName(),
                             ChatColor.GREEN + "  ID: " + b.getID(),
                             ChatColor.GREEN + "  Balance: " + b.getBalance(),
-                            ChatColor.GREEN + "  Employees: " + b.getEmployeeIDs() == null || b.getEmployeeIDs().length == 0 ? "N/A" : this.asString(b.getEmployeeIDs())};
+                            ChatColor.GREEN + "  Employees: " + (b.getEmployeeIDs() == null || b.getEmployeeIDs().length == 0 ? "N/A" : this.asString(b.getEmployeeIDs()))};
                     sender.sendMessage(info);
                 } else if (!(sender instanceof Player)) {
                     String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
@@ -335,27 +335,20 @@ public class BusinessCommandHandler implements CommandExecutor {
                             ChatColor.GREEN + "  2) " + ChatColor.WHITE + BusinessManager.getIndex(2),
                             ChatColor.GREEN + "  3) " + ChatColor.WHITE + BusinessManager.getIndex(3),
                             ChatColor.GREEN + "  4) " + ChatColor.WHITE + BusinessManager.getIndex(4),
-                            ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(5)};
+                            ChatColor.GREEN + "  5) " + ChatColor.WHITE + BusinessManager.getIndex(5),
+                            ChatColor.GREEN + "Type b.top [page number] for more results"};
                     sender.sendMessage(info);
                 } else {
                     int index = Integer.parseInt(args[0]);
-                    if (index == 2) {
-                        String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
-                                ChatColor.GREEN + "  6) " + ChatColor.WHITE + BusinessManager.getIndex(6),
-                                ChatColor.GREEN + "  7) " + ChatColor.WHITE + BusinessManager.getIndex(7),
-                                ChatColor.GREEN + "  8) " + ChatColor.WHITE + BusinessManager.getIndex(8),
-                                ChatColor.GREEN + "  9) " + ChatColor.WHITE + BusinessManager.getIndex(9),
-                                ChatColor.GREEN + "  10) " + ChatColor.WHITE + BusinessManager.getIndex(10)};
-                        sender.sendMessage(info);
-                    } else {
                         String[] info = new String[]{ChatColor.DARK_GREEN + "|=========Top Businesses==========|",
                                 ChatColor.GREEN + "  " + (((index * 5) - 5) + 1) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 1),
                                 ChatColor.GREEN + "  " + (((index * 5) - 5) + 2) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 2),
                                 ChatColor.GREEN + "  " + (((index * 5) - 5) + 3) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 3),
                                 ChatColor.GREEN + "  " + (((index * 5) - 5) + 4) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 4),
-                                ChatColor.GREEN + "  " + (((index * 5) - 5) + 5) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 5)};
+                                ChatColor.GREEN + "  " + (((index * 5) - 5) + 5) + ") " + ChatColor.WHITE + BusinessManager.getIndex(((index * 5) - 5) + 5),
+                                ChatColor.GREEN + "Type b.top [page number] for more results"};
                         sender.sendMessage(info);
-                    }
+
                 }
                 // </editor-fold>
                 // <editor-fold defaultstate="collapsed" desc="Hire">

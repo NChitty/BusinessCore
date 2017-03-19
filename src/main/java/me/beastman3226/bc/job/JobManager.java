@@ -120,7 +120,7 @@ public class JobManager {
                 jobs.add(ChatColor.AQUA + "#" + j.getID() + ": " + j.getDescription());
             }
         }
-        if (((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < (i * 5) + 5) {
+        if (jobs.size() < i || jobs.size() < (i * 5) + 5) {
             try {
                 return jobs.subList(i * 5, jobs.size()).toArray(new String[]{});
             } catch (ArrayIndexOutOfBoundsException aioobe) {
