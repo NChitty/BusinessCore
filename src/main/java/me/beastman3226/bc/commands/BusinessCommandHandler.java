@@ -12,6 +12,7 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.player.Manager;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -167,12 +168,16 @@ public class BusinessCommandHandler implements CommandExecutor {
                         b = BusinessManager.getBusiness(sender.getName());
                         if (b == null) b = Manager.getBusiness(sender.getName());
                         BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
+                        EconomyResponse r = Information.eco.withdrawPlayer(sender.getName(), event.getAmount());
                         Bukkit.getServer().getPluginManager().callEvent(event);
+                        if(!r.transactionSuccess()) {
+                            event.setCancelled(true);
+                        }
                         if (!event.isCancelled()) {
                             event.getBusiness().deposit(event.getAmount());
-                            Information.eco.withdrawPlayer(sender.getName(), event.getAmount());
                             Business.businessList.remove(event.getBusiness());
                             Business.businessList.add(event.getBusiness());
+
                         }
                         sender.sendMessage(Prefixes.NOMINAL + "Current balance in " + b.getName() + " is " + b.getBalance() + " " + Information.eco.currencyNamePlural());
                         return true;
@@ -193,7 +198,7 @@ public class BusinessCommandHandler implements CommandExecutor {
                         caught = true;
                     }
                     if (caught) {
-                        sender.sendMessage("Please specify valid numbers as numbers ie. 1, 0.0");
+                        sender.sendMessage("Please specify amounts as numbers ie. 1, 0.0");
                         return false;
                     } else {
                         Business b = BusinessManager.getBusiness(id);

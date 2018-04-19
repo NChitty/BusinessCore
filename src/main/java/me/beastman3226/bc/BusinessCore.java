@@ -6,12 +6,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static me.beastman3226.bc.BusinessCore.Information.initManagers;
-import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
 import me.beastman3226.bc.commands.MiscCommandHandler;
-import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
@@ -26,8 +24,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
 
 /**
  *
@@ -64,29 +60,6 @@ public class BusinessCore extends JavaPlugin {
             BusinessManager.createBusinesses();
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
-        }
-        try {
-            Metrics metrics = new Metrics(this);
-
-            Graph businessesCreated = metrics.createGraph("Number of Businesses Created");
-            businessesCreated.addPlotter(new Metrics.Plotter("Businesses") {
-                @Override
-                public int getValue() {
-                    return Business.businessList.size();
-                }
-            });
-
-            Graph jobsCompleted = metrics.createGraph("Number of Jobs Completed");
-            jobsCompleted.addPlotter(new Metrics.Plotter("Jobs") {
-                @Override
-                public int getValue() {
-                    return Job.jobList.size();
-                }
-            });
-            
-            metrics.start();
-        } catch (IOException e) {
-            this.getLogger().severe("Failed to send stats :-(");
         }
         Scheduler.runPayPeriod();
         getLogger().info("Do /businesscore for information about this plugin");
@@ -147,15 +120,8 @@ public class BusinessCore extends JavaPlugin {
             return false;
         }
         RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (rsp == null) {
-            System.out.println("Economy plugin not detected");
-            rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        }
-        if (rsp == null) {
-            return false;
-        }
         Information.eco = rsp.getProvider();
-        return Information.eco != null;
+        return rsp != null;
 
     }
     
@@ -165,10 +131,6 @@ public class BusinessCore extends JavaPlugin {
             return false;
         }
         RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if(rsp == null) {
-            System.out.println("Chat plugin not detected");
-            return false;
-        }
         Information.chat = rsp.getProvider();  
         return Information.chat != null;
     }

@@ -73,9 +73,9 @@ public class JobCreatedEvent extends Event implements Cancellable{
     private int createId() {
         int i = 0;
         Random r = new Random();
-        i = r.nextInt(1001);
+        i = r.nextInt(1000000);
         while(taken(i)) {
-            i = r.nextInt(i) + i;
+            return createId();
         }
         return i;
     }
