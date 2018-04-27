@@ -82,7 +82,7 @@ public class Business {
         if(amount > this.worth) {
             throw new InsufficientFundsException("Not enough funds. Missing " + (amount - worth));
         } else {
-            this.worth =- amount;
+            this.worth = this.worth - amount;
             BusinessCore.log(Level.INFO, "Withdrawing " + amount + " from " + this.worth + " in business " + this.getName());
         }
         return this;
