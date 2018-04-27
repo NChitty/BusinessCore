@@ -1,11 +1,17 @@
 package me.beastman3226.bc.job;
 
-import com.evilmidget38.UUIDFetcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.errors.OpenJobException;
@@ -16,11 +22,6 @@ import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Prefixes;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -42,7 +43,7 @@ public class JobManager {
         JobCreatedEvent event = new JobCreatedEvent(description, p, pay);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            j = new Job(event.getID(), event.getName(), event.getDescription(), event.getLocation(), event.getPayment());
+            j = new Job(event.getID(), event.getUUID(), event.getDescription(), event.getLocation(), event.getPayment());
             Job.jobList.add(j);
         }
         return j;
@@ -78,7 +79,7 @@ public class JobManager {
             }
         } else {
             try {
-                Bukkit.getPlayer(UUIDFetcher.getUUIDOf(j.getPlayer())).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
+                ((Player) j.getPlayer()).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
             } catch (Exception ex) {
                 Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -104,7 +105,7 @@ public class JobManager {
             if(issuer == null) {
                 issuer = Bukkit.getOfflinePlayer(UUID.fromString(Information.jobYml.getString(string + ".UUID"))).getName();
             }
-            Job j = new Job(Integer.parseInt(string), issuer, Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
+            Job j = new Job(Integer.parseInt(string), UUID.fromString(issuer), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
             Job.jobList.add(j);
             if (Information.debug) {
                 Information.log.log(Level.INFO, "Created job #{0} with description: {1}", new Object[]{j.getID(), j.getDescription()});
@@ -120,7 +121,7 @@ public class JobManager {
                 jobs.add(ChatColor.AQUA + "#" + j.getID() + ": " + j.getDescription());
             }
         }
-        if (jobs.size() < i || jobs.size() < (i * 5) + 5) {
+        if (((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < (i * 5) + 5) {
             try {
                 return jobs.subList(i * 5, jobs.size()).toArray(new String[]{});
             } catch (ArrayIndexOutOfBoundsException aioobe) {
@@ -137,7 +138,7 @@ public class JobManager {
     public static boolean isIssuer(String name) {
         for (Job j : Job.jobList) {
             if (j != null) {
-                if (j.getPlayer().equalsIgnoreCase(name)) {
+                if (j.getPlayer().getName().equalsIgnoreCase(name)) {
                     return true;
                 }
             }
@@ -147,7 +148,7 @@ public class JobManager {
 
     public static Job getJob(String name) {
         for (Job j : Job.jobList) {
-            if (j.getPlayer().equalsIgnoreCase(name)) {
+            if (j.getPlayer().getName().equalsIgnoreCase(name)) {
                 return j;
             }
         }
@@ -157,7 +158,7 @@ public class JobManager {
     public static Job[] getJobs(String issuer) {
         ArrayList<Job> jobs = new ArrayList<Job>();
         for (Job j : Job.jobList) {
-            if (j.getPlayer().equalsIgnoreCase(issuer)) {
+            if (j.getPlayer().getName().equalsIgnoreCase(issuer)) {
                 jobs.add(j);
             }
         }
@@ -171,7 +172,7 @@ public class JobManager {
             employees.add(EmployeeManager.getEmployee((Integer) id));
         }
         for (Employee e : employees) {
-            if (j.getPlayer().equalsIgnoreCase(e.getName())) {
+            if (j.getPlayer().getName().equalsIgnoreCase(e.getName())) {
                 return true;
             }
         }
@@ -179,7 +180,7 @@ public class JobManager {
     }
 
     public static boolean doesBelongToBusiness(Business business, Job j) {
-        if (business.getOwnerName().equalsIgnoreCase(j.getPlayer())) {
+        if (business.getOwnerName().equalsIgnoreCase(j.getPlayer().getName())) {
             return true;
         }
 
@@ -188,7 +189,7 @@ public class JobManager {
             employees.add(EmployeeManager.getEmployee((Integer) id));
         }
         for (Employee e : employees) {
-            if (j.getPlayer().equalsIgnoreCase(e.getName())) {
+            if (j.getPlayer().getName().equalsIgnoreCase(e.getName())) {
                 return true;
             }
         }

@@ -21,7 +21,6 @@ public class MiscCommandHandler implements CommandExecutor {
         return instance;
     }
     
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         if (cmd.getName().equalsIgnoreCase("businesscore")) {
             sender.sendMessage(ChatColor.BLUE + "/=========BusinessCore==========\\");
@@ -52,8 +51,6 @@ public class MiscCommandHandler implements CommandExecutor {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lCheck Balance: &r&c/b.balance"));
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lHire Player: &r&c/b.hire &4<playername>"));
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lFire Player: &r&c/b.fire &4<playername>"));
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lList businesses: &r&c/b.top &4[page number]"));
-                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c&lGet Information: &r&c/b.info &4[id]"));
                 }
             }
         } 

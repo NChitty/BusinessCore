@@ -12,7 +12,7 @@ import me.beastman3226.bc.BusinessCore.FileFunctions;
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.event.business.BusinessDeletedEvent;
+import me.beastman3226.bc.errors.NoOpenIDException;
 import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
@@ -42,7 +42,7 @@ public class BusinessManager {
             owner = Bukkit.getOfflinePlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
             if(owner == null) owner = Bukkit.getPlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
             balance = yml.getDouble(s + ".balance");
-            if(yml.contains(s + ".pay") || yml.contains(s + ".salary")) {
+            if(!yml.contains(s + ".pay") || !yml.contains(s + ".salary")) {
                 pay = yml.getDouble(s + ".pay");
                 salary = yml.getBoolean(s + ".salary");
             }
@@ -130,14 +130,25 @@ public class BusinessManager {
     /**
      * Finds an open business ID for a newly created business
      * @return The open id
+     * @throws NoOpenIDException
      */
-    public static int openID() {
+    public static int openID() throws NoOpenIDException {
         int id = 1000;
         Random r = new Random();
         id = (r.nextInt(1000) + 1000);
         for(Business b : Business.businessList) {
             if(b.getID() == id) {
-                return openID();
+                id = (r.nextInt(5000) + 5000);
+                for(Business b1 : Business.businessList) {
+                    if(b1.getID() == id) {
+                        id = (r.nextInt(10000) + 10000);
+                        for(Business b2 : Business.businessList) {
+                            if(b2.getID() == id) {
+                                throw new NoOpenIDException(id);
+                            }
+                        }
+                    }
+                }
             }
         }
         return id;
@@ -148,8 +159,16 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void deleteBusiness(Business business) {
-        BusinessDeletedEvent event = new BusinessDeletedEvent(business);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        try {
+            Business.businessList.remove(business);
+            
+            BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
+            
+            BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
+            Bukkit.getPlayer(UUIDFetcher.getUUIDOf(business.getOwnerName())).sendMessage(Prefixes.ERROR + "Your business has been deleted");
+        } catch (Exception ex) {
+            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

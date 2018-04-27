@@ -35,12 +35,10 @@ public abstract class BusinessEvent extends Event implements Cancellable{
         return handlers;
     }
 
-    @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
-    @Override
     public void setCancelled(boolean bln) {
         this.cancelled = bln;
     }

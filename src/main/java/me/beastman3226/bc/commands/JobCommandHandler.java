@@ -30,7 +30,6 @@ public class JobCommandHandler implements CommandExecutor {
       return instance;
    }
     
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         if (sender.hasPermission(cmd.getPermission())) {
             if (cmd.getName().equalsIgnoreCase("j.open") && args.length > 1) {

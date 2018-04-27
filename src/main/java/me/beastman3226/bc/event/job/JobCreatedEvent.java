@@ -1,6 +1,8 @@
 package me.beastman3226.bc.event.job;
 
 import java.util.Random;
+import java.util.UUID;
+
 import me.beastman3226.bc.job.Job;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,14 +20,14 @@ public class JobCreatedEvent extends Event implements Cancellable{
     protected boolean cancelled;
 
     protected final int id;
-    protected String name;
     protected String description;
     protected Location loc;
     protected double pay;
+	protected UUID uuid;
 
     public JobCreatedEvent(String description, Player p, double pay) {
         id = createId();
-        this.name = p.getName();
+        this.uuid = p.getUniqueId();
         this.description = description;
         this.loc = p.getLocation();
         this.pay = pay;
@@ -39,8 +41,8 @@ public class JobCreatedEvent extends Event implements Cancellable{
         return this.description;
     }
 
-    public String getName() {
-        return this.name;
+    public UUID getUUID() {
+        return this.uuid;
     }
 
     public Location getLocation() {
@@ -60,12 +62,10 @@ public class JobCreatedEvent extends Event implements Cancellable{
         return handlers;
     }
 
-    @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
-    @Override
     public void setCancelled(boolean bln) {
         this.cancelled = bln;
     }
@@ -73,9 +73,9 @@ public class JobCreatedEvent extends Event implements Cancellable{
     private int createId() {
         int i = 0;
         Random r = new Random();
-        i = r.nextInt(1000000);
+        i = r.nextInt(1001);
         while(taken(i)) {
-            return createId();
+            i = r.nextInt(i) + i;
         }
         return i;
     }

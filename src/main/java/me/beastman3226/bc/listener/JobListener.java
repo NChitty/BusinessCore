@@ -1,16 +1,17 @@
 package me.beastman3226.bc.listener;
 
-import com.evilmidget38.UUIDFetcher;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.data.file.JobFileManager;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCreatedEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 
 public class JobListener implements Listener {
 
@@ -18,7 +19,7 @@ public class JobListener implements Listener {
     public void onCreate(JobCreatedEvent e) {
         if(!e.isCancelled()) {
             try {
-                JobFileManager.editConfig(new FileData().add(e.getID() + ".UUID", UUIDFetcher.getUUIDOf(e.getName()))
+                JobFileManager.editConfig(new FileData().add(e.getID() + ".player", e.getUUID().toString())
                         .add(e.getID() + ".description", e.getDescription())
                         .add(e.getID() + ".location", e.getLocation().getBlockX() + "," + e.getLocation().getBlockY() + "," + e.getLocation().getBlockZ())
                         .add(e.getID() + ".world", e.getLocation().getWorld().getName())

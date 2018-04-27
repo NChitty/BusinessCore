@@ -33,6 +33,8 @@ public class FileManager {
                 }
                 FileFunctions.save(type);
                 break;
+            default:
+            	break;
         }
     }
 

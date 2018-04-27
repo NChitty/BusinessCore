@@ -1,13 +1,18 @@
 package me.beastman3226.bc.job;
 
 import java.util.HashSet;
+import java.util.UUID;
+
 import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.data.file.JobFileManager;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 /**
  *
@@ -16,7 +21,7 @@ import org.bukkit.Location;
 public class Job {
 
     private final int id;
-    private String player;
+    private UUID player;
     private String description;
     private Location loc;
     private double pay;
@@ -32,9 +37,9 @@ public class Job {
      * @param loc location that the job was started
      * @param pay Payment that a business will recieve if it completed
      */
-    public Job(int id, String name, String description, Location loc, double pay) {
+    public Job(int id, UUID uuid, String description, Location loc, double pay) {
         this.id = id;
-        this.player = name;
+        this.player = uuid;
         this.description = description;
         this.loc = loc;
         this.pay = pay;
@@ -49,14 +54,14 @@ public class Job {
      * @param pay Payment that a business will recieve if it completed
      * @param e Employeeid
      */
-    public Job(int id, String playername, String description, Location loc, double pay, int e) {
+    public Job(int id, UUID uuid, String description, Location loc, double pay, int e) {
         this.id = id;
-        this.player = playername;
+        this.player = uuid;
         this.description = description;
         this.loc = loc;
         this.pay = pay;
         this.employeeid = e;
-        JobFileManager.editConfig(new FileData().add(id + ".player", playername)
+        JobFileManager.editConfig(new FileData().add(id + ".player", uuid)
                 .add(id + ".description", description)
                 .add(id + ".location", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
                 .add(id + ".world", loc.getWorld().getName())
@@ -94,14 +99,14 @@ public class Job {
     public void finish() {
         String employee = EmployeeManager.getEmployee(this.employeeid).getName();
         this.employeeid = 0;
-        Information.eco.withdrawPlayer(player, pay);
+        Information.eco.withdrawPlayer(Bukkit.getPlayer(player), pay);
         Business b = EmployeeManager.getEmployee(employee).getBusiness();
         b.deposit(pay);
         JobFileManager.editConfig(new FileData().add("id", null));
     }
 
-    public String getPlayer() {
-        return this.player;
+    public OfflinePlayer getPlayer() {
+        return Bukkit.getPlayer(player);
     }
 
     public boolean isClaimed() {
