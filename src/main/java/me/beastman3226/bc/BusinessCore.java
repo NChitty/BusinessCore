@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static me.beastman3226.bc.BusinessCore.Information.initManagers;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
@@ -36,12 +33,14 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BusinessCore extends JavaPlugin {
 
+    private static BusinessCore instance;
+    
     HashMap<String, String> hm = new HashMap<String, String>();
+
 
     @Override
     public void onEnable() {
-        Information.BusinessCore = this;
-        Information.config = getConfig();
+        instance = this;
         this.getLogger().log(Level.INFO, "Loaded Economy: {0}", setupEconomy());
         this.getLogger().log(Level.INFO, "Loaded Chat: {0}", setupChat());
         Information.initFiles(this);
@@ -206,18 +205,14 @@ public class BusinessCore extends JavaPlugin {
         }
     }
 
-    /**
-     * This class turns normally protected, private or other information that
-     * isn't in scope and puts it out there for everyone to use; information
-     * stored in the actual main class will ever be in scope.
-     */
-    public static class Information {
+    public static BusinessCore getInstance() {
+        if(this.instance == null)
+            return null;
+        return this.instance;
+    }
 
         private static File businessFile, jobFile, employeeFile, managerFile;
-        public static FileConfiguration config;
         public static FileConfiguration businessYml, employeeYml, jobYml, managerYml;
-        public static BusinessCore BusinessCore;
-        public static Connection connection;
         public static net.milkbowl.vault.economy.Economy eco;
         public static boolean debug;
         public static Logger log;
@@ -239,217 +234,26 @@ public class BusinessCore extends JavaPlugin {
             }
         }
 
-        public static void initFiles(Plugin p) {
-            businessFile = new File(p.getDataFolder(), "business.yml");
-            jobFile = new File(p.getDataFolder(), "jobs.yml");
-            employeeFile = new File(p.getDataFolder(), "employee.yml");
+    public void initFiles() {
+        businessFile = new File(p.getDataFolder(), "business.yml");
+        jobFile = new File(p.getDataFolder(), "jobs.yml");
+        employeeFile = new File(p.getDataFolder(), "employee.yml");
 
-            if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
+        if (!businessFile.exists() || !jobFile.exists() || !employeeFile.exists()) {
                 businessFile.getParentFile().mkdirs();
                 jobFile.getParentFile().mkdirs();
                 employeeFile.getParentFile().mkdirs();
-                try {
-                    businessFile.createNewFile();
-                    jobFile.createNewFile();
-                    employeeFile.createNewFile();
-                } catch (IOException ex) {
-                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-
-            businessYml = YamlConfiguration.loadConfiguration(businessFile);
-            employeeYml = YamlConfiguration.loadConfiguration(employeeFile);
-            jobYml = YamlConfiguration.loadConfiguration(jobFile);
-            initManagers(p);
-        }
-
-        public static Time getTime() {
-            String string = config.getString("payperiod");
-            for (Time t : Time.values()) {
-                if (string.contains(t.identifier + "")) {
-                    return t;
-                }
-            }
-            return null;
-        }
-
-        public static int getValue() {
-            String string = config.getString("payperiod");
-            string = string.replace(getTime().identifier, ' ');
-            return Integer.valueOf(string.trim());
-        }
-    }
-
-    /**
-     * Class for file functions (loading, reloading and saving)
-     *
-     * @author beastman3226
-     */
-    public static class FileFunctions {
-
-        /**
-         * Reloads the specified config, simply dumps all information that is in
-         * memory and replaces it with all information from file.
-         *
-         * @param config the config to be reloaded
-         */
-        public static void reload(Config config) {
-            switch (config) {
-                case BUSINESS:
-                    try {
-                        Information.businessYml.load(Information.businessFile);
-                    } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
-                    break;
-                case EMPLOYEE:
-                    try {
-                        Information.employeeYml.load(Information.employeeFile);
-                    } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
-                    break;
-                case JOB:
-                    try {
-                        Information.jobYml.load(Information.jobFile);
-                    } catch (FileNotFoundException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    } catch (InvalidConfigurationException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
-                    break;
-                case MANAGER:
-                    try {
-                        Information.managerYml.load(Information.managerFile);
-                    } catch (IOException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InvalidConfigurationException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-            }
-        }
-
-        /**
-         * This is a method for loading all the files at startup
-         *
-         */
-        public static void load() {
             try {
-                Information.businessYml.load(Information.businessFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            try {
-                Information.employeeYml.load(Information.employeeFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            try {
-                Information.jobYml.load(Information.jobFile);
-            } catch (FileNotFoundException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            } catch (InvalidConfigurationException ex) {
-                Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-            }
-            if (Information.managers) {
-                try {
-                    if (!Information.managerFile.exists()) {
-                        Information.managerFile.createNewFile();
-                        Information.managerYml.load(Information.managerFile);
-                    } else {
-                        Information.managerYml.load(Information.managerFile);
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvalidConfigurationException ex) {
-                    Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        /**
-         * Dumps all the information asscociated with the config into the actual
-         * file
-         *
-         * @param config Config to dump to
-         */
-        public static void save(Config config) {
-            switch (config) {
-                case BUSINESS:
-                    try {
-                        Information.businessYml.save(Information.businessFile);
-                    } catch (IOException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                case EMPLOYEE:
-                    try {
-                        Information.employeeYml.save(Information.employeeFile);
-                    } catch (IOException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                case JOB:
-                    try {
-                        Information.jobYml.save(Information.jobFile);
-                    } catch (IOException ex) {
-                        Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    break;
-                case MANAGER:
-                    try {
-                        Information.managerYml.save(Information.managerFile);
-                    } catch (IOException ex) {
-                        Information.BusinessCore.getLogger().severe(ex.getLocalizedMessage());
-                    }
-                    break;
-            }
-        }
-
-        /**
-         * Saves all information in all the configs
-         *
-         */
-        public static void save() {
-            try {
-                Information.businessYml.save(Information.businessFile);
-                Information.employeeYml.save(Information.employeeFile);
-                Information.jobYml.save(Information.jobFile);
-                if (Information.managerFile.exists()) {
-                    Information.managerYml.save(Information.managerFile);
-                }
+                businessFile.createNewFile();
+                jobFile.createNewFile();
+                employeeFile.createNewFile();
             } catch (IOException ex) {
                 Logger.getLogger(BusinessCore.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    /**
-     * Simple class for finding which config is being referred to.
-     */
-    public static enum Config {
-
-        BUSINESS, EMPLOYEE, JOB, MANAGER;
+        businessYml = YamlConfiguration.loadConfiguration(businessFile);
+        employeeYml = YamlConfiguration.loadConfiguration(employeeFile);
+        jobYml = YamlConfiguration.loadConfiguration(jobFile);
+        initManagers(p);
     }
 }
