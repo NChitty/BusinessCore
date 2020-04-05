@@ -1,21 +1,14 @@
 package me.beastman3226.bc.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.BusinessCore.Config;
-import me.beastman3226.bc.BusinessCore.FileFunctions;
-import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.data.file.BusinessFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.errors.NoOpenIDException;
-import me.beastman3226.bc.util.Prefixes;
-import me.beastman3226.bc.util.Sorter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -24,26 +17,28 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class BusinessManager {
 
+    public static ArrayList<Business> businessList = new ArrayList<Business>();
+
     /**
      * Creates all businesses from file.
      */
     public static void createBusinesses() {
-        FileFunctions.reload(Config.BUSINESS);
-        FileConfiguration yml = Information.businessYml;
+        BusinessCore.getInstance().getBusinessFileManager().reload();
+        FileConfiguration businessYml = BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration();
         int id;
         String name, owner;
         boolean salary = false;
         double pay = 0, balance;
-        for(String s : Information.businessYml.getKeys(false)) {
-            List<String> list = yml.getStringList(s + ".employeeIDs");
-            id = yml.getInt(s + ".id");
+        for(String s : businessYml.getKeys(false)) {
+            List<String> list = businessYml.getStringList(s + ".employeeIDs");
+            id = businessYml.getInt(s + ".id");
             name = s;
-            owner = Bukkit.getOfflinePlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
-            if(owner == null) owner = Bukkit.getPlayer(UUID.fromString(yml.getString(s + ".ownerUUID"))).getName();
-            balance = yml.getDouble(s + ".balance");
-            if(!yml.contains(s + ".pay") || !yml.contains(s + ".salary")) {
-                pay = yml.getDouble(s + ".pay");
-                salary = yml.getBoolean(s + ".salary");
+            owner = Bukkit.getOfflinePlayer(UUID.fromString(businessYml.getString(s + ".ownerUUID"))).getName();
+            if(owner == null) owner = Bukkit.getPlayer(UUID.fromString(businessYml.getString(s + ".ownerUUID"))).getName();
+            balance = businessYml.getDouble(s + ".balance");
+            if(!businessYml.contains(s + ".pay") || !businessYml.contains(s + ".salary")) {
+                pay = businessYml.getDouble(s + ".pay");
+                salary = businessYml.getBoolean(s + ".salary");
             }
             if(!list.isEmpty()) {
                 Business b = createBusiness(new Business.Builder(id)
@@ -53,15 +48,15 @@ public class BusinessManager {
                         .ids(list.toArray(new String[]{}))
                         .salary(salary)
                         .pay(pay));
-               BusinessCore.log(Level.INFO, "Loaded business " + b.getName() + " from file");
+               BusinessCore.getInstance().getLogger().log(Level.INFO, "Loaded business " + b.getName() + " from file");
             } else {
-                Business b = createBusiness(new Business.Builder(id)
+                createBusiness(new Business.Builder(id)
                         .name(s)
                         .owner(owner)
                         .balance(balance));
-                if(Information.debug) {
+                /*if(Information.debug) {
                     Information.BusinessCore.getLogger().log(Level.INFO, "Loaded business {0} with owner as {1}!", new Object[]{b.getName(), b.getOwnerName()});
-                }
+                }*/
             }
           }
     }
@@ -73,10 +68,10 @@ public class BusinessManager {
      */
     public static Business createBusiness(Business.Builder build) {
         Business b = build.build();
-        Business.businessList.add(b);
-        if(Information.debug) {
+        businessList.add(b);
+        /*if(Information.debug) {
             Information.log.log(Level.INFO, "Created a business with name {0}", build.getName());
-        }
+        }*/
         return b;
     }
 
@@ -88,7 +83,7 @@ public class BusinessManager {
      */
     public static Business getBusiness(int id) {
         Business b = null;
-        Business[] array = Business.businessList.toArray(new Business[]{});
+        Business[] array = businessList.toArray(new Business[]{});
         for (Business business : array) {
             if(business.getID() == id) {
                 b = business;
@@ -105,7 +100,7 @@ public class BusinessManager {
      * @return The business
      */
     public static Business getBusiness(String name) {
-        for(Business b : Business.businessList) {
+        for(Business b : businessList) {
             if(b.getOwnerName().equalsIgnoreCase(name)) {
                 return b;
             } else {
@@ -117,7 +112,7 @@ public class BusinessManager {
     
     public static int getID(String bname) {
         int id = -1;
-        for(Business b : Business.businessList) {
+        for(Business b : businessList) {
             if(b.getName().equalsIgnoreCase(bname)) {
                 id = b.getID();
                 break;
@@ -135,13 +130,13 @@ public class BusinessManager {
         int id = 1000;
         Random r = new Random();
         id = (r.nextInt(1000) + 1000);
-        for(Business b : Business.businessList) {
+        for(Business b : businessList) {
             if(b.getID() == id) {
                 id = (r.nextInt(5000) + 5000);
-                for(Business b1 : Business.businessList) {
+                for(Business b1 : businessList) {
                     if(b1.getID() == id) {
                         id = (r.nextInt(10000) + 10000);
-                        for(Business b2 : Business.businessList) {
+                        for(Business b2 : businessList) {
                             if(b2.getID() == id) {
                                 throw new NoOpenIDException(id);
                             }
@@ -159,14 +154,14 @@ public class BusinessManager {
      */
     public static void deleteBusiness(Business business) {
         try {
-            Business.businessList.remove(business);
+            businessList.remove(business);
             
-            BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
+            BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(business.getName(), null));
             
-            BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
-            Bukkit.getServer().getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
+            BusinessCore.getInstance().getLogger().log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
+            Bukkit.getServer().getPlayer(business.getOwnerName()).sendMessage(BusinessCore.getPrefix(BusinessCore.NOMINAL) + "Your business has been deleted");
         } catch (Exception ex) {
-            Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
+            //
         }
     }
 
@@ -177,7 +172,7 @@ public class BusinessManager {
      * @return True if name has a business, false if not.
      */
     public static boolean isOwner(String name) {
-        for(Business b : Business.businessList) {
+        for(Business b : businessList) {
             if(b.getOwnerName().equalsIgnoreCase(name)) {
                 return true;
             } else {
@@ -197,19 +192,19 @@ public class BusinessManager {
         return getBusiness(id) != null;
     }
 
-    /**
-     * Sorts the list and gets the rank specified
-     * @param rank The rank
-     * @return The name of the business at said rank
-     */
-    public static String getIndex(int rank) {
-        Business b = null;
-        try {
-            b = Sorter.sort().get(--rank);
-        } catch (Exception e) {
-            return "You could be here.";
-        }
-        return b.getName() + ChatColor.GREEN + " ID: " + ChatColor.WHITE + b.getID();
+
+    public static ArrayList<Business> sortById() {
+        businessList.sort((Business b1, Business b2) -> Integer.compare(b1.getID(), b2.getID()));
+        return businessList;
     }
 
+    public static ArrayList<Business> sortByBalance() {
+        businessList.sort((Business b1, Business b2) -> Double.compare(b1.getBalance(), b2.getBalance()));
+        return businessList;
+    }
+
+    public static ArrayList<Business> sortByName() {
+        businessList.sort((Business b1, Business b2) -> b1.getName().compareTo(b2.getName()));
+        return businessList;
+    }
 }

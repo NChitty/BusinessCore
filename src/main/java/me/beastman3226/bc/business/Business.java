@@ -3,7 +3,6 @@ package me.beastman3226.bc.business;
 import java.util.HashSet;
 import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.player.Employee;
 
@@ -14,7 +13,6 @@ public class Business {
     private String ownerName;
     private double worth;
     private HashSet<Integer> employeeIDs = new HashSet<Integer>();
-    public static HashSet<Business> businessList = new HashSet<Business>();
     private boolean salary = true;
     private double pay;
     
@@ -74,7 +72,7 @@ public class Business {
 
     public Business deposit(double amount) {
         this.worth = this.worth + amount;
-        BusinessCore.log(Level.INFO, "Depositing " + amount + " into " + this.getName());
+        BusinessCore.getInstance().getLogger().log(Level.INFO, "Depositing " + amount + " into " + this.getName());
         return this;
     }
 
@@ -83,7 +81,7 @@ public class Business {
             throw new InsufficientFundsException("Not enough funds. Missing " + (amount - worth));
         } else {
             this.worth = this.worth - amount;
-            BusinessCore.log(Level.INFO, "Withdrawing " + amount + " from " + this.worth + " in business " + this.getName());
+            BusinessCore.getInstance().getLogger().log(Level.INFO, "Withdrawing " + amount + " from " + this.worth + " in business " + this.getName());
         }
         return this;
     }
@@ -95,7 +93,7 @@ public class Business {
 
     public Business removeEmployee(int id) {
         this.employeeIDs.remove(id);
-        BusinessCore.log(Level.INFO, "Fired employee " + id + " from " + this.getName() );
+        BusinessCore.getInstance().getLogger().log(Level.INFO, "Fired employee " + id + " from " + this.getName() );
         return this;
     }
 
@@ -106,7 +104,7 @@ public class Business {
      */
     public Business addEmployee(int id) {
         this.employeeIDs.add(id);
-        BusinessCore.log(Level.INFO, "Added employee " + id + " to " + this.getName());
+        BusinessCore.getInstance().getLogger().log(Level.INFO, "Added employee " + id + " to " + this.getName());
         return this;
     }
 
@@ -117,7 +115,7 @@ public class Business {
      */
     public Business addEmployee(Employee employee) {
         this.employeeIDs.add(employee.getID());
-        BusinessCore.log(Level.INFO, "Added employee " + employee.getID() + " to " + this.getName());
+        BusinessCore.getInstance().getLogger().log(Level.INFO, "Added employee " + employee.getID() + " to " + this.getName());
         return this;
     }
 
@@ -127,15 +125,16 @@ public class Business {
     }
 
     private HashSet<Integer> toHashSet(int[] employeeIDs) {
-            HashSet<Integer> returnThis = new HashSet<Integer>();
-            for(int i : employeeIDs) {
-                returnThis.add(i);
-            }
-            return returnThis;
+        HashSet<Integer> returnThis = new HashSet<Integer>();
+        for(int i : employeeIDs) {
+            returnThis.add(i);
         }
+        return returnThis;
+    }
+    
     public boolean toggleSalary() {
         
-        Information.businessYml.set(this.name + ".salary", !this.salary);
+        BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration().set(this.name + ".salary", !this.salary);
         
         return (this.salary = !salary);
     }
@@ -150,7 +149,7 @@ public class Business {
     
     public void setSalary(double salary) {
         this.pay = salary;
-        Information.businessYml.set(this.name + ".payment", this.pay);
+        BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration().set(this.name + ".payment", this.pay);
         
     }
     
