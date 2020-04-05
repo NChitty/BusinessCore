@@ -3,14 +3,14 @@ package me.beastman3226.bc.listener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.data.file.BusinessFileManager;
-import me.beastman3226.bc.data.file.EmployeeFileManager;
 import me.beastman3226.bc.data.file.FileData;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessPostCreatedEvent;
 import me.beastman3226.bc.player.Employee;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,9 +24,9 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
         if (!e.isCancelled()) {
-            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
+            BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
         }
-        BusinessCore.log(Level.INFO, e.getBusiness() + "'s balance has changed to " + e.getFinalAmount());
+        BusinessCore.getInstance().getLogger().log(Level.INFO, e.getBusiness() + "'s balance has changed to " + e.getFinalAmount());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -34,8 +34,8 @@ public class BusinessListener implements Listener {
         if (!e.isCancelled()) {
             try {
                 String ownerName = e.getBusiness().getOwnerName();
-                BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".name", e.getBusiness().getName())
-                        .add(e.getBusiness().getName() + ".ownerUUID", "" + Bukkit.getServer().getPlayer(e.getBusiness.getName()).getUniqueID())
+                BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(e.getBusiness().getName() + ".name", e.getBusiness().getName())
+                        .add(e.getBusiness().getName() + ".ownerUUID", "" + Bukkit.getServer().getPlayer(e.getBusiness().getName()).getUniqueId())
                         .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
                         .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
                         .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
@@ -52,7 +52,7 @@ public class BusinessListener implements Listener {
                 e.setCancelled(true);
             }
         }
-        BusinessCore.log(Level.INFO, e.getBusiness() + " has hired an employee.");
+        BusinessCore.getInstance().getLogger().log(Level.INFO, e.getBusiness() + " has hired an employee.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -69,8 +69,8 @@ public class BusinessListener implements Listener {
             e.setCancelled(true);
         }
         if (!e.isCancelled()) {
-            BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.finalEmployeeList()));
-            EmployeeFileManager.editConfig(new FileData().add(e.getEmployee().getName(), null));
+            BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.finalEmployeeList()));
+            BusinessCore.getInstance().getEmployeeFileManager().editConfig(new FileData().add(e.getEmployee().getName(), null));
         }
         Employee.employeeList.remove(e.getEmployee());
     }

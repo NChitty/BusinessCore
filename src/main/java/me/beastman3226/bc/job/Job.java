@@ -3,10 +3,9 @@ package me.beastman3226.bc.job;
 import java.util.HashSet;
 import java.util.UUID;
 
-import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.data.file.JobFileManager;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 
@@ -61,7 +60,7 @@ public class Job {
         this.loc = loc;
         this.pay = pay;
         this.employeeid = e;
-        JobFileManager.editConfig(new FileData().add(id + ".player", uuid)
+        BusinessCore.getInstance().getJobFileManager().editConfig(new FileData().add(id + ".player", uuid)
                 .add(id + ".description", description)
                 .add(id + ".location", loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ())
                 .add(id + ".world", loc.getWorld().getName())
@@ -99,10 +98,10 @@ public class Job {
     public void finish() {
         String employee = EmployeeManager.getEmployee(this.employeeid).getName();
         this.employeeid = 0;
-        Information.eco.withdrawPlayer(Bukkit.getPlayer(player), pay);
+        BusinessCore.getInstance().getEconomy().withdrawPlayer(Bukkit.getPlayer(player), pay);
         Business b = EmployeeManager.getEmployee(employee).getBusiness();
         b.deposit(pay);
-        JobFileManager.editConfig(new FileData().add("id", null));
+        BusinessCore.getInstance().getJobFileManager().editConfig(new FileData().add("id", null));
     }
 
     public OfflinePlayer getPlayer() {

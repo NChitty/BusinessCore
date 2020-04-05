@@ -1,8 +1,13 @@
 package me.beastman3226.bc.data.file;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-import org.bukkit.FileConfiguration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.*;
+
+import me.beastman3226.bc.BusinessCore;
 
 /**
  *
@@ -16,12 +21,12 @@ public class FileManager {
     public FileManager(String fileName) {
         file = new File(BusinessCore.getInstance().getDataFolder(), fileName);
 
-        if(!file.exists) {
-            file.getParentfile().mkdirs();
+        if(!file.exists()) {
+            file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
             } catch(IOException ex) {
-                BusinessCore.getInstance().getLogger().severe(ex);
+                BusinessCore.getInstance().getLogger().severe(ex.getMessage());
             }
         }
         fileConfig = YamlConfiguration.loadConfiguration(file);
@@ -74,9 +79,7 @@ public class FileManager {
         try {
             fileConfig.save(file);
         } catch (IOException ex) {
-            BusinessCore.getInstance().getLogger().log(Level.SEVERE, null, ex);
+            BusinessCore.getInstance().getLogger().severe(ex.getLocalizedMessage());
         }
     }
-
-
 }

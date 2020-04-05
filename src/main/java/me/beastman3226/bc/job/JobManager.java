@@ -10,9 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import me.beastman3226.bc.BusinessCore.Information;
+import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.errors.OpenJobException;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
@@ -20,7 +21,6 @@ import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCreatedEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
-import me.beastman3226.bc.util.Prefixes;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 /**
@@ -68,7 +68,7 @@ public class JobManager {
     }
 
     public static boolean completeJob(Employee e, Job j) {
-        EconomyResponse r = Information.eco.withdrawPlayer(j.getPlayer(), j.getPayment());
+        EconomyResponse r = BusinessCore.getInstance().getEconomy().withdrawPlayer(j.getPlayer(), j.getPayment());
         if (r.transactionSuccess()) {
             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(e.getBusiness(), j.getPayment());
             Bukkit.getPluginManager().callEvent(event);
@@ -79,7 +79,7 @@ public class JobManager {
             }
         } else {
             try {
-                ((Player) j.getPlayer()).sendMessage(Prefixes.ERROR + "Your balance is insufficient. Get more money!");
+                ((Player) j.getPlayer()).sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "Your balance is insufficient. Get more money!");
             } catch (Exception ex) {
                 Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -89,27 +89,28 @@ public class JobManager {
     }
 
     public static void loadJobs() {
-        for (String string : Information.jobYml.getKeys(false)) {
+        FileConfiguration jobYml = BusinessCore.getInstance().getJobFileManager().getFileConfiguration();
+        for (String string : jobYml.getKeys(false)) {
             int x = 0, y = 0, z = 0;
             try {
-                String location = Information.jobYml.getString(string + ".location");
+                String location = jobYml.getString(string + ".location");
                 String[] s = location.split(",");
                 x = Integer.parseInt(s[0]);
                 y = Integer.parseInt(s[1]);
                 z = Integer.parseInt(s[2]);
             } catch (NumberFormatException nfe) {
             }
-            World world = Bukkit.getWorld(Information.jobYml.getString(string + ".world"));
+            World world = Bukkit.getWorld(jobYml.getString(string + ".world"));
             Location loc = new Location(world, x, y, z);
-            String issuer = Bukkit.getPlayer(UUID.fromString(Information.jobYml.getString(string + ".UUID"))).getName();
+            String issuer = Bukkit.getPlayer(UUID.fromString(jobYml.getString(string + ".UUID"))).getName();
             if(issuer == null) {
-                issuer = Bukkit.getOfflinePlayer(UUID.fromString(Information.jobYml.getString(string + ".UUID"))).getName();
+                issuer = Bukkit.getOfflinePlayer(UUID.fromString(jobYml.getString(string + ".UUID"))).getName();
             }
-            Job j = new Job(Integer.parseInt(string), UUID.fromString(issuer), Information.jobYml.getString(string + ".description"), loc, Information.jobYml.getDouble(string + ".payment"));
+            Job j = new Job(Integer.parseInt(string), UUID.fromString(issuer), jobYml.getString(string + ".description"), loc, jobYml.getDouble(string + ".payment"));
             Job.jobList.add(j);
-            if (Information.debug) {
+            /*if (Information.debug) {
                 Information.log.log(Level.INFO, "Created job #{0} with description: {1}", new Object[]{j.getID(), j.getDescription()});
-            }
+            }*/
         }
 
     }

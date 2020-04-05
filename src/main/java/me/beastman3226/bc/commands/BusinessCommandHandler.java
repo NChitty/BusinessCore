@@ -2,7 +2,6 @@ package me.beastman3226.bc.commands;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.errors.InsufficientFundsException;
@@ -12,8 +11,6 @@ import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessPostCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessPreCreatedEvent;
 import me.beastman3226.bc.player.EmployeeManager;
-import me.beastman3226.bc.player.Manager;
-import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

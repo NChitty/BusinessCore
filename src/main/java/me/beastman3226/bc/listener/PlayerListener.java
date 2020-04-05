@@ -1,17 +1,13 @@
 package me.beastman3226.bc.listener;
 
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.BusinessCore.Information;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
-import me.beastman3226.bc.player.Manager;
-import me.beastman3226.bc.util.Prefixes;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,13 +32,13 @@ public class PlayerListener implements Listener {
                 if (!event.isCancelled()) {
                     event.getBusiness().addEmployee(event.getEmployee());
                     EmployeeManager.pending.remove(e.getPlayer().getName());
-                    Business.businessList.remove(event.getBusiness());
-                    Business.businessList.add(event.getBusiness());
-                    e.getPlayer().sendMessage(Prefixes.POSITIVE + "You have been hired to work for " + event.getBusiness().getName());
+                    BusinessManager.businessList.remove(event.getBusiness());
+                    BusinessManager.businessList.add(event.getBusiness());
+                    e.getPlayer().sendMessage(BusinessCore.getPrefix(BusinessCore.WORKING) + "You have been hired to work for " + event.getBusiness().getName());
                     e.setCancelled(true);
                 }
             } else {
-                e.getPlayer().sendMessage(Prefixes.ERROR + "Timed out.");
+                e.getPlayer().sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "Timed out.");
                 Scheduler.playerMilli.remove(e.getPlayer().getName());
             }
         }
@@ -52,7 +48,7 @@ public class PlayerListener implements Listener {
     public void onLogin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         String prefix = "";
-        if (Information.prefix) {
+        /*if (Information.prefix) {
             if (BusinessManager.isOwner(player.getName())) {
                 prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
             } else if (Manager.isManager(player.getName()) && BusinessCore.Information.managers) {
@@ -74,6 +70,6 @@ public class PlayerListener implements Listener {
         } else if(Information.chat.getPlayerPrefix(player).contains(BusinessManager.getBusiness(player.getName()).getName())){
             prefix = Information.chat.getPlayerPrefix(player).replace("[" + BusinessManager.getBusiness(player.getName()).getName() + "]", "");
            Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix));
-        }
+        }*/
     }
 }

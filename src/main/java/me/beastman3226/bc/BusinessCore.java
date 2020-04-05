@@ -5,6 +5,7 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommandHandler;
 import me.beastman3226.bc.commands.JobCommandHandler;
 import me.beastman3226.bc.commands.MiscCommandHandler;
+import me.beastman3226.bc.data.file.FileManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
@@ -12,6 +13,8 @@ import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.player.EmployeeManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,10 +25,14 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BusinessCore extends JavaPlugin {
 
+    public static final int ERROR = -1;
+    public static final int NOMINAL = 0;
+    public static final int WORKING = 1;
     private static BusinessCore instance;
     private Economy eco;
     private Chat chat;
-    
+    private FileManager businessFileManager, jobFileManager, employeeFileManager;
+
     HashMap<String, String> hm = new HashMap<String, String>();
 
 
@@ -36,9 +43,7 @@ public class BusinessCore extends JavaPlugin {
         this.getLogger().info("Loaded Chat: " + setupChat());
         registerListeners();
         registerCommands();
-        /**
-         * @todo:
-         */
+        //settings and configs
         BusinessManager.createBusinesses();
         EmployeeManager.loadEmployees();
         JobManager.loadJobs();
@@ -52,7 +57,7 @@ public class BusinessCore extends JavaPlugin {
 
     /**
      * A method to condense the clutter inside the onEnable method.
-     */
+     */    
     public void registerListeners() {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BusinessListener(), this);
@@ -123,9 +128,39 @@ public class BusinessCore extends JavaPlugin {
         return chat != null;
     }
 
+    public Economy getEconomy() {
+		return this.eco;
+    }
+
+    public FileManager getBusinessFileManager() {
+        return this.businessFileManager;
+    }
+
+    public FileManager getEmployeeFileManager() {
+        return this.employeeFileManager;
+    }
+
+    public FileManager getJobFileManager() {
+        return this.jobFileManager;
+    }
+
     public static BusinessCore getInstance() {
         if(instance == null)
             return null;
         return instance;
     }
+    
+    public static String getPrefix(int type) {
+        switch(type) {
+            case ERROR:
+                return ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+            case NOMINAL:
+                return ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+            case WORKING: 
+                return ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+            default:
+                return ChatColor.GRAY + "[" + ChatColor.GOLD + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+        }
+    }
+
 }

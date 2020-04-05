@@ -23,7 +23,7 @@ public class Scheduler {
         for (String name : EmployeeManager.pending.keySet()) {
             Player player = Bukkit.getPlayer(name);
             if (player != null && player.isOnline()) {
-                player.sendMessage(Prefixes.NOMINAL + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
+                player.sendMessage(BusinessCore.getPrefix(BusinessCore.NOMINAL) + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
                 playerMilli.put(name, System.currentTimeMillis());
             }
         }
