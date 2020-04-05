@@ -1,7 +1,5 @@
 debug-message: false
-firstrun: false
 payperiod: 1h
-managers: false
 prefixes:
     enabled: false
     colorcodes:
