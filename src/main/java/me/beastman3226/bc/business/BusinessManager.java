@@ -1,6 +1,5 @@
 package me.beastman3226.bc.business;
 
-import com.evilmidget38.UUIDFetcher;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -165,7 +164,7 @@ public class BusinessManager {
             BusinessFileManager.editConfig(new FileData().add(business.getName(), null));
             
             BusinessCore.log(Level.WARNING, business.getOwnerName() + " has just deleted business " + business.getName());
-            Bukkit.getPlayer(UUIDFetcher.getUUIDOf(business.getOwnerName())).sendMessage(Prefixes.ERROR + "Your business has been deleted");
+            Bukkit.getServer().getPlayer(business.getOwnerName()).sendMessage(Prefixes.ERROR + "Your business has been deleted");
         } catch (Exception ex) {
             Logger.getLogger(BusinessManager.class.getName()).log(Level.SEVERE, null, ex);
         }

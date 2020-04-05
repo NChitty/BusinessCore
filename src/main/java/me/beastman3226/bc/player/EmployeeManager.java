@@ -1,6 +1,5 @@
 package me.beastman3226.bc.player;
 
-import com.evilmidget38.UUIDFetcher;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -68,7 +67,7 @@ public class EmployeeManager {
             Employee employee = new Employee(name, 1000 + Employee.employeeList.size() + 1);
             employee.setBusiness(BID);
             Employee.employeeList.add(employee);
-            EmployeeFileManager.editConfig(new FileData().add(name + ".UUID", UUIDFetcher.getUUIDOf(name))
+            EmployeeFileManager.editConfig(new FileData().add(name + ".UUID", Bukkit.getServer().getPlayer(name).getUniqueID())
                     .add(name + ".id", employee.getID())
                     .add(name + ".business", employee.getBusiness().getID())
                     .add(name + ".completed", 0)

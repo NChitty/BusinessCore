@@ -1,6 +1,5 @@
 package me.beastman3226.bc.listener;
 
-import com.evilmidget38.UUIDFetcher;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import me.beastman3226.bc.BusinessCore;
@@ -36,7 +35,7 @@ public class BusinessListener implements Listener {
             try {
                 String ownerName = e.getBusiness().getOwnerName();
                 BusinessFileManager.editConfig(new FileData().add(e.getBusiness().getName() + ".name", e.getBusiness().getName())
-                        .add(e.getBusiness().getName() + ".ownerUUID", "" + UUIDFetcher.getUUIDOf(ownerName).toString())
+                        .add(e.getBusiness().getName() + ".ownerUUID", "" + Bukkit.getServer().getPlayer(e.getBusiness.getName()).getUniqueID())
                         .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
                         .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
                         .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
