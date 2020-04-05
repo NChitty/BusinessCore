@@ -1,6 +1,5 @@
 package me.beastman3226.bc;
 
-import com.evilmidget38.UUIDFetcher;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,8 +29,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
 
 /**
  *
@@ -114,29 +111,6 @@ public class BusinessCore extends JavaPlugin {
             BusinessManager.createBusinesses();
             EmployeeManager.loadEmployees();
             JobManager.loadJobs();
-        }
-        try {
-            Metrics metrics = new Metrics(this);
-
-            Graph businessesCreated = metrics.createGraph("Number of Businesses Created");
-            businessesCreated.addPlotter(new Metrics.Plotter("Businesses") {
-                @Override
-                public int getValue() {
-                    return Business.businessList.size();
-                }
-            });
-
-            Graph jobsCompleted = metrics.createGraph("Number of Jobs Completed");
-            jobsCompleted.addPlotter(new Metrics.Plotter("Jobs") {
-                @Override
-                public int getValue() {
-                    return Job.jobList.size();
-                }
-            });
-
-            metrics.start();
-        } catch (IOException e) {
-            this.getLogger().severe("Failed to send stats :-(");
         }
         Scheduler.runPayPeriod();
         getLogger().info("Do /businesscore for information about this plugin");
