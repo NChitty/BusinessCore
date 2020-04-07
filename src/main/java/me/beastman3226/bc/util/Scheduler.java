@@ -1,12 +1,7 @@
 package me.beastman3226.bc.util;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.business.Business;
-import me.beastman3226.bc.errors.InsufficientFundsException;
-import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
-import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

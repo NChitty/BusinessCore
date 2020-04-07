@@ -8,7 +8,6 @@ import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -46,9 +45,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
+        /*Player player = e.getPlayer();
         String prefix = "";
-        /*if (Information.prefix) {
+        if (Information.prefix) {
             if (BusinessManager.isOwner(player.getName())) {
                 prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
             } else if (Manager.isManager(player.getName()) && BusinessCore.Information.managers) {
