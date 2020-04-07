@@ -7,13 +7,13 @@ import me.beastman3226.bc.business.BusinessManager;
  *
  * @author beastman3226
  */
-public class BusinessPostCreatedEvent extends BusinessEvent {
+public class BusinessCreatedEvent extends BusinessEvent {
 
-    public BusinessPostCreatedEvent(Business b) {
+    public BusinessCreatedEvent(Business b) {
         super(b);
     }
 
-    public BusinessPostCreatedEvent(int id) {
+    public BusinessCreatedEvent(int id) {
         super(id);
     }
 
