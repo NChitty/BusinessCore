@@ -31,7 +31,8 @@ public class BusinessCommand extends ICommand {
 
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.start", usage = "/business start [name]")
     public void start(CommandSender sender, String[] args) {
-        if (!BusinessManager.isOwner(sender.getName())) {
+        Player playerSender = (Player) sender;
+        if (!BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
             String businessName = this.parseArgs(args);
             int id = BusinessManager.getNewID(businessName);
             if (id == -1) {
@@ -39,27 +40,22 @@ public class BusinessCommand extends ICommand {
                 return;
             }
             Business b = BusinessManager
-                    .createBusiness(new Business.Builder(id).name(businessName).owner(sender.getName()));
+                    .createBusiness(new Business.Builder(id).name(businessName).owner(playerSender.getUniqueId().toString()));
             BusinessCreatedEvent event = new BusinessCreatedEvent(b);
             Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                sender.sendMessage(BusinessCore.WORKING_PREFIX + "You founded " + businessName + "!");
-            }
         } else {
             sender.sendMessage(BusinessCore.ERROR_PREFIX + "You already own a business!");
         }
     }
 
-    @Subcommand(permission = "businesscore.business.close", usage = "/business close <id|owner name>")
+    @Subcommand(permission = "businesscore.business.close", usage = "/business close <id>")
     public void close(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (BusinessManager.isOwner(sender.getName())) {
-                BusinessClosedEvent event = new BusinessClosedEvent(BusinessManager.getBusiness(sender.getName()));
+            Player playerSender = (Player) sender;
+            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+                BusinessClosedEvent event = new BusinessClosedEvent(BusinessManager.getBusiness(playerSender.getUniqueId().toString()));
+                event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    BusinessManager.closeBusiness(BusinessManager.getBusiness(sender.getName()));
-                    sender.sendMessage(BusinessCore.NOMINAL_PREFIX + "Your business has been closed.");
-                }
             } else {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX + "You are not an owner!");
             }
@@ -68,29 +64,18 @@ public class BusinessCommand extends ICommand {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX + "/business close <id|owner name>");
             } else {
                 int id = -1;
-                if (args[0].matches("[0-9]")) {
+                if (!args[0].matches("[^0-9]+")) {
                     id = Integer.parseInt(args[0]);
                     if (BusinessManager.isID(id)) {
                         Business b = BusinessManager.getBusiness(id);
                         BusinessClosedEvent event = new BusinessClosedEvent(b);
+                        event.setSource(sender);
                         Bukkit.getPluginManager().callEvent(event);
-                        if (!event.isCancelled()) {
-                            BusinessManager.closeBusiness(b);
-                            sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getName() + " has been closed.");
-                        }
                     } else {
                         sender.sendMessage(BusinessCore.ERROR_PREFIX + "There is no such business with that ID.");
                     }
-                } else if (BusinessManager.isOwner(args[0])) {
-                    Business b = BusinessManager.getBusiness(args[0]);
-                    BusinessClosedEvent event = new BusinessClosedEvent(b);
-                    Bukkit.getPluginManager().callEvent(event);
-                    if (!event.isCancelled()) {
-                        BusinessManager.closeBusiness(b);
-                        sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getName() + " has been closed.");
-                    }
                 } else {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "/business close <id|owner name>");
+                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "/business close <id>");
                 }
             }
         }
@@ -99,7 +84,8 @@ public class BusinessCommand extends ICommand {
     @Subcommand(minArgs = 1, permission = "businesscore.business.withdraw", usage = "/business withdraw <id>|[amount] <amount>")
     public void withdraw(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (BusinessManager.isOwner(sender.getName())) {
+            Player playerSender = (Player) sender;
+            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 if (args.length > 1) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "You only need to provide the amount.");
                     return;
@@ -107,9 +93,10 @@ public class BusinessCommand extends ICommand {
                 if (args[0].matches("[^0-9.0-9]")) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
                 } else {
-                    Business b = BusinessManager.getBusiness(sender.getName());
+                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -amount);
+                    event.setSource(sender);
                     Bukkit.getPluginManager().callEvent(event);
                 }
             } else {
@@ -126,6 +113,7 @@ public class BusinessCommand extends ICommand {
                 Business b = BusinessManager.getBusiness(id);
                 double amount = Double.parseDouble(args[1]);
                 BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -amount);
+                event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             }
         }
@@ -134,7 +122,8 @@ public class BusinessCommand extends ICommand {
     @Subcommand(minArgs = 1, permission = "businesscore.business.deposit", usage = "/business deposit <id>[amount] <amount>")
     public void deposit(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (BusinessManager.isOwner(sender.getName())) {
+            Player playerSender = (Player) sender;
+            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 if (args.length > 1) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "You only need to provide the amount.");
                     return;
@@ -142,9 +131,10 @@ public class BusinessCommand extends ICommand {
                 if (args[0].matches("[^0-9.0-9]")) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
                 } else {
-                    Business b = BusinessManager.getBusiness(sender.getName());
+                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
+                    event.setSource(sender);
                     Bukkit.getPluginManager().callEvent(event);
                 }
             } else {
@@ -161,6 +151,7 @@ public class BusinessCommand extends ICommand {
                 Business b = BusinessManager.getBusiness(id);
                 double amount = Double.parseDouble(args[1]);
                 BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
+                event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             }
         }
@@ -169,8 +160,9 @@ public class BusinessCommand extends ICommand {
     @Subcommand(permission = "businesscore.business.balance", usage = "/business balance <id>")
     public void balance(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (BusinessManager.isOwner(sender.getName())) {
-                Business b = BusinessManager.getBusiness(sender.getName());
+            Player playerSender = (Player) sender;
+            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString());
                 sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getBalance()
                         + BusinessCore.getInstance().getEconomy().currencyNameSingular());
 
@@ -194,8 +186,9 @@ public class BusinessCommand extends ICommand {
     @Subcommand(permission = "businesscore.business.info", usage = "/business info <id>")
     public void info(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            if (BusinessManager.isOwner(sender.getName())) {
-                Business b = BusinessManager.getBusiness(sender.getName());
+            Player playerSender = (Player) sender;
+            if (BusinessManager.isOwner((playerSender.getUniqueId().toString()))) {
+                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString()));
                 String header = String.format(ChatColor.DARK_GREEN + "|%5s|%30s|%13s|", "ID", "Business Name",
                         "Balance");
                 String info = String.format(ChatColor.GREEN + "|%5d|%30s|%10.2f|", b.getID(), b.getName(),
@@ -289,7 +282,8 @@ public class BusinessCommand extends ICommand {
 
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|employee name]")
     public void employee(CommandSender sender, String[] args) {
-        if (BusinessManager.isOwner(sender.getName())) {
+        Player playerSender = (Player) sender;
+        if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
             Player player = null;
             if (args.length > 1) {
                 if (args[1].matches("[^0-9]+")) {
@@ -309,7 +303,7 @@ public class BusinessCommand extends ICommand {
                         sender.sendMessage(BusinessCore.OTHER_PREFIX + "An offer to join your business has been sent.");
                         player.sendMessage(
                                 String.format("%sYou have been offered a job at %s by %s", BusinessCore.OTHER_PREFIX,
-                                        BusinessManager.getBusiness(sender.getName()), sender.getName()));
+                                        BusinessManager.getBusiness(playerSender.getUniqueId().toString()), sender.getName()));
                         EmployeeManager.pending.put(player.getName(),
                                 BusinessManager.getBusiness(sender.getName()).getID());
                         Scheduler.runAcceptance();

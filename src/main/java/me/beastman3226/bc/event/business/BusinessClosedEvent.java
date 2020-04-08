@@ -1,5 +1,7 @@
 package me.beastman3226.bc.event.business;
 
+import org.bukkit.command.CommandSender;
+
 import me.beastman3226.bc.business.Business;
 
 /**
@@ -7,6 +9,7 @@ import me.beastman3226.bc.business.Business;
  */
 public class BusinessClosedEvent extends BusinessEvent {
 
+    private CommandSender source;
 
     public BusinessClosedEvent(int id) {
         super(id);
@@ -15,5 +18,13 @@ public class BusinessClosedEvent extends BusinessEvent {
 
     public BusinessClosedEvent(Business business) {
         super(business);
+    }
+
+    public void setSource(CommandSender source) {
+        this.source = source;
+    }
+
+    public CommandSender getSource() {
+        return this.source;
     }
 }

@@ -1,5 +1,7 @@
 package me.beastman3226.bc.event.business;
 
+import org.bukkit.command.CommandSender;
+
 import me.beastman3226.bc.business.Business;
 
 /**
@@ -9,6 +11,7 @@ import me.beastman3226.bc.business.Business;
 public class BusinessBalanceChangeEvent extends BusinessEvent {
 
     private double change;
+    private CommandSender source;
 
     /**
      *
@@ -23,6 +26,14 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
     public BusinessBalanceChangeEvent(int id, double change) {
         super(id);
         this.change = change;
+    }
+
+    public void setSource(CommandSender source) {
+        this.source = source;
+    }
+
+    public CommandSender getSource() {
+        return this.source;
     }
 
     /**
@@ -41,6 +52,10 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
         return (this.change < 0);
     }
 
+    public boolean isOverdraft() {
+        return this.getBusiness().getBalance() + this.getAmount() < 0;
+    }
+
     /**
      * Gets the absolute value of the amount specified
      *
@@ -54,7 +69,7 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
     }
 
     public double getFinalAmount() {
-        if(this.isWithdrawal() && this.getBusiness().getBalance() + this.getAmount() < 0) {
+        if(this.getBusiness().getBalance() + this.getAmount() < 0) {
             return this.getBusiness().getBalance();
         } else {
             return this.getBusiness().getBalance() + this.getAmount();

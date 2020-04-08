@@ -1,14 +1,11 @@
 package me.beastman3226.bc.business;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.event.business.BusinessClosedEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -95,12 +92,12 @@ public class BusinessManager {
      * Finds a business based on the name of the current owner, 100% match is not
      * guaranteed (ownership change)
      * 
-     * @param name Name of the owner
+     * @param uuid UUID of the owner
      * @return The business
      */
-    public static Business getBusiness(String name) {
+    public static Business getBusiness(String uuid) {
         for (Business b : businessList) {
-            if (b.getOwnerName().equalsIgnoreCase(name)) {
+            if (b.getOwnerUUID().equalsIgnoreCase(uuid)) {
                 return b;
             } else {
                 continue;
@@ -131,13 +128,7 @@ public class BusinessManager {
      * @param business The business to be deleted
      */
     public static void closeBusiness(Business business) {
-        
         businessList.remove(business);
-
-        BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(business.getName(), null));
-
-        BusinessCore.getInstance().getLogger().log(Level.WARNING,
-                business.getOwnerName() + " has just closed business " + business.getName());
     }
 
     /**

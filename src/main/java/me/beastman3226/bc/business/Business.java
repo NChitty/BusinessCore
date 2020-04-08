@@ -1,17 +1,21 @@
 package me.beastman3226.bc.business;
 
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.errors.InsufficientFundsException;
 import me.beastman3226.bc.player.Employee;
 
 public class Business {
 
     private final int id;
     private String name;
-    private String ownerName;
-    private double worth;
+    private String ownerUUID;
+    private double balance;
     private HashSet<Integer> employeeIDs = new HashSet<Integer>();
     private boolean salary = true;
     private double pay;
@@ -20,8 +24,8 @@ public class Business {
     private Business(Builder build) {
         this.id = build.id;
         this.name = build.name;
-        this.ownerName = build.ownerName;
-        this.worth = build.worth;
+        this.ownerUUID = build.ownerUUID;
+        this.balance = build.balance;
         this.salary = build.salary;
         this.pay = build.pay;
         if(build.employeeIDs != null) {
@@ -37,12 +41,12 @@ public class Business {
         return this.name;
     }
 
-    public String getOwnerName() {
-        return this.ownerName;
+    public String getOwnerUUID() {
+        return this.ownerUUID;
     }
 
     public double getBalance() {
-        return this.worth;
+        return this.balance;
     }
 
     public int[] getEmployeeIDs() {
@@ -55,34 +59,33 @@ public class Business {
         return toReturn;
     }
 
+    public Player getOwner() {
+        return Bukkit.getPlayer(UUID.fromString(this.ownerUUID));
+    }
+
     public Business setName(String name) {
         this.name = name;
         return this;
     }
 
-    public Business setOwnerName(String owner) {
-        this.ownerName = owner;
+    public Business setOwnerUUID(String owner) {
+        this.ownerUUID = owner;
         return this;
     }
 
     public Business setBalance(double newBalance) {
-        this.worth = newBalance;
+        this.balance = newBalance;
         return this;
     }
 
     public Business deposit(double amount) {
-        this.worth = this.worth + amount;
+        this.balance = this.balance + amount;
         BusinessCore.getInstance().getLogger().log(Level.INFO, "Depositing " + amount + " into " + this.getName());
         return this;
     }
 
-    public Business withdraw(double amount) throws InsufficientFundsException {
-        if(amount > this.worth) {
-            throw new InsufficientFundsException("Not enough funds. Missing " + (amount - worth));
-        } else {
-            this.worth = this.worth - amount;
-            BusinessCore.getInstance().getLogger().log(Level.INFO, "Withdrawing " + amount + " from " + this.worth + " in business " + this.getName());
-        }
+    public Business withdraw(double amount) {
+        this.balance = this.balance - amount;
         return this;
     }
 
@@ -156,8 +159,8 @@ public class Business {
     public static class Builder {
         private int id;
         private String name;
-        private String ownerName;
-        private double worth;
+        private String ownerUUID;
+        private double balance;
         private int[] employeeIDs;
         private double pay;
         private boolean salary;
@@ -175,12 +178,12 @@ public class Business {
             return this.name;
         }
 
-        public String getOwnerName() {
-            return this.ownerName;
+        public String getOwnerUUID() {
+            return this.ownerUUID;
         }
 
         public double getBalance() {
-            return this.worth;
+            return this.balance;
         }
 
         public int[] getEmployeeIDs() {
@@ -203,12 +206,12 @@ public class Business {
          * @return 
          */
         public Builder owner(String owner) {
-            this.ownerName = owner;
+            this.ownerUUID = owner;
             return this;
         }
 
         public Builder balance(double d) {
-            this.worth = d;
+            this.balance = d;
             return this;
         }
 
