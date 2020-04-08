@@ -53,9 +53,7 @@ public abstract class ICommand implements CommandExecutor {
                     }
                 } catch (NoSuchMethodException e) {
                     return false;
-                } catch(SecurityException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                } catch(Exception e) {
                     e.printStackTrace();
                 }
             } else if (hasSubcommands && args.length == 0) {

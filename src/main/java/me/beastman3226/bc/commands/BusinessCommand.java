@@ -13,6 +13,10 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.business.BusinessClosedEvent;
 import me.beastman3226.bc.event.business.BusinessCreatedEvent;
+import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
+import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Scheduler;
 
 public class BusinessCommand extends ICommand {
 
@@ -283,18 +287,65 @@ public class BusinessCommand extends ICommand {
         }
     }
 
-    @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list]")
+    @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|employee name]")
     public void employee(CommandSender sender, String[] args) {
-        switch (args[0].toLowerCase()) {
-            case "hire":
-                break;
-            case "fire":
-                break;
-            case "list":
-                break;
-            default:
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "Try \"hire\",\"fire\", or \"list\"");
-                break;
+        if (BusinessManager.isOwner(sender.getName())) {
+            Player player = null;
+            if (args.length > 1) {
+                if (args[1].matches("[^0-9]+")) {
+                    player = Bukkit.getPlayer(args[1]);
+                } else {
+                    int id = Integer.parseInt(args[1]);
+                    if (EmployeeManager.getEmployee(id) != null)
+                        player = Bukkit.getPlayerExact(EmployeeManager.getEmployee(id).getName());
+                }
+            }
+            switch (args[0].toLowerCase()) {
+                case "hire":
+                    if (EmployeeManager.isEmployee(player.getName())) {
+                        sender.sendMessage(
+                                BusinessCore.ERROR_PREFIX + "That player is already any employee of a business.");
+                    } else {
+                        sender.sendMessage(BusinessCore.OTHER_PREFIX + "An offer to join your business has been sent.");
+                        player.sendMessage(
+                                String.format("%sYou have been offered a job at %s by %s", BusinessCore.OTHER_PREFIX,
+                                        BusinessManager.getBusiness(sender.getName()), sender.getName()));
+                        EmployeeManager.pending.put(player.getName(),
+                                BusinessManager.getBusiness(sender.getName()).getID());
+                        Scheduler.runAcceptance();
+                    }
+                    break;
+                case "fire":
+                    if (EmployeeManager.isEmployee(player.getName())) {
+                        Employee emp = EmployeeManager.getEmployee(player.getName());
+                        if (emp.getBusiness().equals(BusinessManager.getBusiness(sender.getName()))) {
+                            Business b = BusinessManager.getBusiness(sender.getName());
+                            BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, emp);
+                            Bukkit.getPluginManager().callEvent(event);
+                        } else {
+                            sender.sendMessage(String.format("%sThat employee is not yours.", BusinessCore.ERROR_PREFIX));
+                        }
+                    } else {
+                        sender.sendMessage(
+                                String.format("%sThat player is not an employee.", BusinessCore.ERROR_PREFIX));
+                    }
+                    break;
+                case "list":
+                    Business b = BusinessManager.getBusiness(sender.getName());
+                    final String format = "%s|%5d|%20s|%4d|%7d|\n";
+                    StringBuilder sb = new StringBuilder(String.format("%s|%5s|%20s|%4s|%7s|\n", ChatColor.GOLD, "ID", "Name", "Jobs", "Current"));
+                    for(int id : b.getEmployeeIDs()) {
+                        Employee emp = EmployeeManager.getEmployee(id);
+                        sb.append(String.format(format, ChatColor.GRAY, id, emp.getName(), emp.getCompletedJobs(), emp.getCurrentJob()));
+                    }
+                    sender.sendMessage(sb.toString().split("\n"));
+                    break;
+                default:
+                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "Try \"hire\",\"fire\", or \"list\"");
+                    break;
+            }
+        } else {
+            sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to run this command.");
         }
     }
 }
