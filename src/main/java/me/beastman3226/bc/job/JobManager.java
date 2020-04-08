@@ -107,9 +107,6 @@ public class JobManager {
             }
             Job j = new Job(Integer.parseInt(string), UUID.fromString(issuer), jobYml.getString(string + ".description"), loc, jobYml.getDouble(string + ".payment"));
             Job.jobList.add(j);
-            /*if (Information.debug) {
-                Information.log.log(Level.INFO, "Created job #{0} with description: {1}", new Object[]{j.getID(), j.getDescription()});
-            }*/
         }
 
     }

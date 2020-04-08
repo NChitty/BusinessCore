@@ -55,6 +55,10 @@ public class Business {
         return Bukkit.getPlayer(UUID.fromString(this.ownerUUID));
     }
 
+    public String getOwnerName() {
+		return this.getOwner().getName();
+	}
+
     public Business setName(String name) {
         this.name = name;
         return this;
@@ -115,27 +119,6 @@ public class Business {
     @Override
     public String toString() {
         return this.name;
-    }
-    
-    public boolean toggleSalary() {
-        
-        BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration().set(this.name + ".salary", !this.salary);
-        
-        return (this.salary = !salary);
-    }
-    
-    public boolean isSalary() {
-        return this.salary;
-    }
-    
-    public double getSalary() {
-        return this.pay;
-    }
-    
-    public void setSalary(double salary) {
-        this.pay = salary;
-        BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration().set(this.name + ".payment", this.pay);
-        
     }
     
     public static class Builder {

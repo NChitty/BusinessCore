@@ -21,24 +21,16 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
-        if (Scheduler.playerMilli.containsKey(e.getPlayer().getName()) && e.getMessage().contains("yes")) {
-            if (Scheduler.playerMilli.get(e.getPlayer().getName()) >= (System.currentTimeMillis() - 10000)) {
-                Business b = BusinessManager.getBusiness(EmployeeManager.pending.get(e.getPlayer().getName()));
+        if (Scheduler.playerMilli.containsKey(e.getPlayer()) && e.getMessage().contains("yes")) {
+            if (Scheduler.playerMilli.get(e.getPlayer()) >= (System.currentTimeMillis() - 10000)) {
+                Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, null);
-                Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer().getName(), b.getID());
+                Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer(), b.getID());
                 event.setEmployee(newEmployee);
                 Bukkit.getPluginManager().callEvent(event);
-                if (!event.isCancelled()) {
-                    event.getBusiness().addEmployee(event.getEmployee());
-                    EmployeeManager.pending.remove(e.getPlayer().getName());
-                    BusinessManager.businessList.remove(event.getBusiness());
-                    BusinessManager.businessList.add(event.getBusiness());
-                    e.getPlayer().sendMessage(BusinessCore.WORKING_PREFIX + "You have been hired to work for " + event.getBusiness().getName());
-                    e.setCancelled(true);
-                }
             } else {
                 e.getPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Timed out.");
-                Scheduler.playerMilli.remove(e.getPlayer().getName());
+                Scheduler.playerMilli.remove(e.getPlayer());
             }
         }
     }

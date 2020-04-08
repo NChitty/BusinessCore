@@ -11,6 +11,7 @@ import me.beastman3226.bc.player.EmployeeManager;
 public class BusinessFiredEmployeeEvent extends BusinessEvent {
 
     private Employee employee;
+    
     public BusinessFiredEmployeeEvent(Business b, Employee e) {
         super(b);
         this.employee = e;
@@ -32,13 +33,4 @@ public class BusinessFiredEmployeeEvent extends BusinessEvent {
     public void setEmployee(Employee e) {
         this.employee = e;
     }
-
-    public int[] finalEmployeeList() {
-        return this.getBusiness().removeEmployee(employee.getID()).getEmployeeIDs();
-    }
-
-    public void setEmployeeList(int[] ids) {
-        this.getBusiness().setEmployeeIDs(ids);
-    }
-
 }

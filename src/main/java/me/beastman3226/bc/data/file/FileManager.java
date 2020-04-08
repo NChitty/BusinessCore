@@ -20,7 +20,6 @@ public class FileManager {
 
     public FileManager(String fileName) {
         file = new File(BusinessCore.getInstance().getDataFolder(), fileName);
-
         if(!file.exists()) {
             file.getParentFile().mkdirs();
             try {

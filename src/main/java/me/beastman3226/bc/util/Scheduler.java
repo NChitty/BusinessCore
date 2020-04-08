@@ -12,14 +12,13 @@ import org.bukkit.entity.Player;
  */
 public class Scheduler {
 
-    public static HashMap<String, Long> playerMilli = new HashMap<String, Long>();
+    public static HashMap<Player, Long> playerMilli = new HashMap<>();
 
     public static void runAcceptance() {
-        for (String name : EmployeeManager.pending.keySet()) {
-            Player player = Bukkit.getPlayer(name);
+        for (Player player : EmployeeManager.getPendingPlayers().keySet()) {
             if (player != null && player.isOnline()) {
                 player.sendMessage(BusinessCore.NOMINAL_PREFIX + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
-                playerMilli.put(name, System.currentTimeMillis());
+                playerMilli.put(player, System.currentTimeMillis());
             }
         }
     }

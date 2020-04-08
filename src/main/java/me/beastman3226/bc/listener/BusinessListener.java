@@ -90,19 +90,10 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
         
-            BusinessCore.getInstance().getBusinessFileManager()
-                    .editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.finalEmployeeList()));
-            BusinessCore.getInstance().getEmployeeFileManager()
-                    .editConfig(new FileData().add(e.getEmployee().getName(), null));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onHire(BusinessHiredEmployeeEvent e) {
-        for (Object o : e.getBusiness().getEmployees()) {
-            if (((Integer) o) == e.getEmployee().getID()) {
-                e.setCancelled(true);
-            }
-        }
-        BusinessCore.getInstance().getLogger().log(Level.INFO, e.getBusiness() + " has hired an employee.");
+        
     }
 }
