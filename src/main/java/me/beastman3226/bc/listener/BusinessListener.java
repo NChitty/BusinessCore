@@ -84,34 +84,21 @@ public class BusinessListener implements Listener {
                 .editConfig(new FileData().add(businessName + ".name", businessName)
                         .add(e.getBusiness().getName() + ".ownerUUID", ownerUUID)
                         .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
-                        .add(e.getBusiness().getName() + ".employeeIDs", e.getBusiness().getEmployeeIDs())
                         .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
-        boolean onList = false;
-        for (int id : e.getBusiness().getEmployeeIDs()) {
-            if (e.getEmployee().getID() == id) {
-                onList = true;
-                break;
-            }
-        }
-        if (!onList) {
-            e.setCancelled(true);
-        }
-        if (!e.isCancelled()) {
+        
             BusinessCore.getInstance().getBusinessFileManager()
                     .editConfig(new FileData().add(e.getBusiness().getName() + ".employeeIDs", e.finalEmployeeList()));
             BusinessCore.getInstance().getEmployeeFileManager()
                     .editConfig(new FileData().add(e.getEmployee().getName(), null));
-        }
-        Employee.employeeList.remove(e.getEmployee());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onHire(BusinessHiredEmployeeEvent e) {
-        for (Object o : e.getBusiness().getEmployeeIDs()) {
+        for (Object o : e.getBusiness().getEmployees()) {
             if (((Integer) o) == e.getEmployee().getID()) {
                 e.setCancelled(true);
             }

@@ -39,8 +39,8 @@ public class BusinessCommand extends ICommand {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX + "That name is too similar to another business's name.");
                 return;
             }
-            Business b = BusinessManager
-                    .createBusiness(new Business.Builder(id).name(businessName).owner(playerSender.getUniqueId().toString()));
+            Business b = BusinessManager.createBusiness(
+                    new Business.Builder(id).name(businessName).owner(playerSender.getUniqueId().toString()));
             BusinessCreatedEvent event = new BusinessCreatedEvent(b);
             Bukkit.getPluginManager().callEvent(event);
         } else {
@@ -53,7 +53,8 @@ public class BusinessCommand extends ICommand {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-                BusinessClosedEvent event = new BusinessClosedEvent(BusinessManager.getBusiness(playerSender.getUniqueId().toString()));
+                BusinessClosedEvent event = new BusinessClosedEvent(
+                        BusinessManager.getBusiness(playerSender.getUniqueId().toString()));
                 event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             } else {
@@ -162,7 +163,7 @@ public class BusinessCommand extends ICommand {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString());
+                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString()));
                 sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getBalance()
                         + BusinessCore.getInstance().getEconomy().currencyNameSingular());
 
@@ -194,8 +195,8 @@ public class BusinessCommand extends ICommand {
                 String info = String.format(ChatColor.GREEN + "|%5d|%30s|%10.2f|", b.getID(), b.getName(),
                         b.getBalance());
                 String splitter = ChatColor.DARK_GREEN + "==========================================";
-                String employeeIds = ChatColor.GREEN + Arrays.toString(b.getEmployeeIDs());
-                sender.sendMessage(new String[] { header, info, splitter, employeeIds });
+                String employees = ChatColor.GREEN + Arrays.toString(b.getEmployees().toArray());
+                sender.sendMessage(new String[] { header, info, splitter, employees });
 
             } else if (args.length == 0) {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX
@@ -215,8 +216,8 @@ public class BusinessCommand extends ICommand {
                 String info = String.format(ChatColor.GREEN + "|%5d|%30s|%10.2f|", b.getID(), b.getName(),
                         b.getBalance());
                 String splitter = ChatColor.DARK_GREEN + "==========================================";
-                String employeeIds = ChatColor.GREEN + Arrays.toString(b.getEmployeeIDs());
-                sender.sendMessage(new String[] { header, info, splitter, employeeIds });
+                String employees = ChatColor.GREEN + Arrays.toString(b.getEmployees().toArray());
+                sender.sendMessage(new String[] { header, info, splitter, employees });
             }
         }
     }
@@ -224,7 +225,7 @@ public class BusinessCommand extends ICommand {
     @Subcommand(minArgs = 1, permission = "businesscore.business.list", usage = "/business list [<\"id\"|\"balance\"|\"name\">] [<page>]")
     public void list(CommandSender sender, String[] args) {
         int page = 1;
-        int pagesOutOf = BusinessManager.businessList.size() / 5;
+        int pagesOutOf = BusinessManager.getBusinessList().size() / 5;
         int fromIndex = 0;
         int toIndex = 4;
         if (args.length > 1) {
@@ -235,7 +236,7 @@ public class BusinessCommand extends ICommand {
         }
         if (page > 1) {
             fromIndex = page <= pagesOutOf ? page * 5 : pagesOutOf * 5;
-            toIndex = page <= pagesOutOf ? page * 5 + 4 : BusinessManager.businessList.size();
+            toIndex = page <= pagesOutOf ? page * 5 + 4 : BusinessManager.getBusinessList().size();
         }
         switch (args[0].toLowerCase()) {
             case "id":
@@ -280,57 +281,56 @@ public class BusinessCommand extends ICommand {
         }
     }
 
-    @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|employee name]")
+    @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|player name]")
     public void employee(CommandSender sender, String[] args) {
         Player playerSender = (Player) sender;
         if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+            Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
             Player player = null;
             if (args.length > 1) {
                 if (args[1].matches("[^0-9]+")) {
                     player = Bukkit.getPlayer(args[1]);
                 } else {
                     int id = Integer.parseInt(args[1]);
-                    if (EmployeeManager.getEmployee(id) != null)
-                        player = Bukkit.getPlayerExact(EmployeeManager.getEmployee(id).getName());
+                    if (EmployeeManager.isEmployeeFor(b, id))
+                        player = Bukkit.getPlayer(EmployeeManager.getEmployee(b, id).getUniqueId());
                 }
+            }
+            if (player == null) {
+                sender.sendMessage(BusinessCore.ERROR_PREFIX + "Could not find the specified player.");
+                return;
             }
             switch (args[0].toLowerCase()) {
                 case "hire":
-                    if (EmployeeManager.isEmployee(player.getName())) {
+                    if (EmployeeManager.isEmployee(player.getUniqueId())) {
                         sender.sendMessage(
                                 BusinessCore.ERROR_PREFIX + "That player is already any employee of a business.");
                     } else {
                         sender.sendMessage(BusinessCore.OTHER_PREFIX + "An offer to join your business has been sent.");
-                        player.sendMessage(
-                                String.format("%sYou have been offered a job at %s by %s", BusinessCore.OTHER_PREFIX,
-                                        BusinessManager.getBusiness(playerSender.getUniqueId().toString()), sender.getName()));
-                        EmployeeManager.pending.put(player.getName(),
-                                BusinessManager.getBusiness(sender.getName()).getID());
+                        player.sendMessage(String.format("%sYou have been offered a job at %s by %s",
+                                BusinessCore.OTHER_PREFIX,
+                                b.getName(), sender.getName()));
+                        EmployeeManager.getPendingPlayers().put(player,
+                                b.getID());
                         Scheduler.runAcceptance();
                     }
                     break;
                 case "fire":
-                    if (EmployeeManager.isEmployee(player.getName())) {
+                    if (EmployeeManager.isEmployeeFor(b, player.getUniqueId())) {
                         Employee emp = EmployeeManager.getEmployee(player.getName());
-                        if (emp.getBusiness().equals(BusinessManager.getBusiness(sender.getName()))) {
-                            Business b = BusinessManager.getBusiness(sender.getName());
-                            BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, emp);
-                            Bukkit.getPluginManager().callEvent(event);
-                        } else {
-                            sender.sendMessage(String.format("%sThat employee is not yours.", BusinessCore.ERROR_PREFIX));
-                        }
+                        BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, emp);
+                        Bukkit.getPluginManager().callEvent(event);
                     } else {
                         sender.sendMessage(
-                                String.format("%sThat player is not an employee.", BusinessCore.ERROR_PREFIX));
+                                String.format("%sThat player is not one of your employees.", BusinessCore.ERROR_PREFIX));
                     }
                     break;
                 case "list":
-                    Business b = BusinessManager.getBusiness(sender.getName());
                     final String format = "%s|%5d|%20s|%4d|%7d|\n";
-                    StringBuilder sb = new StringBuilder(String.format("%s|%5s|%20s|%4s|%7s|\n", ChatColor.GOLD, "ID", "Name", "Jobs", "Current"));
-                    for(int id : b.getEmployeeIDs()) {
-                        Employee emp = EmployeeManager.getEmployee(id);
-                        sb.append(String.format(format, ChatColor.GRAY, id, emp.getName(), emp.getCompletedJobs(), emp.getCurrentJob()));
+                    StringBuilder sb = new StringBuilder(
+                            String.format("%s|%5s|%20s|%4s|%7s|\n", ChatColor.GOLD, "ID", "Name", "Jobs", "Current"));
+                    for (Employee e : b.getEmployees()) {
+                        sb.append(String.format(format, ChatColor.GRAY, e.getID(), e.getName(), e.getCompletedJobs(), e.getCurrentJob()));
                     }
                     sender.sendMessage(sb.toString().split("\n"));
                     break;

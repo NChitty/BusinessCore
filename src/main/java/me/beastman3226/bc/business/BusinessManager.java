@@ -3,9 +3,7 @@ package me.beastman3226.bc.business;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.data.file.FileData;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,7 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class BusinessManager {
 
-    public static ArrayList<Business> businessList = new ArrayList<Business>();
+    private static ArrayList<Business> businessList = new ArrayList<Business>();
 
     /**
      * Creates all businesses from file.
@@ -26,33 +24,18 @@ public class BusinessManager {
         FileConfiguration businessYml = BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration();
         int id;
         String name, owner;
-        boolean salary = false;
-        double pay = 0, balance;
+        double balance;
         for (String s : businessYml.getKeys(false)) {
-            List<String> list = businessYml.getStringList(s + ".employeeIDs");
             id = businessYml.getInt(s + ".id");
             name = s;
-            owner = Bukkit.getOfflinePlayer(UUID.fromString(businessYml.getString(s + ".ownerUUID"))).getName();
-            if (owner == null)
-                owner = Bukkit.getPlayer(UUID.fromString(businessYml.getString(s + ".ownerUUID"))).getName();
+            owner = businessYml.getString(s + ".ownerUUID");
             balance = businessYml.getDouble(s + ".balance");
-            if (!businessYml.contains(s + ".pay") || !businessYml.contains(s + ".salary")) {
-                pay = businessYml.getDouble(s + ".pay");
-                salary = businessYml.getBoolean(s + ".salary");
-            }
-            if (!list.isEmpty()) {
-                Business b = createBusiness(new Business.Builder(id).name(name).owner(owner).balance(balance)
-                        .ids(list.toArray(new String[] {})).salary(salary).pay(pay));
-                BusinessCore.getInstance().getLogger().log(Level.INFO, "Loaded business " + b.getName() + " from file");
-            } else {
-                createBusiness(new Business.Builder(id).name(s).owner(owner).balance(balance));
-                /*
-                 * if(Information.debug) { Information.BusinessCore.getLogger().log(Level.INFO,
-                 * "Loaded business {0} with owner as {1}!", new Object[]{b.getName(),
-                 * b.getOwnerName()}); }
-                 */
-            }
+            Business b = createBusiness(new Business.Builder(id).name(name).owner(owner).balance(balance));
         }
+    }
+
+    public static ArrayList<Business> getBusinessList() {
+        return businessList;
     }
 
     /**
@@ -110,9 +93,9 @@ public class BusinessManager {
         int id = 0;
         int pos = 1;
         for (char c : name.toCharArray()) {
-            if(Character.isLetter(c)){
-                id += ((c-'a'+1)*(c-'a'+1))*(pos++);
-            } else if(Character.isDigit(c)){
+            if (Character.isLetter(c)) {
+                id += ((c - 'a' + 1) * (c - 'a' + 1)) * (pos++);
+            } else if (Character.isDigit(c)) {
                 continue;
             }
         }
@@ -138,9 +121,9 @@ public class BusinessManager {
      * @param name The name of the player
      * @return True if name has a business, false if not.
      */
-    public static boolean isOwner(String name) {
+    public static boolean isOwner(String uuid) {
         for (Business b : businessList) {
-            if (b.getOwnerName().equalsIgnoreCase(name)) {
+            if (b.getOwnerUUID().equalsIgnoreCase(uuid)) {
                 return true;
             } else {
                 continue;

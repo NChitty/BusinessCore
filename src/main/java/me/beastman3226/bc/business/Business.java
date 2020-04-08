@@ -1,5 +1,6 @@
 package me.beastman3226.bc.business;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
 
 public class Business {
 
@@ -16,7 +18,7 @@ public class Business {
     private String name;
     private String ownerUUID;
     private double balance;
-    private HashSet<Integer> employeeIDs = new HashSet<Integer>();
+    private HashSet<Employee> employees = new HashSet<Employee>();
     private boolean salary = true;
     private double pay;
     
@@ -26,11 +28,7 @@ public class Business {
         this.name = build.name;
         this.ownerUUID = build.ownerUUID;
         this.balance = build.balance;
-        this.salary = build.salary;
-        this.pay = build.pay;
-        if(build.employeeIDs != null) {
-            this.employeeIDs = build.toHashSet(build.employeeIDs);
-        }
+        this.employees.addAll(Arrays.asList(build.employees));
     }
 
     public int getID() {
@@ -49,14 +47,8 @@ public class Business {
         return this.balance;
     }
 
-    public int[] getEmployeeIDs() {
-        int[] toReturn = new int[this.employeeIDs.size()];
-        int i = 0;
-        for(Integer id : this.employeeIDs) {
-            toReturn[i] = id.intValue();
-            i++;
-        }
-        return toReturn;
+    public HashSet<Employee> getEmployees() {
+        return this.employees;
     }
 
     public Player getOwner() {
@@ -89,14 +81,14 @@ public class Business {
         return this;
     }
 
-    public Business setEmployeeIDs(int[] ids) {
-        this.employeeIDs = this.toHashSet(ids);
+
+    public Business setEmployees(Employee[] e) {
+        this.employees.addAll(Arrays.asList(e));
         return this;
     }
 
-    public Business removeEmployee(int id) {
-        this.employeeIDs.remove(id);
-        BusinessCore.getInstance().getLogger().log(Level.INFO, "Fired employee " + id + " from " + this.getName() );
+    public Business removeEmployee(Employee e) {
+        this.employees.remove(e);
         return this;
     }
 
@@ -105,9 +97,8 @@ public class Business {
      * @param id The id of the employee to be added
      * @return this instance of the business
      */
-    public Business addEmployee(int id) {
-        this.employeeIDs.add(id);
-        BusinessCore.getInstance().getLogger().log(Level.INFO, "Added employee " + id + " to " + this.getName());
+    public Business addEmployee(Employee e) {
+        this.employees.add(e);
         return this;
     }
 
@@ -116,23 +107,14 @@ public class Business {
      * @param employee The employee to be added
      * @return this instance of the business
      */
-    public Business addEmployee(Employee employee) {
-        this.employeeIDs.add(employee.getID());
-        BusinessCore.getInstance().getLogger().log(Level.INFO, "Added employee " + employee.getID() + " to " + this.getName());
+    public Business addEmployee(int id) {
+        this.employees.add(EmployeeManager.getEmployee(id));
         return this;
     }
 
     @Override
     public String toString() {
         return this.name;
-    }
-
-    private HashSet<Integer> toHashSet(int[] employeeIDs) {
-        HashSet<Integer> returnThis = new HashSet<Integer>();
-        for(int i : employeeIDs) {
-            returnThis.add(i);
-        }
-        return returnThis;
     }
     
     public boolean toggleSalary() {
@@ -161,17 +143,10 @@ public class Business {
         private String name;
         private String ownerUUID;
         private double balance;
-        private int[] employeeIDs;
-        private double pay;
-        private boolean salary;
+        private Employee[] employees;
         
         public int getID() {
             return this.id;
-        }
-        
-        public Builder salary(boolean sal) {
-            this.salary = sal;
-            return this;
         }
         
         public String getName() {
@@ -186,8 +161,8 @@ public class Business {
             return this.balance;
         }
 
-        public int[] getEmployeeIDs() {
-            return this.employeeIDs;
+        public Employee[] getEmployees() {
+            return this.employees;
         }
 
         public Builder(int id) {
@@ -215,27 +190,16 @@ public class Business {
             return this;
         }
 
-        public Builder ids(int[] ids) {
-            if(ids != null) {
-                this.employeeIDs = ids;
-            } else {
-                this.employeeIDs = new int[]{};
-            }
+        public Builder employees(Employee[] employee) {
+            this.employees = employee;
             return this;
         }
         
-        public Builder pay(double pay) {
-            this.pay = pay;
-            return this;
-        }
-        
-        public Builder ids(String[] ids) {
+        public Builder employees(String[] ids) {
             int i = 0;
-            int k;
-            this.employeeIDs = new int[ids.length];
+            this.employees = new Employee[ids.length];
             for(String s : ids) {
-                k = Integer.valueOf(s);
-                this.employeeIDs[i] = k;
+                this.employees[i] = EmployeeManager.getEmployee(Integer.parseInt(s));
                 i++;
             }
             return this;
@@ -243,17 +207,7 @@ public class Business {
 
         public Business build() {
             return new Business(this);
-        }
-
-        private HashSet<Integer> toHashSet(int[] employeeIDs) {
-            HashSet<Integer> returnThis = new HashSet<Integer>();
-            for(int i : employeeIDs) {
-                returnThis.add(i);
-            }
-            return returnThis;
-        }
-        
-        
+        }  
     }
     
 }

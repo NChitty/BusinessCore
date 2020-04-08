@@ -1,6 +1,9 @@
 package me.beastman3226.bc.player;
 
 import java.util.HashSet;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
@@ -13,16 +16,16 @@ import me.beastman3226.bc.data.file.FileData;
  */
 public class Employee {
 
-    private final String employeeName;
+    private String employeeName;
+    private final UUID uniqueId;
     private final int id;
     private int business;
     private int completedJobs;
     private int jobID;
 
-    public static HashSet<Employee> employeeList = new HashSet<Employee>();
-
-    public Employee(String name, int id) {
-        this.employeeName = name;
+    public Employee(UUID uuid, int id) {
+        this.uniqueId = uuid;
+        this.employeeName = Bukkit.getPlayer(uuid).getName();
         this.id = id;
     }
 
@@ -36,6 +39,10 @@ public class Employee {
 
     public Business getBusiness() {
         return BusinessManager.getBusiness(this.business);
+    }
+
+    public UUID getUniqueId() {
+        return this.uniqueId;
     }
 
     public Employee setBusiness(Business b) {
@@ -85,6 +92,6 @@ public class Employee {
 
     @Override
     public String toString() {
-        return this.employeeName;
+        return this.id + "";
     }
 }
