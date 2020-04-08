@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.errors.OpenJobException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 

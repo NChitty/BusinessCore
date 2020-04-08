@@ -21,7 +21,7 @@ public class BusinessCreatedEvent extends BusinessEvent {
     public void setCancelled(boolean vln) {
         if(vln == true) {
             super.cancelled = true;
-            BusinessManager.deleteBusiness(super.business);
+            BusinessManager.closeBusiness(super.business);
         } else {
             super.cancelled = vln;
         }

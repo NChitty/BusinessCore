@@ -6,7 +6,6 @@ import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.file.FileData;
-import me.beastman3226.bc.errors.OpenJobException;
 
 /**
  *

@@ -33,11 +33,11 @@ public class PlayerListener implements Listener {
                     EmployeeManager.pending.remove(e.getPlayer().getName());
                     BusinessManager.businessList.remove(event.getBusiness());
                     BusinessManager.businessList.add(event.getBusiness());
-                    e.getPlayer().sendMessage(BusinessCore.getPrefix(BusinessCore.WORKING) + "You have been hired to work for " + event.getBusiness().getName());
+                    e.getPlayer().sendMessage(BusinessCore.WORKING_PREFIX + "You have been hired to work for " + event.getBusiness().getName());
                     e.setCancelled(true);
                 }
             } else {
-                e.getPlayer().sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "Timed out.");
+                e.getPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Timed out.");
                 Scheduler.playerMilli.remove(e.getPlayer().getName());
             }
         }

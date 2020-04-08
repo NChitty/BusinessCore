@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
-import me.beastman3226.bc.errors.OpenJobException;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCreatedEvent;
@@ -79,7 +78,7 @@ public class JobManager {
             }
         } else {
             try {
-                ((Player) j.getPlayer()).sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "Your balance is insufficient. Get more money!");
+                ((Player) j.getPlayer()).sendMessage(BusinessCore.ERROR_PREFIX + "Your balance is insufficient. Get more money!");
             } catch (Exception ex) {
                 Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
             }

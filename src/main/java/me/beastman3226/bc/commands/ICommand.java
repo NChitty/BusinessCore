@@ -35,17 +35,17 @@ public abstract class ICommand implements CommandExecutor {
                         Subcommand info = subcommand.getAnnotation(Subcommand.class);
                         if (!sender.hasPermission(info.permission())) {
                             sender.sendMessage(
-                                    BusinessCore.getPrefix(BusinessCore.ERROR) + "You must have the permission "
+                                    BusinessCore.ERROR_PREFIX + "You must have the permission "
                                             + info.permission() + " to execute this command.");
                             return true;
                         }
                         if (!info.consoleUse() && !(sender instanceof Player)) {
-                            sender.sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "Only players may use this command!");
+                            sender.sendMessage(BusinessCore.ERROR_PREFIX + "Only players may use this command!");
                             return true;
                         }
                         if (args.length - 1 < info.minArgs()) {
                             sender.sendMessage(
-                                    BusinessCore.getPrefix(BusinessCore.ERROR) + info.usage());
+                                    BusinessCore.ERROR_PREFIX + info.usage());
                             return true;
                         }
                         subcommand.invoke(null, sender, Arrays.copyOfRange(args, 1, args.length));
@@ -62,7 +62,7 @@ public abstract class ICommand implements CommandExecutor {
                 return false;
             } else {
                 if (!sender.hasPermission(permission)) {
-                    sender.sendMessage(BusinessCore.getPrefix(BusinessCore.ERROR) + "You must have the permission "
+                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must have the permission "
                             + permission + " to execute this command.");
                     return true;
                 } else {

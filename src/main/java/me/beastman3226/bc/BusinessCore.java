@@ -2,9 +2,6 @@ package me.beastman3226.bc;
 
 import java.util.HashMap;
 import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.commands.BusinessCommandHandler;
-import me.beastman3226.bc.commands.JobCommandHandler;
-import me.beastman3226.bc.commands.MiscCommandHandler;
 import me.beastman3226.bc.data.file.FileManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
@@ -25,9 +22,10 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BusinessCore extends JavaPlugin {
 
-    public static final int ERROR = -1;
-    public static final int NOMINAL = 0;
-    public static final int WORKING = 1;
+    public static final String ERROR_PREFIX = ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+    public static final String NOMINAL_PREFIX = ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+    public static final String WORKING_PREFIX = ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
+    public static final String OTHER_PREFIX = ChatColor.GRAY + "[" + ChatColor.GOLD + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
     private static BusinessCore instance;
     private Economy eco;
     private Chat chat;
@@ -68,30 +66,8 @@ public class BusinessCore extends JavaPlugin {
      * Method to avoid clutter inside onEnable for commands.
      */
     public void registerCommands() {
-        BusinessCommandHandler bch = BusinessCommandHandler.getInstance();
-        JobCommandHandler jch = JobCommandHandler.getInstance();
-        MiscCommandHandler mch = MiscCommandHandler.getInstance();
-        getCommand("b.create").setExecutor(bch);
-        getCommand("b.delete").setExecutor(bch);
-        getCommand("b.withdraw").setExecutor(bch);
-        getCommand("b.deposit").setExecutor(bch);
-        getCommand("b.balance").setExecutor(bch);
-        getCommand("b.info").setExecutor(bch);
-        getCommand("b.top").setExecutor(bch);
-        getCommand("b.toggle").setExecutor(bch);
-        getCommand("b.salary").setExecutor(bch);
-        getCommand("b.hire").setExecutor(bch);
-        getCommand("b.fire").setExecutor(bch);
-        getCommand("b.employee").setExecutor(bch);
-        getCommand("j.open").setExecutor(jch);
-        getCommand("j.claim").setExecutor(jch);
-        getCommand("j.list").setExecutor(jch);
-        getCommand("j.complete").setExecutor(jch);
-        getCommand("j.me").setExecutor(jch);
-        getCommand("j.id").setExecutor(jch);
-        getCommand("businesscore").setExecutor(mch);
-        getCommand("bc.help").setExecutor(mch);
-        getCommand("update").setExecutor(mch);
+
+        
     }
 
     public boolean setupEconomy() {
@@ -149,18 +125,4 @@ public class BusinessCore extends JavaPlugin {
             return null;
         return instance;
     }
-    
-    public static String getPrefix(int type) {
-        switch(type) {
-            case ERROR:
-                return ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-            case NOMINAL:
-                return ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-            case WORKING: 
-                return ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-            default:
-                return ChatColor.GRAY + "[" + ChatColor.GOLD + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-        }
-    }
-
 }
