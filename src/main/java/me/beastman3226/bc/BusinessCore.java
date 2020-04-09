@@ -2,6 +2,7 @@ package me.beastman3226.bc;
 
 import java.util.HashMap;
 import me.beastman3226.bc.business.BusinessManager;
+import me.beastman3226.bc.commands.BusinessCommand;
 import me.beastman3226.bc.data.file.FileManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
@@ -39,6 +40,10 @@ public class BusinessCore extends JavaPlugin {
         instance = this;
         this.getLogger().info("Loaded Economy: " + setupEconomy());
         this.getLogger().info("Loaded Chat: " + setupChat());
+        this.saveDefaultConfig();
+        businessFileManager = new FileManager("business.yml");
+        employeeFileManager = new FileManager("employee.yml");
+        jobFileManager = new FileManager("job.yml");
         registerListeners();
         registerCommands();
         //settings and configs
@@ -66,8 +71,7 @@ public class BusinessCore extends JavaPlugin {
      * Method to avoid clutter inside onEnable for commands.
      */
     public void registerCommands() {
-
-        
+        new BusinessCommand();
     }
 
     public boolean setupEconomy() {

@@ -2,6 +2,7 @@ package me.beastman3226.bc.commands;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,11 +17,14 @@ public abstract class ICommand implements CommandExecutor {
     private String permission;
     private boolean hasSubcommands;
 
+    private static HashMap<Class<? extends ICommand>, ICommand> invokeInstance = new HashMap<>();
+
     public ICommand(String command, String permission, boolean subcommands) {
         this.command = command;
         this.permission = permission;
         this.hasSubcommands = subcommands;
         BusinessCore.getInstance().getCommand(command).setExecutor(this);
+        invokeInstance.put(this.getClass(), this);
     }
 
     @Override
@@ -29,7 +33,7 @@ public abstract class ICommand implements CommandExecutor {
             if (hasSubcommands && args.length > 0) {
                 String sub = args[0];
                 try {
-                    Method subcommand = getClass().getMethod(sub.toLowerCase(), CommandSender.class, String[].class);
+                    Method subcommand = this.getClass().getMethod(sub.toLowerCase(), CommandSender.class, String[].class);
                     if (subcommand.isAnnotationPresent(Subcommand.class)) {
                         Subcommand info = subcommand.getAnnotation(Subcommand.class);
                         if (!sender.hasPermission(info.permission())) {
@@ -47,7 +51,7 @@ public abstract class ICommand implements CommandExecutor {
                                     BusinessCore.ERROR_PREFIX + info.usage());
                             return true;
                         }
-                        subcommand.invoke(null, sender, Arrays.copyOfRange(args, 1, args.length));
+                        subcommand.invoke(invokeInstance.get(subcommand.getDeclaringClass()), sender, Arrays.copyOfRange(args, 1, args.length));
                         return true;
                     }
                 } catch (NoSuchMethodException e) {

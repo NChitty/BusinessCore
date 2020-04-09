@@ -26,7 +26,7 @@ public class PlayerListener implements Listener {
                 Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
                 Employee newEmployee = new Employee(e.getPlayer().getUniqueId(), b.getID());
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, newEmployee);
-                Bukkit.getPluginManager().callEvent(event);
+                Bukkit.getScheduler().runTask(BusinessCore.getInstance(), () -> Bukkit.getPluginManager().callEvent(event));
                 Scheduler.playerMilli.remove(e.getPlayer());
             } else {
                 e.getPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Timed out.");

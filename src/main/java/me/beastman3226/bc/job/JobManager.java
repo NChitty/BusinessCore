@@ -19,7 +19,6 @@ import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCreatedEvent;
 import me.beastman3226.bc.player.Employee;
-import me.beastman3226.bc.player.EmployeeManager;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 /**

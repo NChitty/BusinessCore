@@ -192,7 +192,7 @@ public class BusinessCommand extends ICommand {
                 Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString()));
                 String header = String.format(ChatColor.DARK_GREEN + "|%5s|%30s|%13s|", "ID", "Business Name",
                         "Balance");
-                String info = String.format(ChatColor.GREEN + "|%5d|%30s|%10.2f|", b.getID(), b.getName(),
+                String info = String.format(ChatColor.GREEN + "|%5d|%30s|%13.2f|", b.getID(), b.getName(),
                         b.getBalance());
                 String splitter = ChatColor.DARK_GREEN + "==========================================";
                 String employees = ChatColor.GREEN + Arrays.toString(b.getEmployees().toArray());
@@ -240,7 +240,7 @@ public class BusinessCommand extends ICommand {
         }
         switch (args[0].toLowerCase()) {
             case "id":
-                Business[] businesses = BusinessManager.sortById().subList(fromIndex, toIndex).toArray(new Business[0]);
+                Business[] businesses = BusinessManager.sortById().subList(fromIndex, toIndex >=  BusinessManager.getBusinessList().size() ? BusinessManager.getBusinessList().size()- 1 : toIndex).toArray(new Business[0]);
                 sender.sendMessage(ChatColor.DARK_GREEN + "|=========Businesses by ID==========|");
                 for (Business b : businesses) {
                     String message = String.format(ChatColor.GREEN + "[%d] " + ChatColor.WHITE + "%s", b.getID(),
@@ -296,15 +296,15 @@ public class BusinessCommand extends ICommand {
                         player = Bukkit.getPlayer(EmployeeManager.getEmployee(b, id).getUniqueId());
                 }
             }
-            if (player == null) {
+            if (player == null && !args[0].toLowerCase().equals("list")) {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX + "Could not find the specified player.");
                 return;
             }
             switch (args[0].toLowerCase()) {
                 case "hire":
-                    if (EmployeeManager.isEmployee(player.getUniqueId())) {
+                    if (EmployeeManager.isEmployee(player.getUniqueId()) || BusinessManager.isOwner(((Player) sender).getUniqueId().toString())) {
                         sender.sendMessage(
-                                BusinessCore.ERROR_PREFIX + "That player is already any employee of a business.");
+                                BusinessCore.ERROR_PREFIX + "That player is already an employee of a business.");
                     } else {
                         sender.sendMessage(BusinessCore.OTHER_PREFIX + "An offer to join your business has been sent.");
                         player.sendMessage(String.format("%sYou have been offered a job at %s by %s",

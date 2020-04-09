@@ -1,35 +1,18 @@
 package me.beastman3226.bc.commands;
 
-import java.util.ArrayList;
-import me.beastman3226.bc.BusinessCore.Information;
-import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.job.Job;
-import me.beastman3226.bc.job.JobManager;
-import me.beastman3226.bc.player.EmployeeManager;
-import me.beastman3226.bc.util.Prefixes;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-/**
- * Handles commands relating to jobs
- *
- * @author beastman3226
- */
-public class JobCommandHandler implements CommandExecutor {
-    
-   private static JobCommandHandler instance = null;
-   protected JobCommandHandler() {}
-   public static JobCommandHandler getInstance() {
-      if(instance == null) {
-         instance = new JobCommandHandler();
-      }
-      return instance;
-   }
-    
+public class JobCommand extends ICommand {
+
+    public JobCommand() {
+        super("job", "businesscore.job", true);
+    }
+
+    @Override
+    public void execute(CommandSender sender) {
+        // TODO Auto-generated method stub
+    }
+/*
     public boolean onCommand(CommandSender sender, Command cmd, String string, String[] args) {
         if (sender.hasPermission(cmd.getPermission())) {
             if (cmd.getName().equalsIgnoreCase("j.open") && args.length > 1) {
@@ -198,4 +181,5 @@ public class JobCommandHandler implements CommandExecutor {
     private String locToString(Location loc) {
         return loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
     }
+*/
 }

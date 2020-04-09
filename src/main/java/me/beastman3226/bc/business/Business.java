@@ -26,7 +26,8 @@ public class Business {
         this.name = build.name;
         this.ownerUUID = build.ownerUUID;
         this.balance = build.balance;
-        this.employees.addAll(Arrays.asList(build.employees));
+        if(build.employees != null)
+            this.employees.addAll(Arrays.asList(build.employees));
     }
 
     public int getID() {
