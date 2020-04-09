@@ -1,6 +1,5 @@
 package me.beastman3226.bc.listener;
 
-import java.util.logging.Level;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
@@ -10,7 +9,6 @@ import me.beastman3226.bc.event.business.BusinessClosedEvent;
 import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
-import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import net.milkbowl.vault.economy.Economy;

@@ -1,6 +1,5 @@
 package me.beastman3226.bc.commands;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 

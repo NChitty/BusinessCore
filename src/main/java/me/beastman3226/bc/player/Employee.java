@@ -1,6 +1,5 @@
 package me.beastman3226.bc.player;
 
-import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;

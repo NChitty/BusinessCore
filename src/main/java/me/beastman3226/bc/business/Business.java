@@ -19,8 +19,6 @@ public class Business {
     private String ownerUUID;
     private double balance;
     private HashSet<Employee> employees = new HashSet<Employee>();
-    private boolean salary = true;
-    private double pay;
     
     
     private Business(Builder build) {

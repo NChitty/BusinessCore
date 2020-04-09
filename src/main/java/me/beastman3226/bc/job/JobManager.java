@@ -56,12 +56,7 @@ public class JobManager {
                 return false;
             }
             j.claim(e);
-            try {
-                e.startJob(j.getID());
-            } catch (OpenJobException ex) {
-                event.setCancelled(true);
-                return false;
-            }
+            e.startJob(j.getID());
         }
         return true;
     }
@@ -164,12 +159,8 @@ public class JobManager {
 
     public static boolean doesBelongToBusiness(Employee employee, Job j) {
         Business b = employee.getBusiness();
-        ArrayList<Employee> employees = new ArrayList<Employee>();
-        for (Object id : b.getEmployeeIDs()) {
-            employees.add(EmployeeManager.getEmployee((Integer) id));
-        }
-        for (Employee e : employees) {
-            if (j.getPlayer().getName().equalsIgnoreCase(e.getName())) {
+        for (Employee e : b.getEmployees()) {
+            if (j.getPlayer().getUniqueId().equals(e.getUniqueId())) {
                 return true;
             }
         }
@@ -177,15 +168,10 @@ public class JobManager {
     }
 
     public static boolean doesBelongToBusiness(Business business, Job j) {
-        if (business.getOwnerName().equalsIgnoreCase(j.getPlayer().getName())) {
+        if (business.getOwner().getUniqueId().equals(j.getPlayer().getUniqueId())) {
             return true;
         }
-
-        ArrayList<Employee> employees = new ArrayList<Employee>();
-        for (Object id : business.getEmployeeIDs()) {
-            employees.add(EmployeeManager.getEmployee((Integer) id));
-        }
-        for (Employee e : employees) {
+        for (Employee e : business.getEmployees()) {
             if (j.getPlayer().getName().equalsIgnoreCase(e.getName())) {
                 return true;
             }

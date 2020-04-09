@@ -1,12 +1,10 @@
 package me.beastman3226.bc.business;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import me.beastman3226.bc.BusinessCore;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import me.beastman3226.bc.BusinessCore;
 
 /**
  *
@@ -31,6 +29,7 @@ public class BusinessManager {
             owner = businessYml.getString(s + ".ownerUUID");
             balance = businessYml.getDouble(s + ".balance");
             Business b = createBusiness(new Business.Builder(id).name(name).owner(owner).balance(balance));
+            businessList.add(b);
         }
     }
 

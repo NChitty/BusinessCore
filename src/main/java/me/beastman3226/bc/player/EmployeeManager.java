@@ -3,14 +3,10 @@ package me.beastman3226.bc.player;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.data.file.FileData;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
