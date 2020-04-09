@@ -24,10 +24,10 @@ public class PlayerListener implements Listener {
         if (Scheduler.playerMilli.containsKey(e.getPlayer()) && e.getMessage().contains("yes")) {
             if (Scheduler.playerMilli.get(e.getPlayer()) >= (System.currentTimeMillis() - 10000)) {
                 Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
-                BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, null);
-                Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer(), b.getID());
-                event.setEmployee(newEmployee);
+                Employee newEmployee = new Employee(e.getPlayer().getUniqueId(), b.getID());
+                BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, newEmployee);
                 Bukkit.getPluginManager().callEvent(event);
+                Scheduler.playerMilli.remove(e.getPlayer());
             } else {
                 e.getPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Timed out.");
                 Scheduler.playerMilli.remove(e.getPlayer());

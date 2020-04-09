@@ -65,13 +65,8 @@ public class Employee {
         return this;
     }
 
-    public Employee startJob(int id) throws OpenJobException {
-        if(this.jobID != -1) {
-            throw new OpenJobException();
-        } else {
-            this.jobID = id;
-            BusinessCore.getInstance().getEmployeeFileManager().editConfig(new FileData().add(this.employeeName + ".job", id));
-        }
+    public Employee startJob(int id) {
+        this.jobID = id;
         return this;
     }
 

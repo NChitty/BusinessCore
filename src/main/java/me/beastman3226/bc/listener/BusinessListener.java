@@ -12,6 +12,7 @@ import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -66,12 +67,13 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClosed(BusinessClosedEvent e) {
         Business b = e.getBusiness();
-        if(b.getOwner().isOnline()) {
+        if (b.getOwner().isOnline()) {
             b.getOwner().sendMessage(BusinessCore.OTHER_PREFIX + "Your business has been closed.");
         }
         BusinessCore.getInstance().getLogger().info(e.getBusiness().getName() + " has been closed.");
         BusinessManager.closeBusiness(e.getBusiness());
-        BusinessCore.getInstance().getBusinessFileManager().editConfig(new FileData().add(e.getBusiness().getName(), null));
+        BusinessCore.getInstance().getBusinessFileManager()
+                .editConfig(new FileData().add(e.getBusiness().getName(), null));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -89,11 +91,36 @@ public class BusinessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
-        
+        EmployeeManager.getEmployeeList().remove(e.getEmployee());
+        e.getBusiness().removeEmployee(e.getEmployee());
+        BusinessCore.getInstance().getBusinessFileManager()
+                .editConfig(new FileData().add(e.getEmployee().getID() + "", null));
+        e.getBusiness().getOwner().sendMessage(BusinessCore.NOMINAL_PREFIX + "Fired " + e.getEmployee().getName()
+                + " from " + e.getBusiness().getName());
+        BusinessCore.getInstance().getLogger()
+                .info("Fired " + e.getEmployee().getName() + " from " + e.getBusiness().getName());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onHire(BusinessHiredEmployeeEvent e) {
-        
+        Player owner = e.getBusiness().getOwner();
+        Player employee = Bukkit.getPlayer(e.getEmployee().getUniqueId());
+        if (owner.isOnline()) {
+            owner.sendMessage(
+                    BusinessCore.WORKING_PREFIX + employee.getName() + " has accepted a position in your business.");
+        }
+        if (employee.isOnline()) {
+            employee.sendMessage(
+                    BusinessCore.WORKING_PREFIX + "You are now an employee of " + e.getBusiness().getName());
+        }
+        BusinessCore.getInstance().getLogger()
+                .info(employee.getName() + " has accepted a position in " + e.getBusiness().getName());
+        e.getBusiness().addEmployee(e.getEmployee());
+        EmployeeManager.getEmployeeList().add(e.getEmployee());
+        Employee emp = e.getEmployee();
+        BusinessCore.getInstance().getEmployeeFileManager()
+                .editConfig(new FileData().add(emp.getID() + ".id", emp.getID())
+                        .add(emp.getID() + ".UUID", emp.getUniqueId().toString())
+                        .add(emp.getID() + ".business", emp.getBusiness().getID()));
     }
 }
