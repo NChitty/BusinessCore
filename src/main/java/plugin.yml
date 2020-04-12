@@ -6,43 +6,9 @@ depend: [Vault]
 commands:
   business:
     description: Commands for controlling business operations
-    permission: business.business
+    permission: businesscore.business
     usage: "/business [start|<close>|<withdraw>|<deposit>|<balance>|<info>|<list>|employee] [<arguments>]"
-#  j.open:
-#   description: Opens a job with pay and description
-#   permission: business.job.open
-#   permission-message: "&4You do not have 'business.job.open' or the like, please talk to an #adminstrator"
-#   aliases: [j.o, create.ticket]
-#  j.claim:
-#   description: Claims the job with specified job id
-#   permission: business.job.claim
-#   permission-message: "&4You do not have 'business.job.claim' or the like, please talk to an #adminstrator"
-#   aliases: [j.cl, claim.ticket]
-#  j.list:
-#    description: Shows a list of open jobs.
-#    permission: business.job.list
-#    permission-message: "&4You do not have 'business.job.list' or the like, please talk to an #adminstrator"
-#    aliases: [j.l, list.tickets]
-#  j.complete:
-#    description: Completes a job with specified ID or at random from your open jobs
-#    permission: business.job.complete
-#    permission-message: "&4You do not have 'business.job.complete' or the like, please talk to an #adminstrator"
-#    aliases: [j.co, complete.ticket]
-#  j.me:
-#    description: Shows information pertaining to you and the job portion of BusinessCore
-#    permission: business.job.me
-#    permission-message: "&4You do not have 'business.job.me' or the like, please talk to an #adminstrator"
-#    aliases: [j.m, j.info, j.i, ticket.info]
-#  j.id:
-#    description: Shows information on the job with specified id
-#    permission: business.job.id
-#    permission-message: "&4You do not have 'business.job.id' or the like, please talk to an #adminstrator"
-#    aliases: [j.id.info, id.ticket]
-#  businesscore:
-#    description: Displays information about the plugin you are running
-#    aliases: [bc]
-#  bc.help:
-#    description: Shows the help pages
-#    aliases: [help.bc, businesscore.help]
-#  update:
-#      description: Updates the data for the newest version
+  job:
+    description: Commands for accessing jobs
+    permission: businesscore.job
+    usage: "/job [open|claim|list|complete|current|info|tp] [<arguments>]"

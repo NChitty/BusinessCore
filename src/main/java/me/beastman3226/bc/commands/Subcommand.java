@@ -12,6 +12,6 @@ public @interface Subcommand {
     public boolean consoleUse() default true;
     public int minArgs() default 0;
     public String permission() default "businesscore.core";
-    public String usage();
+    public String usage() default "";
 
 }

@@ -54,7 +54,7 @@ public class Employee {
         return this;
     }
 
-    public Employee setBusiness(String owner) {
+    public Employee setBusiness(UUID owner) {
         this.business = BusinessManager.getBusiness(owner).getID();
         return this;
     }
@@ -72,7 +72,7 @@ public class Employee {
     public Employee completeJob() {
         this.jobID = -1;
         this.completedJobs = this.completedJobs++;
-        BusinessCore.getInstance().getEmployeeFileManager().editConfig(new FileData().add(this.employeeName + ".job", -1).add(this.employeeName + ".completed", this.completedJobs));
+        BusinessCore.getInstance().getEmployeeFileManager().edit(new FileData().add(this.employeeName + ".job", -1).add(this.employeeName + ".completed", this.completedJobs));
         return this;
     }
 

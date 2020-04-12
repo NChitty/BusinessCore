@@ -47,7 +47,7 @@ public class FileManager {
         this.fileConfig = fileConfig;
     }
 
-    public void editConfig(FileData data) {
+    public void edit(FileData data) {
         for(String path : data.getData().keySet()) {
             fileConfig.set(path, data.getData().get(path));
         }

@@ -3,6 +3,7 @@ package me.beastman3226.bc;
 import java.util.HashMap;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommand;
+import me.beastman3226.bc.commands.JobCommand;
 import me.beastman3226.bc.data.file.FileManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
@@ -72,6 +73,7 @@ public class BusinessCore extends JavaPlugin {
      */
     public void registerCommands() {
         new BusinessCommand();
+        new JobCommand();
     }
 
     public boolean setupEconomy() {

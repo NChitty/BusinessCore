@@ -54,7 +54,7 @@ public class BusinessCommand extends ICommand {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 BusinessClosedEvent event = new BusinessClosedEvent(
-                        BusinessManager.getBusiness(playerSender.getUniqueId().toString()));
+                        BusinessManager.getBusiness(playerSender.getUniqueId()));
                 event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             } else {
@@ -94,7 +94,7 @@ public class BusinessCommand extends ICommand {
                 if (args[0].matches("[^0-9.0-9]")) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
                 } else {
-                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
+                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -amount);
                     event.setSource(sender);
@@ -132,7 +132,7 @@ public class BusinessCommand extends ICommand {
                 if (args[0].matches("[^0-9.0-9]")) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
                 } else {
-                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
+                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
                     event.setSource(sender);
@@ -162,10 +162,9 @@ public class BusinessCommand extends ICommand {
     public void balance(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString()));
-                sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getBalance()
-                        + BusinessCore.getInstance().getEconomy().currencyNameSingular());
+            if (BusinessManager.isOwner(playerSender.getUniqueId())) {
+                Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
+                sender.sendMessage(BusinessCore.NOMINAL_PREFIX + BusinessCore.getInstance().getEconomy().format(b.getBalance()));
 
             } else {
                 sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to execute this command.");
@@ -178,8 +177,7 @@ public class BusinessCommand extends ICommand {
             } else {
                 int id = Integer.parseInt(args[0]);
                 Business b = BusinessManager.getBusiness(id);
-                sender.sendMessage(BusinessCore.NOMINAL_PREFIX + b.getBalance()
-                        + BusinessCore.getInstance().getEconomy().currencyNameSingular());
+                sender.sendMessage(BusinessCore.NOMINAL_PREFIX + BusinessCore.getInstance().getEconomy().format(b.getBalance()));
             }
         }
     }
@@ -188,8 +186,8 @@ public class BusinessCommand extends ICommand {
     public void info(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner((playerSender.getUniqueId().toString()))) {
-                Business b = BusinessManager.getBusiness((playerSender.getUniqueId().toString()));
+            if (BusinessManager.isOwner((playerSender.getUniqueId()))) {
+                Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
                 String header = String.format(ChatColor.DARK_GREEN + "|%5s|%30s|%13s|", "ID", "Business Name",
                         "Balance");
                 String info = String.format(ChatColor.GREEN + "|%5d|%30s|%13.2f|", b.getID(), b.getName(),
@@ -284,8 +282,8 @@ public class BusinessCommand extends ICommand {
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|player name]")
     public void employee(CommandSender sender, String[] args) {
         Player playerSender = (Player) sender;
-        if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-            Business b = BusinessManager.getBusiness(playerSender.getUniqueId().toString());
+        if (BusinessManager.isOwner(playerSender.getUniqueId())) {
+            Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
             Player player = null;
             if (args.length > 1) {
                 if (args[1].matches("[^0-9]+")) {
@@ -342,4 +340,30 @@ public class BusinessCommand extends ICommand {
             sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to run this command.");
         }
     }
+
+    @Subcommand
+    public void help(CommandSender sender, String[] args) {
+        if(sender instanceof Player) {
+            String[] helpPage = {ChatColor.BLUE + "/business start [name]: " + ChatColor.AQUA + "Starts a business with the specified name and you as the owner.",
+            ChatColor.BLUE + "/business withdraw [amount]: " + ChatColor.AQUA + "Withdraws the specified amount from your business's account.",
+            ChatColor.BLUE + "/business deposit [amount]: " + ChatColor.AQUA + "Deposit the specified amount into your business's account.",
+            ChatColor.BLUE + "/business employee hire [playername]: " + ChatColor.AQUA + "Send a job offer to the specified player.",
+            ChatColor.BLUE + "/business employee fire [playername|ID]: " + ChatColor.AQUA + "Fire the player specified by name or their employee ID.",
+            ChatColor.BLUE + "/business employee list: " + ChatColor.AQUA + "List information about your current employees.",
+            ChatColor.BLUE + "/business balance" + ChatColor.AQUA + "Get the balance of your business.",
+            ChatColor.BLUE + "/business close: " + ChatColor.AQUA + "Close your business forever. Note you should withdraw everything first.",
+            ChatColor.BLUE + "/business info: " + ChatColor.AQUA + "Get general information about your business.",
+            ChatColor.BLUE + "/business list [\"balance\"|\"id\"|\"name\"] [page #]: " + ChatColor.AQUA + "Lists businesses sorted by the various methods."};
+            sender.sendMessage(helpPage);
+        } else {
+            String[] helpPage = {ChatColor.BLUE + "/business withdraw <id> <amount>: " + ChatColor.AQUA + "Withdraws the specified amount from the business specified by id.",
+            ChatColor.BLUE + "/business deposit <id> <amount>: " + ChatColor.AQUA + "Deposit the specified amount into the business specified by id.",
+            ChatColor.BLUE + "/business balance <id>" + ChatColor.AQUA + "Get the balance of the business.",
+            ChatColor.BLUE + "/business close <id>: " + ChatColor.AQUA + "Close the specified business.",
+            ChatColor.BLUE + "/business info <id>: " + ChatColor.AQUA + "Get general information about your business.",
+            ChatColor.BLUE + "/business list [\"balance\"|\"id\"|\"name\"] [page #]: " + ChatColor.AQUA + "Lists businesses sorted by the various methods."};
+            sender.sendMessage(helpPage);
+        }
+    }
+
 }

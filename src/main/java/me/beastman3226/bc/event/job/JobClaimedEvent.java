@@ -1,8 +1,11 @@
 package me.beastman3226.bc.event.job;
 
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import me.beastman3226.bc.job.Job;
-import me.beastman3226.bc.player.Employee;
-import me.beastman3226.bc.player.EmployeeManager;
 
 /**
  *
@@ -10,20 +13,20 @@ import me.beastman3226.bc.player.EmployeeManager;
  */
 public class JobClaimedEvent extends JobEvent {
 
-    Employee e;
+    Player claimingPlayer;
 
-    public JobClaimedEvent(int id, int eID) {
+    public JobClaimedEvent(int id, UUID uniqueId) {
         super(id);
-        e = EmployeeManager.getEmployee(eID);
+        this.claimingPlayer = Bukkit.getPlayer(uniqueId);
     }
 
-    public JobClaimedEvent(Job j, int eID) {
+    public JobClaimedEvent(Job j, Player player) {
         super(j);
-        e = EmployeeManager.getEmployee(eID);
+        this.claimingPlayer = player;
     }
 
-    public Employee getEmployee() {
-        return e;
+    public Player getClaimingPlayer() {
+        return claimingPlayer;
     }
 
 

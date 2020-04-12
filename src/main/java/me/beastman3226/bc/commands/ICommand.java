@@ -59,8 +59,6 @@ public abstract class ICommand implements CommandExecutor {
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
-            } else if (hasSubcommands && args.length == 0) {
-                return false;
             } else {
                 if (!sender.hasPermission(permission)) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must have the permission "

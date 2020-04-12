@@ -1,25 +1,17 @@
 package me.beastman3226.bc.job;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
-import me.beastman3226.bc.business.Business;
-import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
-import me.beastman3226.bc.event.job.JobClaimedEvent;
-import me.beastman3226.bc.event.job.JobCreatedEvent;
-import me.beastman3226.bc.player.Employee;
-import net.milkbowl.vault.economy.EconomyResponse;
+import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.data.file.FileManager;
 
 /**
  *
@@ -27,154 +19,104 @@ import net.milkbowl.vault.economy.EconomyResponse;
  */
 public class JobManager {
 
+    private static HashSet<Job> jobList = new HashSet<Job>();
+
     public static Job getJob(int i) {
-        for (Job j : Job.jobList) {
-            if (j.getID() == i) {
+        for (Job j : jobList)
+            if (j.getID() == i)
                 return j;
-            }
+        return null;
+    }
+
+    public static boolean hasClaimedJob(UUID uniqueId) {
+		for(Job j : jobList) {
+            if(j.isClaimed())
+                if(j.getWorker().getUniqueId().equals(uniqueId))
+                    return true;
+        }
+        return false;
+    }
+    
+    public static Job getClaimedJob(UUID uniqueId) {
+        for(Job j : jobList) {
+            if(j.isClaimed())
+                if(j.getWorker().getUniqueId().equals(uniqueId))
+                    return j;
         }
         return null;
     }
 
-    public static Job createJob(Player p, String description, double pay) {
-        Job j = null;
-        JobCreatedEvent event = new JobCreatedEvent(description, p, pay);
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            j = new Job(event.getID(), event.getUUID(), event.getDescription(), event.getLocation(), event.getPayment());
-            Job.jobList.add(j);
-        }
-        return j;
+    public static Job[] getPlayerJobs(Player player) {
+        HashSet<Job> jobs = new HashSet<>();
+        for(Job j : jobList)
+            if(j.getPlayer().getUniqueId().equals(player.getUniqueId()))
+                jobs.add(j);
+        return jobs.toArray(new Job[]{});
     }
 
-    public static boolean claimJob(Employee e, Job j) {
-        JobClaimedEvent event = new JobClaimedEvent(j, e.getID());
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            if (j == null) {
-                return false;
-            }
-            j.claim(e);
-            e.startJob(j.getID());
-        }
-        return true;
+    public static Job[] getOpenJobs() {
+        HashSet<Job> jobs = new HashSet<>();
+        for(Job j : jobList)
+            if(!j.isClaimed())
+                jobs.add(j);
+        return jobs.toArray(new Job[]{});
     }
 
-    public static boolean completeJob(Employee e, Job j) {
-        EconomyResponse r = BusinessCore.getInstance().getEconomy().withdrawPlayer(j.getPlayer(), j.getPayment());
-        if (r.transactionSuccess()) {
-            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(e.getBusiness(), j.getPayment());
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                e.getBusiness().deposit(event.getAmount());
-                e.completeJob();
-                j.finish();
-            }
-        } else {
-            try {
-                ((Player) j.getPlayer()).sendMessage(BusinessCore.ERROR_PREFIX + "Your balance is insufficient. Get more money!");
-            } catch (Exception ex) {
-                Logger.getLogger(JobManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        Job.jobList.remove(j);
-        return r.transactionSuccess();
-    }
+    public static Job createJob(String description, Location location, double payment, UUID uuid) {
+        int id = jobList.size();
+        Job newJob = new Job(id, uuid, description, location, payment);
+        jobList.add(newJob);
+        FileManager fm = BusinessCore.getInstance().getJobFileManager();
+        String xyz = location.getX() + "," + location.getY() + "," + location.getZ();
+        fm.edit(new FileData()
+        .add(newJob.getID() + ".description", description)
+        .add(newJob.getID() + ".location", xyz)
+        .add(newJob.getID() + ".world", location.getWorld())
+        .add(newJob.getID() + ".issuer", uuid)
+        .add(newJob.getID() + ".payment", newJob.getPayment()));
+        return newJob;
+	}
+
+	public static boolean claimJob(Job job, Player claimingPlayer) {
+        job.setClaimed(true);
+        job.setWorker(claimingPlayer);
+        FileManager fm = BusinessCore.getInstance().getJobFileManager();
+        fm.edit(new FileData().add(job.getID() + ".worker", claimingPlayer.getUniqueId()));
+		return true;
+	}
+
+	public static boolean completeJob(Job job) {
+        BusinessCore.getInstance().getJobFileManager().edit(new FileData().add(job.getID() + "", null));
+        jobList.remove(job);
+		return true;
+	}
 
     public static void loadJobs() {
         FileConfiguration jobYml = BusinessCore.getInstance().getJobFileManager().getFileConfiguration();
         for (String string : jobYml.getKeys(false)) {
-            int x = 0, y = 0, z = 0;
+            Job j = null;
+            int id = Integer.parseInt(string);
+            String description = jobYml.getString(id + ".description");
+            World world = Bukkit.getWorld(jobYml.getString(id + ".world"));
+            double x = 0, y = 0, z = 0;
             try {
-                String location = jobYml.getString(string + ".location");
+                String location = jobYml.getString(id + ".location");
                 String[] s = location.split(",");
-                x = Integer.parseInt(s[0]);
-                y = Integer.parseInt(s[1]);
-                z = Integer.parseInt(s[2]);
+                x = Double.parseDouble(s[0]);
+                y = Double.parseDouble(s[1]);
+                z = Double.parseDouble(s[2]);
             } catch (NumberFormatException nfe) {
             }
-            World world = Bukkit.getWorld(jobYml.getString(string + ".world"));
             Location loc = new Location(world, x, y, z);
-            String issuer = Bukkit.getPlayer(UUID.fromString(jobYml.getString(string + ".UUID"))).getName();
-            if(issuer == null) {
-                issuer = Bukkit.getOfflinePlayer(UUID.fromString(jobYml.getString(string + ".UUID"))).getName();
-            }
-            Job j = new Job(Integer.parseInt(string), UUID.fromString(issuer), jobYml.getString(string + ".description"), loc, jobYml.getDouble(string + ".payment"));
-            Job.jobList.add(j);
+            double pay = jobYml.getDouble(id + ".payment");
+            UUID issuer = UUID.fromString(jobYml.getString(id + ".issuer"));
+            String worker = jobYml.getString(id + ".worker");
+            if(worker == null || worker.isBlank() || worker.isEmpty())
+                j = new Job(id, issuer, description, loc, pay);
+            else
+                j = new Job(id, issuer, description, loc, pay, UUID.fromString(worker));
+            jobList.add(j);
         }
 
-    }
-
-    public static String[] listJobs(int i) {
-        List<String> jobs = new ArrayList<String>();
-        for (Job j : Job.jobList) {
-            if (!j.isClaimed()) {
-                jobs.add(ChatColor.AQUA + "#" + j.getID() + ": " + j.getDescription());
-            }
-        }
-        if (((ArrayList<String>) jobs).size() < i || ((ArrayList<String>) jobs).size() < (i * 5) + 5) {
-            try {
-                return jobs.subList(i * 5, jobs.size()).toArray(new String[]{});
-            } catch (ArrayIndexOutOfBoundsException aioobe) {
-                return jobs.toArray(new String[]{});
-            }
-        }
-        if (i == 0 || i == 1) {
-            return jobs.toArray(new String[]{});
-        } else {
-            return jobs.subList(i * 5, (i * 5) + 5).toArray(new String[]{});
-        }
-    }
-
-    public static boolean isIssuer(String name) {
-        for (Job j : Job.jobList) {
-            if (j != null) {
-                if (j.getPlayer().getName().equalsIgnoreCase(name)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public static Job getJob(String name) {
-        for (Job j : Job.jobList) {
-            if (j.getPlayer().getName().equalsIgnoreCase(name)) {
-                return j;
-            }
-        }
-        return null;
-    }
-
-    public static Job[] getJobs(String issuer) {
-        ArrayList<Job> jobs = new ArrayList<Job>();
-        for (Job j : Job.jobList) {
-            if (j.getPlayer().getName().equalsIgnoreCase(issuer)) {
-                jobs.add(j);
-            }
-        }
-        return jobs.toArray(new Job[]{});
-    }
-
-    public static boolean doesBelongToBusiness(Employee employee, Job j) {
-        Business b = employee.getBusiness();
-        for (Employee e : b.getEmployees()) {
-            if (j.getPlayer().getUniqueId().equals(e.getUniqueId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean doesBelongToBusiness(Business business, Job j) {
-        if (business.getOwner().getUniqueId().equals(j.getPlayer().getUniqueId())) {
-            return true;
-        }
-        for (Employee e : business.getEmployees()) {
-            if (j.getPlayer().getName().equalsIgnoreCase(e.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

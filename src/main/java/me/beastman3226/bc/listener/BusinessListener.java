@@ -29,36 +29,47 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
         Economy eco = BusinessCore.getInstance().getEconomy();
-        if (e.isWithdrawal()) {
-            if (!e.isOverdraft()) {
+        if (e.getSource() != null) {
+            if (e.isWithdrawal()) {
+                if (!e.isOverdraft()) {
+                    if (e.getSource() instanceof Player) {
+                        EconomyResponse er = eco.depositPlayer((Player) e.getSource(), e.getAbsoluteAmount());
+                        if (!er.transactionSuccess()) {
+                            e.setCancelled(true);
+                            return;
+                        }
+                    }
+                    e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully withdrew "
+                            + e.getAbsoluteAmount() + " from " + e.getBusiness().getName());
+                    e.getBusiness().withdraw(e.getAbsoluteAmount());
+                } else
+                    e.getSource().sendMessage(BusinessCore.ERROR_PREFIX
+                            + "Unable to make a withdraw larger than the balance of the business.");
+            } else {
                 if (e.getSource() instanceof Player) {
-                    EconomyResponse er = eco.depositPlayer((Player) e.getSource(), e.getAbsoluteAmount());
+                    EconomyResponse er = eco.withdrawPlayer((Player) e.getSource(), e.getAmount());
                     if (!er.transactionSuccess()) {
                         e.setCancelled(true);
                         return;
                     }
                 }
-                e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully withdrew " + e.getAbsoluteAmount()
-                        + " from " + e.getBusiness().getName());
-                e.getBusiness().withdraw(e.getAbsoluteAmount());
-            } else
-                e.getSource().sendMessage(BusinessCore.ERROR_PREFIX
-                        + "Unable to make a withdraw larger than the balance of the business.");
-        } else {
-            if (e.getSource() instanceof Player) {
-                EconomyResponse er = eco.withdrawPlayer((Player) e.getSource(), e.getAmount());
-                if (!er.transactionSuccess()) {
-                    e.setCancelled(true);
-                    return;
-                }
+                e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully deposited "
+                        + e.getAbsoluteAmount() + " to " + e.getBusiness().getName());
+                e.getBusiness().deposit(e.getAbsoluteAmount());
             }
-            e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully deposited " + e.getAbsoluteAmount()
-                    + " to " + e.getBusiness().getName());
-            e.getBusiness().deposit(e.getAbsoluteAmount());
+        } else {
+            if(e.isWithdrawal()) {
+                if(e.isOverdraft())
+                    e.setCancelled(true);
+                else
+                    e.getBusiness().withdraw(e.getAbsoluteAmount());
+            } else {
+                e.getBusiness().deposit(e.getAbsoluteAmount());
+            }
         }
         if (!e.isCancelled())
             BusinessCore.getInstance().getBusinessFileManager()
-                    .editConfig(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
+                    .edit(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
 
     }
 
@@ -71,7 +82,7 @@ public class BusinessListener implements Listener {
         BusinessCore.getInstance().getLogger().info(e.getBusiness().getName() + " has been closed.");
         BusinessManager.closeBusiness(e.getBusiness());
         BusinessCore.getInstance().getBusinessFileManager()
-                .editConfig(new FileData().add(e.getBusiness().getName(), null));
+                .edit(new FileData().add(e.getBusiness().getName(), null));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -81,7 +92,7 @@ public class BusinessListener implements Listener {
         String ownerUUID = e.getBusiness().getOwnerUUID();
         String businessName = e.getBusiness().getName();
         BusinessCore.getInstance().getBusinessFileManager()
-                .editConfig(new FileData().add(businessName + ".name", businessName)
+                .edit(new FileData().add(businessName + ".name", businessName)
                         .add(e.getBusiness().getName() + ".ownerUUID", ownerUUID)
                         .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
                         .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
@@ -92,7 +103,7 @@ public class BusinessListener implements Listener {
         EmployeeManager.getEmployeeList().remove(e.getEmployee());
         e.getBusiness().removeEmployee(e.getEmployee());
         BusinessCore.getInstance().getBusinessFileManager()
-                .editConfig(new FileData().add(e.getEmployee().getID() + "", null));
+                .edit(new FileData().add(e.getEmployee().getID() + "", null));
         e.getBusiness().getOwner().sendMessage(BusinessCore.NOMINAL_PREFIX + "Fired " + e.getEmployee().getName()
                 + " from " + e.getBusiness().getName());
         BusinessCore.getInstance().getLogger()
@@ -117,7 +128,7 @@ public class BusinessListener implements Listener {
         EmployeeManager.getEmployeeList().add(e.getEmployee());
         Employee emp = e.getEmployee();
         BusinessCore.getInstance().getEmployeeFileManager()
-                .editConfig(new FileData().add(emp.getID() + ".id", emp.getID())
+                .edit(new FileData().add(emp.getID() + ".id", emp.getID())
                         .add(emp.getID() + ".UUID", emp.getUniqueId().toString())
                         .add(emp.getID() + ".business", emp.getBusiness().getID()));
     }

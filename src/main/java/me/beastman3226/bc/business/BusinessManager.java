@@ -1,6 +1,7 @@
 package me.beastman3226.bc.business;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -77,14 +78,10 @@ public class BusinessManager {
      * @param uuid UUID of the owner
      * @return The business
      */
-    public static Business getBusiness(String uuid) {
-        for (Business b : businessList) {
-            if (b.getOwnerUUID().equalsIgnoreCase(uuid)) {
+    public static Business getBusiness(UUID uuid) {
+        for (Business b : businessList)
+            if (b.getOwner().getUniqueId().equals(uuid))
                 return b;
-            } else {
-                continue;
-            }
-        }
         return null;
     }
 
@@ -121,16 +118,17 @@ public class BusinessManager {
      * @return True if name has a business, false if not.
      */
     public static boolean isOwner(String uuid) {
-        for (Business b : businessList) {
-            if (b.getOwnerUUID().equalsIgnoreCase(uuid)) {
+        return isOwner(UUID.fromString(uuid));
+    }
+
+    public static boolean isOwner(UUID uniqueId) {
+		for(Business b : businessList) {
+            if(b.getOwner().getUniqueId().equals(uniqueId))
                 return true;
-            } else {
-                continue;
-            }
         }
         return false;
     }
-
+    
     /**
      * Checks if the player is an owner via null check using getbusiness(id) method.
      * 
