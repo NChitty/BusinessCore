@@ -71,8 +71,8 @@ public class JobManager {
         fm.edit(new FileData()
         .add(newJob.getID() + ".description", description)
         .add(newJob.getID() + ".location", xyz)
-        .add(newJob.getID() + ".world", location.getWorld())
-        .add(newJob.getID() + ".issuer", uuid)
+        .add(newJob.getID() + ".world", location.getWorld().getName())
+        .add(newJob.getID() + ".issuer", uuid.toString())
         .add(newJob.getID() + ".payment", newJob.getPayment()));
         return newJob;
 	}
@@ -86,9 +86,12 @@ public class JobManager {
 	}
 
 	public static boolean completeJob(Job job) {
-        BusinessCore.getInstance().getJobFileManager().edit(new FileData().add(job.getID() + "", null));
-        jobList.remove(job);
-		return true;
+        if(job.isClaimed()) {
+            BusinessCore.getInstance().getJobFileManager().edit(new FileData().add(job.getID() + "", null));
+            jobList.remove(job);
+            return true;
+        }
+		return false;
 	}
 
     public static void loadJobs() {

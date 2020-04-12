@@ -89,11 +89,9 @@ public class JobCommand extends ICommand {
             if (toIndex >= jobs.length)
                 while (toIndex >= jobs.length)
                     toIndex--;
-            StringBuilder sb = new StringBuilder();
             for (int i = fromIndex; i <= toIndex; i++)
-                sb.append(ChatColor.GRAY + "[" + ChatColor.AQUA + jobs[i].getID() + ChatColor.GRAY + "] "
-                        + ChatColor.WHITE + jobs[i].getDescription() + "|");
-            sender.sendMessage(sb.toString().split("|"));
+                sender.sendMessage(ChatColor.GRAY + "[" + ChatColor.AQUA + jobs[i].getID() + ChatColor.GRAY + "] "+ ChatColor.WHITE + jobs[i].getDescription());
+            sender.sendMessage(ChatColor.DARK_AQUA + "Page " + page + "/" + (int) (jobs.length/(float) 5 + .5));
         } else if (args[0].equalsIgnoreCase("open")) {
             jobs = JobManager.getOpenJobs();
             if (page * 5 > jobs.length) {
@@ -108,7 +106,7 @@ public class JobCommand extends ICommand {
             StringBuilder sb = new StringBuilder();
             for (int i = fromIndex; i <= toIndex; i++)
                 sb.append(ChatColor.GRAY + "[" + ChatColor.AQUA + jobs[i].getID() + ChatColor.GRAY + "] "
-                        + ChatColor.WHITE + jobs[i].getDescription() + "|");
+                        + ChatColor.WHITE + jobs[i].getDescription().replace("|","") + "|");
             sender.sendMessage(sb.toString().split("|"));
         } else {
             sender.sendMessage(BusinessCore.ERROR_PREFIX + "/job list [\"mine\"|\"open\"] [page number @Optional]");
