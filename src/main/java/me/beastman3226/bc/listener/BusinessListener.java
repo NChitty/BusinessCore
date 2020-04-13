@@ -9,7 +9,6 @@ import me.beastman3226.bc.event.business.BusinessClosedEvent;
 import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
-import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -67,10 +66,6 @@ public class BusinessListener implements Listener {
                 e.getBusiness().deposit(e.getAbsoluteAmount());
             }
         }
-        if (!e.isCancelled())
-            BusinessCore.getInstance().getBusinessFileManager()
-                    .edit(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -91,19 +86,14 @@ public class BusinessListener implements Listener {
         owner.sendMessage(BusinessCore.OTHER_PREFIX + "You have successfully started " + e.getBusiness().getName());
         String ownerUUID = e.getBusiness().getOwnerUUID();
         String businessName = e.getBusiness().getName();
-        BusinessCore.getInstance().getBusinessFileManager()
-                .edit(new FileData().add(businessName + ".name", businessName)
-                        .add(e.getBusiness().getName() + ".ownerUUID", ownerUUID)
-                        .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
-                        .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
         EmployeeManager.getEmployeeList().remove(e.getEmployee());
         e.getBusiness().removeEmployee(e.getEmployee());
-        BusinessCore.getInstance().getBusinessFileManager()
-                .edit(new FileData().add(e.getEmployee().getID() + "", null));
+        BusinessCore.getInstance().getEmployeeFileManager()
+                .edit(new FileData().add(e.getEmployee().getName() + "", null));
         e.getBusiness().getOwner().sendMessage(BusinessCore.NOMINAL_PREFIX + "Fired " + e.getEmployee().getName()
                 + " from " + e.getBusiness().getName());
         BusinessCore.getInstance().getLogger()
@@ -126,10 +116,5 @@ public class BusinessListener implements Listener {
                 .info(employee.getName() + " has accepted a position in " + e.getBusiness().getName());
         e.getBusiness().addEmployee(e.getEmployee());
         EmployeeManager.getEmployeeList().add(e.getEmployee());
-        Employee emp = e.getEmployee();
-        BusinessCore.getInstance().getEmployeeFileManager()
-                .edit(new FileData().add(emp.getID() + ".id", emp.getID())
-                        .add(emp.getID() + ".UUID", emp.getUniqueId().toString())
-                        .add(emp.getID() + ".business", emp.getBusiness().getID()));
     }
 }

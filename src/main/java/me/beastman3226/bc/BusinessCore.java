@@ -1,10 +1,14 @@
 package me.beastman3226.bc;
 
+import java.io.File;
 import java.util.HashMap;
+
+import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommand;
 import me.beastman3226.bc.commands.JobCommand;
 import me.beastman3226.bc.data.file.FileManager;
+import me.beastman3226.bc.data.json.JsonManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
@@ -48,14 +52,24 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         //settings and configs
+        this.getLogger().info("Loading businesses...");
         BusinessManager.createBusinesses();
+        this.getLogger().info("Loading employees...");
         EmployeeManager.loadEmployees();
+        this.getLogger().info("Loading jobs...");
         JobManager.loadJobs();
         getLogger().info("Do /businesscore for information about this plugin");
     }
 
     @Override
     public void onDisable() {
+        this.getLogger().info("Saving businesses...");
+        BusinessManager.saveBusinesses();
+        this.getLogger().info("Saving employees...");
+        EmployeeManager.saveEmployees();
+        this.getLogger().info("Saving jobs...");
+        JobManager.saveJobs();
+        this.reloadConfig();
         this.saveConfig();
     }
 

@@ -66,22 +66,12 @@ public class JobManager {
         int id = jobList.size();
         Job newJob = new Job(id, uuid, description, location, payment);
         jobList.add(newJob);
-        FileManager fm = BusinessCore.getInstance().getJobFileManager();
-        String xyz = location.getX() + "," + location.getY() + "," + location.getZ();
-        fm.edit(new FileData()
-        .add(newJob.getID() + ".description", description)
-        .add(newJob.getID() + ".location", xyz)
-        .add(newJob.getID() + ".world", location.getWorld().getName())
-        .add(newJob.getID() + ".issuer", uuid.toString())
-        .add(newJob.getID() + ".payment", newJob.getPayment()));
         return newJob;
 	}
 
 	public static boolean claimJob(Job job, Player claimingPlayer) {
         job.setClaimed(true);
         job.setWorker(claimingPlayer);
-        FileManager fm = BusinessCore.getInstance().getJobFileManager();
-        fm.edit(new FileData().add(job.getID() + ".worker", claimingPlayer.getUniqueId()));
 		return true;
 	}
 
@@ -120,6 +110,23 @@ public class JobManager {
                 j = new Job(id, issuer, description, loc, pay, UUID.fromString(worker));
             jobList.add(j);
         }
+    }
 
+    public static void saveJobs() {
+        FileManager fm = BusinessCore.getInstance().getJobFileManager();
+        for(Job newJob : jobList) {
+            Location location = newJob.getLocation();
+            String xyz = location.getX() + "," + location.getY() + "," + location.getZ();
+            UUID worker = null;
+            if(newJob.getWorker() != null)
+                worker = newJob.getWorker().getUniqueId();
+            fm.edit(new FileData()
+            .add(newJob.getID() + ".description", newJob.getDescription())
+            .add(newJob.getID() + ".location", xyz)
+            .add(newJob.getID() + ".world", location.getWorld().getName())
+            .add(newJob.getID() + ".issuer", newJob.getPlayer().getUniqueId().toString())
+            .add(newJob.getID() + ".payment", newJob.getPayment())
+            .add(newJob.getID() + ".worker", worker.toString()));
+        }
     }
 }

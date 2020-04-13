@@ -21,7 +21,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 public class JobListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCreated(JobCreatedEvent e) {
         Player player = Bukkit.getPlayer(e.getUUID());
         EconomyResponse er = BusinessCore.getInstance().getEconomy().withdrawPlayer(player, e.getPayment());
@@ -35,7 +35,7 @@ public class JobListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClaim(JobClaimedEvent e) {
         if(JobManager.claimJob(e.getJob(), e.getClaimingPlayer())) {
             if(BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId()))
@@ -51,7 +51,7 @@ public class JobListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClompleted(JobCompletedEvent e) {
         if(JobManager.completeJob(e.getJob())) {
             Player worker = e.getJob().getWorker();
@@ -62,6 +62,7 @@ public class JobListener implements Listener {
                 player.sendMessage(BusinessCore.WORKING_PREFIX + "You have marked " + e.getJob().getID() + " as complete.");
             if(EmployeeManager.isEmployee(worker.getUniqueId())) {
                 Business b = EmployeeManager.getEmployee(worker.getUniqueId()).getBusiness();
+                EmployeeManager.getEmployee(b, worker.getUniqueId()).completeJob();
                 BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, e.getJob().getPayment());
                 Bukkit.getPluginManager().callEvent(event);
             } else {
