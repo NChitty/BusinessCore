@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import me.beastman3226.bc.util.PlaceholderPattern;
+
 
 /**
  *
@@ -56,10 +58,12 @@ public class Job {
         this.worker = Bukkit.getPlayer(uniqueId);
     }
 
+    @PlaceholderPattern(pattern = "<job_id>")
     public int getID() {
         return this.id;
     }
 
+    @PlaceholderPattern(pattern = "<job_description>")
     public String getDescription() {
         return this.description;
     }
@@ -68,12 +72,28 @@ public class Job {
         return this.loc;
     }
 
+    @PlaceholderPattern(pattern = "<job_location>")
+    public String getLocationToString() {
+        return this.loc.getWorld().getName() + " " + this.loc.getX() + ", " + this.loc.getY() + ", " + this.loc.getZ();
+    }
+
+    @PlaceholderPattern(pattern = "<job_payment>")
     public double getPayment() {
         return this.pay;
     }
 
     public Player getWorker() {
         return this.worker;
+    }
+
+    @PlaceholderPattern(pattern = "<job_worker_name>")
+    public String getWorkerName() {
+        return this.worker.getName();
+    }
+
+    @PlaceholderPattern(pattern = "<job_player_name>")
+    public String getPlayerName() {
+        return getPlayer().getName();
     }
 
     public void setWorker(Player player) {
@@ -83,6 +103,7 @@ public class Job {
     public OfflinePlayer getPlayer() {
         return Bukkit.getPlayer(player);
     }
+
 
     public boolean isClaimed() {
         return this.claimed;

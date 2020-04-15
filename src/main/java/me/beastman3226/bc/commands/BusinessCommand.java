@@ -87,10 +87,6 @@ public class BusinessCommand extends ICommand {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-                if (args.length > 1) {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "You only need to provide the amount.");
-                    return;
-                }
                 if (args[0].matches("[^0-9.0-9]")) {
                     sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
                 } else {

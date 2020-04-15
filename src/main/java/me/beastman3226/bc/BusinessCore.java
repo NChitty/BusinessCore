@@ -10,6 +10,7 @@ import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
 import me.beastman3226.bc.listener.PlayerListener;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Settings;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 
@@ -32,6 +33,7 @@ public class BusinessCore extends JavaPlugin {
     private Economy eco;
     private Chat chat;
     private FileManager businessFileManager, jobFileManager, employeeFileManager;
+    private Settings settings;
 
     HashMap<String, String> hm = new HashMap<String, String>();
 
@@ -48,6 +50,18 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         //settings and configs
+        settings = new Settings(this.getConfig());
+        if(settings.verboseLogging()) {
+            getLogger().info("(================Business Core Settings================)");
+            getLogger().info("Businesses:");
+            getLogger().info("\tRequire Payment: " + settings.isPayRequiredBusiness());
+            getLogger().info("\tRequired Payment: " + settings.getPayRequiredBusiness());
+            getLogger().info("\tStarting Balance: " + settings.getStartingBusinessBalance());
+            getLogger().info("Jobs:");
+            getLogger().info("\tRequire Payment: " + settings.isPayRequiredJob());
+            getLogger().info("\tRequired Payment: " + settings.getPayRequiredJob());
+            getLogger().info("\tMinimum Payment: " + settings.getMinimumJobPayment());
+        }
         BusinessManager.createBusinesses();
         EmployeeManager.loadEmployees();
         JobManager.loadJobs();

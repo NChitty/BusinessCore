@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.PlaceholderPattern;
 
 public class Business {
 
@@ -30,10 +31,12 @@ public class Business {
             this.employees.addAll(Arrays.asList(build.employees));
     }
 
+    @PlaceholderPattern(pattern = "<business_id>")
     public int getID() {
         return id;
     }
 
+    @PlaceholderPattern(pattern = "<business_name>")
     public String getName() {
         return this.name;
     }
@@ -42,6 +45,7 @@ public class Business {
         return this.ownerUUID;
     }
 
+    @PlaceholderPattern(pattern = "<business_balance>")
     public double getBalance() {
         return this.balance;
     }
@@ -54,9 +58,30 @@ public class Business {
         return Bukkit.getPlayer(UUID.fromString(this.ownerUUID));
     }
 
+    @PlaceholderPattern(pattern = "<business_owner>")
     public String getOwnerName() {
 		return this.getOwner().getName();
 	}
+
+    @PlaceholderPattern(pattern = "<business_employees_byID>")
+    public String getEmployeesById() {
+        StringBuilder sb = new StringBuilder("[");
+        for(Employee e : employees) {
+            sb.append("," + e.getID());
+        }
+        sb.append("]");
+        return sb.toString().replaceFirst(",", "");
+    }
+
+    @PlaceholderPattern(pattern = "<business_employees_byName>")
+    public String getEmployeesByName() {
+        StringBuilder sb = new StringBuilder("[");
+        for(Employee e : employees) {
+            sb.append("," + e.getName());
+        }
+        sb.append("]");
+        return sb.toString().replaceFirst(",", "");
+    }
 
     public Business setName(String name) {
         this.name = name;

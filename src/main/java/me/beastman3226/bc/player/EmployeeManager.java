@@ -50,6 +50,8 @@ public class EmployeeManager {
     }
 
     public static Employee getEmployee(Business b, UUID uuid) {
+        if(b == null)
+            return getEmployee(uuid);
         for(Employee e : b.getEmployees())
             if(e.getUniqueId().equals(uuid))
                 return e;
@@ -57,6 +59,8 @@ public class EmployeeManager {
     }
 
     public static Employee getEmployee(Business b, int id) {
+        if(b == null)
+            return getEmployee(id);
         for(Employee e : b.getEmployees())
             if(e.getID() == id)
                 return e;
@@ -64,6 +68,8 @@ public class EmployeeManager {
     }
 
     public static Employee getEmployee(Business b, String name) {
+        if(b == null)
+            return getEmployee(name);
         for(Employee e : b.getEmployees())
             if(e.getName().equals(name))
                 return e;

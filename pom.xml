@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spigotVersion>[1.12.2-R0.1-SNAPSHOT,)</spigotVersion>
         <vaultVersion>[1.6,)</vaultVersion>
+        <papiVersion>[2.9.3,)</papiVersion>
     </properties>
 
 
@@ -30,6 +31,12 @@
             <artifactId>VaultAPI</artifactId>
             <version>${vaultVersion}</version>
         </dependency>
+        <dependency>
+         <groupId>me.clip</groupId>
+          <artifactId>placeholderapi</artifactId>
+          <version>${papiVersion}</version>
+         <scope>provided</scope>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -39,6 +46,10 @@
         <repository>
             <id>vault-repo</id>
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
     <build>

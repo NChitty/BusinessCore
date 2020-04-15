@@ -2,7 +2,7 @@ name: BusinessCore
 version: 1.0.0-Alpha
 author: Desireaux
 main: me.beastman3226.bc.BusinessCore
-depend: [Vault]
+depend: [Vault, PlaceholderAPI]
 commands:
   business:
     description: Commands for controlling business operations

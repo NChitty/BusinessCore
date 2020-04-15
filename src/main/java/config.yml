@@ -1,8 +1,18 @@
-debug-message: false
-payperiod: 1h
-prefixes:
-    enabled: false
-    colorcodes:
-        owner: '&c'
-        manager: '&e'
-        employee: '&f'
+#This will send more information to console
+verbose-logging: false
+#Options regarding businesses
+businesses:
+#   Whether or not to require an amount to pay to start your business (true/false)
+    require-payment: false
+#   The amount to require to start business (decimal number)
+    payment-to-start: 0.0
+#   Sets the starting balance of a business
+    starting-balance: 0.0
+#Options regarding jobs
+jobs:
+#   Whether or not to pay an amount to open a job ticket (true/false)
+    require-payment: false
+#   The amount needed to open a job
+    payment-to-open: 0.0
+#   Minimum amount to pay for a job
+    payment-minimum: 1.0

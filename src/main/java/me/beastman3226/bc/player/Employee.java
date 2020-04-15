@@ -8,6 +8,7 @@ import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.util.PlaceholderPattern;
 
 /**
  *
@@ -28,14 +29,17 @@ public class Employee {
         this.id = id;
     }
 
+    @PlaceholderPattern(pattern = "<employee_id>")
     public int getID() {
         return this.id;
     }
 
+    @PlaceholderPattern(pattern = "<employee_name>")
     public String getName() {
         return this.employeeName;
     }
 
+    @PlaceholderPattern(pattern = "<employee_business>")
     public Business getBusiness() {
         return BusinessManager.getBusiness(this.business);
     }
@@ -76,10 +80,12 @@ public class Employee {
         return this;
     }
 
+    @PlaceholderPattern(pattern = "<employee_completed_jobs>")
     public int getCompletedJobs() {
         return this.completedJobs;
     }
 
+    @PlaceholderPattern(pattern = "<employee_current_job_id>")
     public int getCurrentJob() {
         return this.jobID;
     }

@@ -67,10 +67,6 @@ public class BusinessListener implements Listener {
                 e.getBusiness().deposit(e.getAbsoluteAmount());
             }
         }
-        if (!e.isCancelled())
-            BusinessCore.getInstance().getBusinessFileManager()
-                    .edit(new FileData().add(e.getBusiness().getName() + ".balance", e.getFinalAmount()));
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -81,21 +77,12 @@ public class BusinessListener implements Listener {
         }
         BusinessCore.getInstance().getLogger().info(e.getBusiness().getName() + " has been closed.");
         BusinessManager.closeBusiness(e.getBusiness());
-        BusinessCore.getInstance().getBusinessFileManager()
-                .edit(new FileData().add(e.getBusiness().getName(), null));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCreated(BusinessCreatedEvent e) {
         Player owner = e.getBusiness().getOwner();
         owner.sendMessage(BusinessCore.OTHER_PREFIX + "You have successfully started " + e.getBusiness().getName());
-        String ownerUUID = e.getBusiness().getOwnerUUID();
-        String businessName = e.getBusiness().getName();
-        BusinessCore.getInstance().getBusinessFileManager()
-                .edit(new FileData().add(businessName + ".name", businessName)
-                        .add(e.getBusiness().getName() + ".ownerUUID", ownerUUID)
-                        .add(e.getBusiness().getName() + ".id", e.getBusiness().getID())
-                        .add(e.getBusiness().getName() + ".balance", e.getBusiness().getBalance()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

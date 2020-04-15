@@ -1,0 +1,120 @@
+#Do not use placeholders in this file, use the formatting guide below to change the messages
+
+#Color formatting:
+# Enclose the text you want with <[color]>my text here<reset>
+# Resetting turns the text back to white
+# <dark_red>, <red>, <gold>, <yellow>, <dark_green>,
+# <green>, <aqua>, <dark_aqua>, <dark_blue>, <blue>,
+# <pink>, <purple>, <white>, <dark_grey>, <grey>, <black>
+# <bold>, <italic>, <underline>, <strikethrough>, <magic>
+
+#Player formatting:
+# This is the name of the player who is receiving the message
+# player recipient: <player_recipient>
+# This is the name of the player who incited an action ie accepts an invitation to a business
+# player cause: <player_cause>
+
+#Links, tooltips, commands, etc:
+# Create a tooltip with <tooltip:message>hoverable text<reset>
+# Create a link with <link:url>text to make hyperlink<reset>
+# Run a command with <command:/[command here] [args]>text to make command<reset>
+# You can use <br> to separate lines in a message, alternatively make them a list
+
+#Prefixes:
+# You can add prefixes by naming them and referencing with the number <prefix_[name]>
+prefixes:
+  error: '<grey>[<red>BusinessCore<grey>]<reset>'
+  action: '<grey>[<gold>BusinessCore<grey>]<reset>'
+  nominal: '<grey>[<aqua>BusinessCore<grey>]<reset>'
+  working: '<grey>[<green>BusinessCore<grey>]<reset>'
+errors:
+  name_too_similar: '<prefix_error> <dark_red><business_name><reset> is too similar to another business.'
+  already_own_business: '<prefix_error> You already own a business'
+  not_an_owner: '<prefix_error> You do not own a business'
+  invalid_id: '<prefix_error> Could not find a business with that id'
+  not_a_number: '<prefix_error> The argument you provided must be a number'
+  minimum_arguments: '<prefix_error> You did not provide enough arguments to the command'
+  try_list: '<prefix_error> If you are looking for a list of businesses try /business list [id,balance,name]'
+  no_player: '<prefix_error> Could not find player with specified name.'
+  already_a_worker: '<prefix_error> That player is already an employee of your business'
+  not_business_employee: '<prefix_error> That player is not your employee'
+#Business formatting:
+# business name:<business_name>
+# business balance: <business_balance>
+# business owner: <business_owner>
+# business balance change: <business_balance_change_amount>
+# business id: <business_id>
+# business employees:
+#  <business_employees_byID> = [id1, id2, ....]
+#  <business_employees_byName> = [Name1, name2, ....] 
+business:
+#Economy format:
+# <economy_plugin_format:amount> This will format the amount as the economy
+# plugin you use does
+# ie <economy_plugin_format:<business_balance>>
+# How /business info [id] displays information
+  info:
+  - '<grey>[<green><business_name><reset>:<dark_green><business_id><grey>]'
+  - '<dark_green>Owner:<reset> <business_owner>'
+  - '<dark_green>Balance:<reset> <economy_plugin_format><business_balance></economy_plugin_format>'
+  - '<dark_green>Employees:<reset> <business_employees_byID>'
+# How /business list will format messages  
+  list:
+   by_id:
+    header: '<dark_green>|=========Businesses by ID==========|'
+    format: '[<gold><business_id><reset>] <business_name>'
+    footer: '<dark_green>|=========Page <currentPage>/<totalPages>========|'
+   by_balance:
+    header: '<dark_green>|=========Businesses by Balance==========|'
+    format: '[<gold><business_id><reset>] [<green><business_balance><reset>] <business_name>'
+    footer: '<dark_green>|=========Page <currentPage>/<totalPages>========|'
+   by_name:
+    header: '<dark_green>|=========Businesses by Name==========|'
+    format: '[<gold><business_id><reset>] <business_name>'
+    footer: '<dark_green>|=========Page <currentPage>/<totalPages>========|'
+  employee:
+#   Note that when parsing, the recipient's business info or employee info will take priority
+#   over the player that caused the message to be sent
+    hire:
+      sent_offer: '<prefix_working> An offer to join your business has been sent to <player_recipient>'
+      offer: '<prefix_action> <player_cause> has offered you a position at <dark_aqua><business_name><reset><br>Type yes to accept the offer.'
+      offer_accepted_owner: '<prefix_action> <player_cause> has accepted your offer to join <busines_name>'
+      offer_accepted_employee: '<prefix_action> You are now an employee of <business_name>' 
+    fire: '<prefix_action> Fired <player_cause> from <business_name>'
+#Employee Formatting:
+# name <employee_name>
+# id <employee_id>
+# business <employee_business>
+# current job <employee_current_job_id>
+# completed jobs <employee_completed_jobs>
+    list:
+      header: '<dark_aqua>|=======<business_name>'s Employees=======|<reset>'
+      format: '<dark_aqua>[<employee_name>] <aqua>ID:<employee_id> Current Job:<employee_current_job_id> Completed Jobs:<employee_completed_jobs>'
+      footer:  '<dark_aqua>|=========Page <currentPage>/<totalPages>========|'
+  withdraw:
+    overdraft:  '<prefix_error> You cannot withdraw more than <business_balance>.'
+    success: '<prefix_working> Successfully withdrew <business_balance_change_amount> from <business_name>'
+  deposit: '<prefix_working> Successfully deposited <business_balance_change_amount> to <business_name>'
+  start: '<prefix_nominal> Successfully started <business_name>'
+#Job formatting:
+# job description: <job_description>
+# This is the player that opened the job ticket
+# job player: <job_player_name>
+# job id: <job_id>
+# job payment: <job_payment>
+# job location: <job_location> (format: world x,y,x)
+# job worker: <job_worker_name>
+job:
+  open:
+  claim:
+
+#Uncomment the following to get messages to console whenever an action is performed
+#debug:
+#  business:
+#    start: '<player_cause> has started <business_name>'
+#    employee: 
+#      hire: '<business_name> has hired <player_cause>'
+#      fire: '<business_name> has fired <player_cause>'
+#    close:
+#    deposit:
+#    withdraw:
