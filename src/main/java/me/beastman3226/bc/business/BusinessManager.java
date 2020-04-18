@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.data.file.FileManager;
 
 /**
  *
@@ -27,13 +29,22 @@ public class BusinessManager {
         for (String s : businessYml.getKeys(false)) {
             id = businessYml.getInt(s + ".id");
             name = s;
-            owner = businessYml.getString(s + ".ownerUUID");
+            owner = businessYml.getString(s + ".owner");
             balance = businessYml.getDouble(s + ".balance");
             Business b = createBusiness(new Business.Builder(id).name(name).owner(owner).balance(balance));
             businessList.add(b);
         }
     }
 
+    public static void saveBusinesses() {
+        FileManager fm = BusinessCore.getInstance().getBusinessFileManager();
+        for(Business b : businessList) {
+            fm.edit(new FileData()
+            .add(b.getName() + ".id", b.getID())
+            .add(b.getName() + ".owner", b.getOwnerUUID())
+            .add(b.getName() + ".balance", b.getBalance()));
+        }
+    }
     public static ArrayList<Business> getBusinessList() {
         return businessList;
     }
@@ -47,10 +58,6 @@ public class BusinessManager {
     public static Business createBusiness(Business.Builder build) {
         Business b = build.build();
         businessList.add(b);
-        /*
-         * if(Information.debug) { Information.log.log(Level.INFO,
-         * "Created a business with name {0}", build.getName()); }
-         */
         return b;
     }
 

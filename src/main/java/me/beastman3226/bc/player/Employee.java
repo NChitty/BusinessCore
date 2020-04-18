@@ -76,7 +76,7 @@ public class Employee {
     public Employee completeJob() {
         this.jobID = -1;
         this.completedJobs = this.completedJobs++;
-        BusinessCore.getInstance().getEmployeeFileManager().edit(new FileData().add(this.employeeName + ".job", -1).add(this.employeeName + ".completed", this.completedJobs));
+        BusinessCore.getInstance().getEmployeeFileManager().edit(new FileData().add(this.employeeName + ".job", null).add(this.employeeName + ".completed", this.completedJobs));
         return this;
     }
 

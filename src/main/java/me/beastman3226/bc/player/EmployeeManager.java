@@ -7,6 +7,9 @@ import java.util.UUID;
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
+import me.beastman3226.bc.data.file.FileData;
+import me.beastman3226.bc.data.file.FileManager;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -32,6 +35,18 @@ public class EmployeeManager {
             BusinessManager.getBusiness(e.getBusiness().getID()).addEmployee(e);
         }
 
+    }
+
+    public static void saveEmployees() {
+        FileManager fm = BusinessCore.getInstance().getEmployeeFileManager();
+        for(Employee e : employeeList) {
+            fm.edit(new FileData()
+            .add(e.getName() + ".id", e.getID())
+            .add(e.getName() + ".UUID", e.getUniqueId().toString())
+            .add(e.getName() + ".business", e.getBusiness().getID())
+            .add(e.getName() + ".job", e.getCurrentJob())
+            .add(e.getName() + ".completed", e.getCompletedJobs()));
+        }
     }
 
     public static HashMap<Player, Integer> getPendingPlayers() {
