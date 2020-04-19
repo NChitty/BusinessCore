@@ -104,7 +104,7 @@ public class JobManager {
             double pay = jobYml.getDouble(id + ".payment");
             UUID issuer = UUID.fromString(jobYml.getString(id + ".issuer"));
             String worker = jobYml.getString(id + ".worker");
-            if(worker == null || worker.isBlank() || worker.isEmpty())
+            if(worker == null  || worker.isEmpty())
                 j = new Job(id, issuer, description, loc, pay);
             else
                 j = new Job(id, issuer, description, loc, pay, UUID.fromString(worker));

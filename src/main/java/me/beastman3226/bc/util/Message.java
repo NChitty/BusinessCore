@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 
@@ -72,7 +74,7 @@ public class Message {
         return sb.toString();
     }
 
-    public TextComponent getMessage() {
+    public List<TextComponent> getMessage() {
         String message;
         if(messages.isList(path)) {
             StringBuilder sb = new StringBuilder();
@@ -121,17 +123,24 @@ public class Message {
                 }
             }
         }
-        if (lastIndex < plainPage.length())
+        if (lastIndex < message.length())
         {
-            curStr.append(plainPage, lastIndex, plainPage.length());
-            TextComponent current = new TextComponent(TextComponent.fromLegacyText(Text.setPlaceholders(player, curStr.toString())));
+            curStr.append(message, lastIndex, message.length());
+            TextComponent current = new TextComponent(TextComponent.fromLegacyText(curStr.toString()));
             compBuilder.add(current);
         }
 
-        return finalMessage;
+        return compBuilder.getComponents();
     }
 
-    private String parseBusinessTags(String string) {
+    private Object parseEvent(String group) {
+        if(ChatColor.valueOf(group.substring(1, group.length()-1).toUpperCase()) != null) {
+            
+        }
+		return null;
+	}
+
+	private String parseBusinessTags(String string) {
         Matcher matcher = Pattern.compile("(<business_[a-zA-Z0-9_]+>)").matcher(string);
         StringBuilder sb = new StringBuilder();
         int lastIndex = 0;

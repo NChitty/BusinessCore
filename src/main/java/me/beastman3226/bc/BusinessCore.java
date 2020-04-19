@@ -54,7 +54,6 @@ public class BusinessCore extends JavaPlugin {
         registerListeners();
         registerCommands();
         //settings and configs
-<<<<<<< HEAD
         settings = new Settings(this.getConfig());
         if(settings.verboseLogging()) {
             getLogger().info("(================Business Core Settings================)");
@@ -67,9 +66,6 @@ public class BusinessCore extends JavaPlugin {
             getLogger().info("\tRequired Payment: " + settings.getPayRequiredJob());
             getLogger().info("\tMinimum Payment: " + settings.getMinimumJobPayment());
         }
-=======
-        this.getLogger().info("Loading businesses...");
->>>>>>> de36c2508b00083c7c994644ec34e22513220d5b
         BusinessManager.createBusinesses();
         this.getLogger().info("Loading employees...");
         EmployeeManager.loadEmployees();

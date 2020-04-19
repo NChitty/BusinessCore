@@ -82,11 +82,8 @@ public class BusinessListener implements Listener {
     public void onCreated(BusinessCreatedEvent e) {
         Player owner = e.getBusiness().getOwner();
         owner.sendMessage(BusinessCore.OTHER_PREFIX + "You have successfully started " + e.getBusiness().getName());
-<<<<<<< HEAD
-=======
         String ownerUUID = e.getBusiness().getOwnerUUID();
         String businessName = e.getBusiness().getName();
->>>>>>> de36c2508b00083c7c994644ec34e22513220d5b
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
