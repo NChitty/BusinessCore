@@ -52,7 +52,7 @@ public class JobListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onClompleted(JobCompletedEvent e) {
+    public void onCompleted(JobCompletedEvent e) {
         if(JobManager.completeJob(e.getJob())) {
             Player worker = e.getJob().getWorker();
             Player player = (Player) e.getJob().getPlayer();

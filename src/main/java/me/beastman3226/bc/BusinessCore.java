@@ -1,14 +1,16 @@
 package me.beastman3226.bc;
 
-import java.io.File;
 import java.util.HashMap;
 
-import me.beastman3226.bc.business.Business;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.commands.BusinessCommand;
 import me.beastman3226.bc.commands.JobCommand;
 import me.beastman3226.bc.data.file.FileManager;
-import me.beastman3226.bc.data.json.JsonManager;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.listener.BusinessListener;
 import me.beastman3226.bc.listener.JobListener;
@@ -17,11 +19,6 @@ import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Settings;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
