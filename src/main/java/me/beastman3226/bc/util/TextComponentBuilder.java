@@ -65,8 +65,8 @@ public class TextComponentBuilder {
         this.nextHoverEvent = nextHoverEvent;
     }
 
-    void setColor(String color) {
-        this.color = ChatColor.valueOf(color);
+    void setColor(ChatColor chatColor) {
+        this.color = chatColor;
     }
 
 }

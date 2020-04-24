@@ -3,28 +3,22 @@ package me.beastman3226.bc.util;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
-import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.job.Job;
-import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.Employee;
-import me.beastman3226.bc.player.EmployeeManager;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.ClickEvent.Action;
 
 public class Message {
 
@@ -53,7 +47,6 @@ public class Message {
         Matcher match = Pattern.compile("<[a-zA-Z0-9_]+>").matcher(string);
         StringBuilder sb = new StringBuilder();
         int lastIndex = 0;
-
         while (match.find()) {
             if (match.start() != 0)
                 sb.append(string.substring(lastIndex, match.start()));
@@ -65,7 +58,11 @@ public class Message {
             else if (match.group().contains("prefix")) {
                 String name = match.group().split("_")[1].replaceAll(">", "");
                 sb.append(getPrefix(name));
-            } else if (match.group().equals("<br>")) {
+            } else if(match.group().contains("current_page"))
+                sb.append(other[0]);
+            else if(match.group().contains("total_pages"))
+                sb.append(other[1]);
+            else if (match.group().equals("<br>")) {
                 sb.append("\n");
             } else {
                 sb.append(match.group());
@@ -74,7 +71,13 @@ public class Message {
         return sb.toString();
     }
 
-    public List<TextComponent> getMessage() {
+    public void sendMessage() {
+        for(TextComponent message : getMessage()) {
+            recipient.spigot().sendMessage(message);
+        }
+    }
+
+    private List<TextComponent> getMessage() {
         String message;
         if(messages.isList(path)) {
             StringBuilder sb = new StringBuilder();
@@ -110,6 +113,9 @@ public class Message {
             {
                 compBuilder.setNextHoverEvent(null);
                 compBuilder.setNextClickEvent(null);
+                compBuilder.setColor(ChatColor.WHITE);
+            } else if (ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()) != null){
+                compBuilder.setColor(ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()));
             }
             else
             {
@@ -134,13 +140,21 @@ public class Message {
     }
 
     private Object parseEvent(String group) {
-        if(ChatColor.valueOf(group.substring(1, group.length()-1).toUpperCase()) != null) {
-            
+        String attribute = group.substring(1, group.indexOf(":"));
+        String value = group.substring(group.indexOf(":"));
+        switch(attribute) {
+            case "tooltip":
+                return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
+            case "link":
+                return new ClickEvent(ClickEvent.Action.OPEN_URL, value);
+            case "command":
+                return new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, value);
+            default:
+                return null;
         }
-		return null;
-	}
+    }
 
-	private String parseBusinessTags(String string) {
+    private String parseBusinessTags(String string) {
         Matcher matcher = Pattern.compile("(<business_[a-zA-Z0-9_]+>)").matcher(string);
         StringBuilder sb = new StringBuilder();
         int lastIndex = 0;

@@ -38,6 +38,10 @@ errors:
   no_player: '<prefix_error> Could not find player with specified name.'
   already_a_worker: '<prefix_error> That player is already an employee of your business'
   not_business_employee: '<prefix_error> That player is not your employee'
+  job_not_found: '<prefix_error> Could not find a valid job'
+  incorrect_player: '<prefix_error> You must be the player who created the job to close it'
+  not_an_employee: '<prefix_error> You must be a member of business to claim a job'
+  self_created: '<prefix_error> You cannot claim a job you created'
 #Business formatting:
 # business name:<business_name>
 # business balance: <business_balance>
@@ -71,7 +75,7 @@ business:
    by_name:
     header: '<dark_green>|=========Businesses by Name==========|'
     format: '[<gold><business_id><reset>] <business_name>'
-    footer: '<dark_green>|=========Page <currentPage>/<totalPages>========|'
+    footer: '<dark_green>|=========Page <current_page>/<total_pages>========|'
   employee:
 #   Note that when parsing, the recipient's business info or employee info will take priority
 #   over the player that caused the message to be sent
@@ -106,9 +110,34 @@ business:
 # job worker: <job_worker_name>
 job:
   open:
+    money_front_success: '<prefix_working> Withdrew <economy_plugin_format:<job_payment>> for job creation'
+    money_front_fail: '<prefix_error> You have to be able to front the money for your job'
+    successful_creation: '<prefix_working> Created job #<job_id>'
   claim:
+    success: '<prefix_nominal> Successfully claimed job #<job_id>'
+    fail:  '<prefix_error> Failed to claim job'
+  list:
+    header: '<dark_green>|=========Jobs==========|'
+    format: '[<gold><job_id><reset>] <job_description>'
+    footer: '<dark_green>|=========Page <currentPage>/<totalPages>========|'
+  complete:
+    to_worker: '<prefix_action> #<job_id> has been completed and <economy_plugin_format:<job_payment>> has been deposited to <business_name>'
+    to_player: '<prefix_action> #<job_id> has been marked as complete'
+    error: '<prefix_error> An error occurred while completing the job.'
+  current:
+  - '<red>(=================[<job_id>]=================)'
+  - '<dark_red>[Created By]<red> <job_player_name>'
+  - '<dark_red>[Description]<red> <job_description>'
+  - '<dark_red>[Location]<red> <job_location>'
+  - '<dark_red>[Payment]<red> <job_payment>'
+  info:
+  - '<red>(=================[<job_id>]=================)'
+  - '<dark_red>[Created By]<red> <job_player_name>'
+  - '<dark_red>[Description]<red> <job_description>'
+  - '<dark_red>[Location]<red> <job_location>'
+  - '<dark_red>[Payment]<red> <job_payment>'
 
-#Uncomment the following to get messages to console whenever an action is performed
+#Uncomment the following to set the messages the console receives
 #debug:
 #  business:
 #    start: '<player_cause> has started <business_name>'
