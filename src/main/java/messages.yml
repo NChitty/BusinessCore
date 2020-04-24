@@ -84,7 +84,7 @@ business:
       offer: '<prefix_action> <player_cause> has offered you a position at <dark_aqua><business_name><reset><br>Type yes to accept the offer.'
       offer_accepted_owner: '<prefix_action> <player_cause> has accepted your offer to join <busines_name>'
       offer_accepted_employee: '<prefix_action> You are now an employee of <business_name>' 
-    fire: '<prefix_action> Fired <player_cause> from <business_name>'
+    fire: '<prefix_action> You fired <player_cause> from <business_name>' 
 #Employee Formatting:
 # name <employee_name>
 # id <employee_id>
@@ -101,6 +101,7 @@ business:
   deposit: '<prefix_working> Successfully deposited <business_balance_change_amount> to <business_name>'
   balance: '<prefix_nominal> [<business_name>]: <economy_plugin_format:<business_balance>>'
   start: '<prefix_nominal> Successfully started <business_name>'
+  close: '<prefix_action> <business_name> has been closed'
 #Job formatting:
 # job description: <job_description>
 # This is the player that opened the job ticket

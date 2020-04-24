@@ -3,7 +3,6 @@ package me.beastman3226.bc.util;
 import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.business.BusinessManager;
-import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 

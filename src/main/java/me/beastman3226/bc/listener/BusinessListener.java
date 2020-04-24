@@ -10,6 +10,7 @@ import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Message;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -38,12 +39,13 @@ public class BusinessListener implements Listener {
                             return;
                         }
                     }
-                    e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully withdrew "
-                            + e.getAbsoluteAmount() + " from " + e.getBusiness().getName());
+                    Message message = new Message("business.withdraw.success", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                    message.sendMessage();
                     e.getBusiness().withdraw(e.getAbsoluteAmount());
-                } else
-                    e.getSource().sendMessage(BusinessCore.ERROR_PREFIX
-                            + "Unable to make a withdraw larger than the balance of the business.");
+                } else {
+                    Message message = new Message("business.withdraw.overdraft", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                    message.sendMessage();
+                }
             } else {
                 if (e.getSource() instanceof Player) {
                     EconomyResponse er = eco.withdrawPlayer((Player) e.getSource(), e.getAmount());
@@ -52,8 +54,8 @@ public class BusinessListener implements Listener {
                         return;
                     }
                 }
-                e.getSource().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully deposited "
-                        + e.getAbsoluteAmount() + " to " + e.getBusiness().getName());
+                Message message = new Message("business.deposit", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                message.sendMessage();
                 e.getBusiness().deposit(e.getAbsoluteAmount());
             }
         } else {
@@ -72,18 +74,19 @@ public class BusinessListener implements Listener {
     public void onClosed(BusinessClosedEvent e) {
         Business b = e.getBusiness();
         if (b.getOwner().isOnline()) {
-            b.getOwner().sendMessage(BusinessCore.OTHER_PREFIX + "Your business has been closed.");
+            Message message = new Message("business.close", e.getSource()).setRecipient(b.getOwner()).setBusiness(e.getBusiness());
+            message.sendMessage();
         }
-        BusinessCore.getInstance().getLogger().info(e.getBusiness().getName() + " has been closed.");
+        Message message = new Message("business.close", e.getSource()).setBusiness(e.getBusiness());
+        message.sendMessage();
         BusinessManager.closeBusiness(e.getBusiness());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCreated(BusinessCreatedEvent e) {
         Player owner = e.getBusiness().getOwner();
-        owner.sendMessage(BusinessCore.OTHER_PREFIX + "You have successfully started " + e.getBusiness().getName());
-        String ownerUUID = e.getBusiness().getOwnerUUID();
-        String businessName = e.getBusiness().getName();
+        Message message = new Message("business.start", owner, e.getBusiness());
+        message.sendMessage();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -92,10 +95,8 @@ public class BusinessListener implements Listener {
         e.getBusiness().removeEmployee(e.getEmployee());
         BusinessCore.getInstance().getEmployeeFileManager()
                 .edit(new FileData().add(e.getEmployee().getName() + "", null));
-        e.getBusiness().getOwner().sendMessage(BusinessCore.NOMINAL_PREFIX + "Fired " + e.getEmployee().getName()
-                + " from " + e.getBusiness().getName());
-        BusinessCore.getInstance().getLogger()
-                .info("Fired " + e.getEmployee().getName() + " from " + e.getBusiness().getName());
+        Message message = new Message("business.fire", e.getBusiness().getOwner(), e.getBusiness()).setCause(Bukkit.getPlayer(e.getEmployee().getUniqueId()));
+        message.sendMessage();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -103,15 +104,13 @@ public class BusinessListener implements Listener {
         Player owner = e.getBusiness().getOwner();
         Player employee = Bukkit.getPlayer(e.getEmployee().getUniqueId());
         if (owner.isOnline()) {
-            owner.sendMessage(
-                    BusinessCore.WORKING_PREFIX + employee.getName() + " has accepted a position in your business.");
+            Message message = new Message("business.offer_accepted_owner", owner, e.getBusiness()).setCause(employee).setEmployee(e.getEmployee());
+            message.sendMessage();
         }
         if (employee.isOnline()) {
-            employee.sendMessage(
-                    BusinessCore.WORKING_PREFIX + "You are now an employee of " + e.getBusiness().getName());
+            Message message = new Message("business.offer_accepted_employee", employee, e.getBusiness()).setCause(owner).setEmployee(e.getEmployee());
+            message.sendMessage();
         }
-        BusinessCore.getInstance().getLogger()
-                .info(employee.getName() + " has accepted a position in " + e.getBusiness().getName());
         e.getBusiness().addEmployee(e.getEmployee());
         EmployeeManager.getEmployeeList().add(e.getEmployee());
     }

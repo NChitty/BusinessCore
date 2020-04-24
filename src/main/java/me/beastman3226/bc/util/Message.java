@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -36,8 +38,9 @@ public class Message {
     private Player recipient;
     private Player cause;
     private Object[] other;
+    private boolean console = false;
 
-    public Message(String path) {
+    private static void initMessage() {
         if (messages == null) {
             File messagesFile = new File(BusinessCore.getInstance().getDataFolder(), "messages.yml");
             if (!messagesFile.getParentFile().exists() || !messagesFile.exists()) {
@@ -45,7 +48,50 @@ public class Message {
             }
             messages = YamlConfiguration.loadConfiguration(messagesFile);
         }
+    }
+
+    public Message(String path) {
+        initMessage();
         this.path = path;
+    }
+
+    public Message(String path, Player recipient, Business b) {
+        initMessage();
+        this.path = path;
+        this.recipient = recipient;
+        this.business = b;
+    }
+
+    public Message(String path, Player recipient, Employee e) {
+        initMessage();
+        this.path = path;
+        this.recipient = recipient;
+        this.employee = e;
+    }
+
+    public Message(String path, Player recipient, Job j) {
+        initMessage();
+        this.path = path;
+        this.recipient = recipient;
+        this.job = j;
+    }
+
+    public Message(String path, boolean console, Player recipient, Player cause) {
+        initMessage();
+        this.path = path;
+        this.console = console;
+        this.recipient = recipient;
+        this.cause = cause;
+    }
+
+    public Message(String path, CommandSender sender) {
+        initMessage();
+        this.path = path;
+        if(sender instanceof Player) {
+            this.recipient = (Player) sender;
+        } else {
+            this.console = true;
+        }
     }
 
     private String parsePlayerTags(String string) {
@@ -57,9 +103,11 @@ public class Message {
                 sb.append(string.substring(lastIndex, match.start()));
             lastIndex = match.end();
             if (match.group().equals("<player_cause>"))
-                sb.append(cause.getName());
+                if(cause != null)
+                    sb.append(cause.getName());
             else if (match.group().equals("<player_recipient>"))
-                sb.append(recipient.getName());
+                if(recipient != null)
+                    sb.append(recipient.getName());
             else if (match.group().contains("prefix")) {
                 String name = match.group().split("_")[1].replaceAll(">", "");
                 sb.append(getPrefix(name));
@@ -73,14 +121,17 @@ public class Message {
                 sb.append(match.group());
             }
         }
+        sb.append(string, lastIndex, string.length());
         return sb.toString();
     }
 
     public void sendMessage() {
         List<TextComponent> message = getMessage();
-        recipient.spigot().sendMessage(message.toArray(new BaseComponent[] {}));
-        for (TextComponent m : message) {
-            BusinessCore.getInstance().getLogger().info(m.getText());
+        if (!console || recipient != null) {
+            if(recipient.isOnline())
+                recipient.spigot().sendMessage(message.toArray(new BaseComponent[] {}));
+        } else {
+            Bukkit.getConsoleSender().spigot().sendMessage(message.toArray(new BaseComponent[] {}));
         }
     }
 
@@ -102,7 +153,8 @@ public class Message {
         if (job != null)
             message = parseJobTags(message);
 
-        Matcher matcher = Pattern.compile("(<[a-zA-Z_]+>|<[a-zA-Z0-9]+:[^>]*)").matcher(message);
+        BusinessCore.getInstance().getLogger().info(message);
+        Matcher matcher = Pattern.compile("(<[a-zA-Z_]+>|<[a-zA-Z0-9_]+:[^>]*>)").matcher(message);
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
@@ -120,11 +172,13 @@ public class Message {
                 compBuilder.setColor(ChatColor.WHITE);
             } else {
                 try {
-                    compBuilder.setColor(ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()));
+                    compBuilder.setColor(ChatColor
+                            .valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()));
                 } catch (IllegalArgumentException e) {
                     if (matcher.group().contains("economy_plugin_format")) {
                         Economy eco = BusinessCore.getInstance().getEconomy();
-                        double d = Double.parseDouble(matcher.group().substring(matcher.group().indexOf(":"), matcher.group().lastIndexOf(">")));
+                        double d = Double.parseDouble(matcher.group().substring(matcher.group().indexOf(":") + 1,
+                                matcher.group().length() - 1));
                         curStr.append(eco.format(d));
                     } else {
                         Object event = parseEvent(matcher.group());
@@ -191,7 +245,7 @@ public class Message {
             lastIndex = matcher.end();
 
         }
-
+        sb.append(string, lastIndex, string.length());
         return sb.toString();
     }
 
@@ -220,6 +274,7 @@ public class Message {
 
         }
 
+        sb.append(string, lastIndex, string.length());
         return sb.toString();
     }
 
@@ -248,6 +303,7 @@ public class Message {
 
         }
 
+        sb.append(string, lastIndex, string.length());
         return sb.toString();
     }
 
