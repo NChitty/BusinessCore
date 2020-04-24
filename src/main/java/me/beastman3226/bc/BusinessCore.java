@@ -63,6 +63,7 @@ public class BusinessCore extends JavaPlugin {
             getLogger().info("\tRequired Payment: " + settings.getPayRequiredJob());
             getLogger().info("\tMinimum Payment: " + settings.getMinimumJobPayment());
         }
+        this.getLogger().info("Loading businesses...");
         BusinessManager.createBusinesses();
         this.getLogger().info("Loading employees...");
         EmployeeManager.loadEmployees();

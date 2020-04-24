@@ -5,7 +5,7 @@
 # Resetting turns the text back to white
 # <dark_red>, <red>, <gold>, <yellow>, <dark_green>,
 # <green>, <aqua>, <dark_aqua>, <dark_blue>, <blue>,
-# <pink>, <purple>, <white>, <dark_grey>, <grey>, <black>
+# <pink>, <purple>, <white>, <dark_gray>, <gray>, <black>
 # <bold>, <italic>, <underline>, <strikethrough>, <magic>
 
 #Player formatting:
@@ -23,12 +23,12 @@
 #Prefixes:
 # You can add prefixes by naming them and referencing with the number <prefix_[name]>
 prefixes:
-  error: '<grey>[<red>BusinessCore<grey>]<reset>'
-  action: '<grey>[<gold>BusinessCore<grey>]<reset>'
-  nominal: '<grey>[<aqua>BusinessCore<grey>]<reset>'
-  working: '<grey>[<green>BusinessCore<grey>]<reset>'
+  error: '<gray>[<red>BusinessCore<gray>]<reset>'
+  action: '<gray>[<gold>BusinessCore<gray>]<reset>'
+  nominal: '<gray>[<aqua>BusinessCore<gray>]<reset>'
+  working: '<gray>[<green>BusinessCore<gray>]<reset>'
 errors:
-  name_too_similar: '<prefix_error> <dark_red><business_name><reset> is too similar to another business.'
+  name_too_similar: '<prefix_error> That name is too similar to another business.'
   already_own_business: '<prefix_error> You already own a business'
   not_an_owner: '<prefix_error> You do not own a business'
   invalid_id: '<prefix_error> Could not find a business with that id'
@@ -36,7 +36,7 @@ errors:
   minimum_arguments: '<prefix_error> You did not provide enough arguments to the command'
   try_list: '<prefix_error> If you are looking for a list of businesses try /business list [id,balance,name]'
   no_player: '<prefix_error> Could not find player with specified name.'
-  already_a_worker: '<prefix_error> That player is already an employee of your business'
+  already_a_worker: '<prefix_error> That player is already an employee of a business'
   not_business_employee: '<prefix_error> That player is not your employee'
   job_not_found: '<prefix_error> Could not find a valid job'
   incorrect_player: '<prefix_error> You must be the player who created the job to close it'
@@ -58,9 +58,9 @@ business:
 # ie <economy_plugin_format:<business_balance>>
 # How /business info [id] displays information
   info:
-  - '<grey>[<green><business_name><reset>:<dark_green><business_id><grey>]'
+  - '<gray>[<green><business_name><reset>:<dark_green><business_id><gray>]'
   - '<dark_green>Owner:<reset> <business_owner>'
-  - '<dark_green>Balance:<reset> <economy_plugin_format><business_balance></economy_plugin_format>'
+  - '<dark_green>Balance:<reset> <economy_plugin_format:<business_balance>>'
   - '<dark_green>Employees:<reset> <business_employees_byID>'
 # How /business list will format messages  
   list:
@@ -80,7 +80,7 @@ business:
 #   Note that when parsing, the recipient's business info or employee info will take priority
 #   over the player that caused the message to be sent
     hire:
-      sent_offer: '<prefix_working> An offer to join your business has been sent to <player_recipient>'
+      sent_offer: '<prefix_working> An offer to join your business has been sent to <player_cause>'
       offer: '<prefix_action> <player_cause> has offered you a position at <dark_aqua><business_name><reset><br>Type yes to accept the offer.'
       offer_accepted_owner: '<prefix_action> <player_cause> has accepted your offer to join <busines_name>'
       offer_accepted_employee: '<prefix_action> You are now an employee of <business_name>' 
@@ -92,13 +92,14 @@ business:
 # current job <employee_current_job_id>
 # completed jobs <employee_completed_jobs>
     list:
-      header: '<dark_aqua>|=======<business_name>'s Employees=======|<reset>'
+      header: "<dark_aqua>|=======<business_name>'s Employees=======|<reset>"
       format: '<dark_aqua>[<employee_name>] <aqua>ID:<employee_id> Current Job:<employee_current_job_id> Completed Jobs:<employee_completed_jobs>'
       footer:  '<dark_aqua>|=========Page <currentPage>/<totalPages>========|'
   withdraw:
     overdraft:  '<prefix_error> You cannot withdraw more than <business_balance>.'
     success: '<prefix_working> Successfully withdrew <business_balance_change_amount> from <business_name>'
   deposit: '<prefix_working> Successfully deposited <business_balance_change_amount> to <business_name>'
+  balance: '<prefix_nominal> [<business_name>]: <economy_plugin_format:<business_balance>>'
   start: '<prefix_nominal> Successfully started <business_name>'
 #Job formatting:
 # job description: <job_description>

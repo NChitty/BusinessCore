@@ -3,6 +3,7 @@ package me.beastman3226.bc.util;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,12 +14,16 @@ import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.player.Employee;
+import me.beastman3226.bc.player.EmployeeManager;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.milkbowl.vault.economy.Economy;
 
 public class Message {
 
@@ -58,9 +63,9 @@ public class Message {
             else if (match.group().contains("prefix")) {
                 String name = match.group().split("_")[1].replaceAll(">", "");
                 sb.append(getPrefix(name));
-            } else if(match.group().contains("current_page"))
+            } else if (match.group().contains("current_page"))
                 sb.append(other[0]);
-            else if(match.group().contains("total_pages"))
+            else if (match.group().contains("total_pages"))
                 sb.append(other[1]);
             else if (match.group().equals("<br>")) {
                 sb.append("\n");
@@ -72,65 +77,68 @@ public class Message {
     }
 
     public void sendMessage() {
-        for(TextComponent message : getMessage()) {
-            recipient.spigot().sendMessage(message);
+        List<TextComponent> message = getMessage();
+        recipient.spigot().sendMessage(message.toArray(new BaseComponent[] {}));
+        for (TextComponent m : message) {
+            BusinessCore.getInstance().getLogger().info(m.getText());
         }
     }
 
     private List<TextComponent> getMessage() {
-        String message;
-        if(messages.isList(path)) {
+        String message = "";
+        if (messages.isList(path)) {
             StringBuilder sb = new StringBuilder();
-            for(String s : messages.getStringList(path))
-                sb.append("\n" + s);
-            message = sb.toString().replaceFirst("\n", "");
+            for (String s : messages.getStringList(path))
+                sb.append("<br>" + s);
+            message = sb.toString().replaceFirst("<br>", "");
         } else {
             message = messages.getString(path);
         }
         message = parsePlayerTags(message);
-        if(business != null)
+        if (business != null)
             message = parseBusinessTags(message);
-        if(employee != null)
+        if (employee != null)
             message = parseEmployeeTags(message);
-        if(job != null)
+        if (job != null)
             message = parseJobTags(message);
 
         Matcher matcher = Pattern.compile("(<[a-zA-Z_]+>|<[a-zA-Z0-9]+:[^>]*)").matcher(message);
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         int lastIndex = 0;
         StringBuilder curStr = new StringBuilder();
-        while (matcher.find())
-        {
-            if (matcher.start() != 0)
-            {
+        while (matcher.find()) {
+            if (matcher.start() != 0) {
                 curStr.append(message, lastIndex, matcher.start());
                 TextComponent current = new TextComponent(curStr.toString());
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
             }
             lastIndex = matcher.end();
-            if (matcher.group().equals("<reset>"))
-            {
+            if (matcher.group().equals("<reset>")) {
                 compBuilder.setNextHoverEvent(null);
                 compBuilder.setNextClickEvent(null);
                 compBuilder.setColor(ChatColor.WHITE);
-            } else if (ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()) != null){
-                compBuilder.setColor(ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()));
-            }
-            else
-            {
-                Object event = parseEvent(matcher.group());
-                if (event != null)
-                {
-                    if (event instanceof HoverEvent)
-                        compBuilder.setNextHoverEvent((HoverEvent) event);
-                    else if (event instanceof ClickEvent)
-                        compBuilder.setNextClickEvent((ClickEvent) event);
+            } else {
+                try {
+                    compBuilder.setColor(ChatColor.valueOf(matcher.group().substring(1, matcher.group().length() - 1).toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    if (matcher.group().contains("economy_plugin_format")) {
+                        Economy eco = BusinessCore.getInstance().getEconomy();
+                        double d = Double.parseDouble(matcher.group().substring(matcher.group().indexOf(":"), matcher.group().lastIndexOf(">")));
+                        curStr.append(eco.format(d));
+                    } else {
+                        Object event = parseEvent(matcher.group());
+                        if (event != null) {
+                            if (event instanceof HoverEvent)
+                                compBuilder.setNextHoverEvent((HoverEvent) event);
+                            else if (event instanceof ClickEvent)
+                                compBuilder.setNextClickEvent((ClickEvent) event);
+                        }
+                    }
                 }
             }
         }
-        if (lastIndex < message.length())
-        {
+        if (lastIndex < message.length()) {
             curStr.append(message, lastIndex, message.length());
             TextComponent current = new TextComponent(TextComponent.fromLegacyText(curStr.toString()));
             compBuilder.add(current);
@@ -140,9 +148,9 @@ public class Message {
     }
 
     private Object parseEvent(String group) {
-        String attribute = group.substring(1, group.indexOf(":"));
-        String value = group.substring(group.indexOf(":"));
-        switch(attribute) {
+        String attribute = group.split(":")[0].substring(1);
+        String value = group.split(":")[1].substring(1, group.split(":")[1].length() - 1);
+        switch (attribute) {
             case "tooltip":
                 return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
             case "link":
@@ -269,16 +277,22 @@ public class Message {
 
     public Message setRecipient(Player recipient) {
         this.recipient = recipient;
+        this.business = BusinessManager.getBusiness(recipient.getUniqueId());
+        this.employee = EmployeeManager.getEmployee(recipient.getUniqueId());
         return this;
     }
 
     public Message setCause(Player cause) {
         this.cause = cause;
+        if (this.business == null)
+            this.business = BusinessManager.getBusiness(cause.getUniqueId());
+        if (this.employee == null)
+            this.employee = EmployeeManager.getEmployee(cause.getUniqueId());
         return this;
     }
 
-    public Message setOther(Object[] other) {
-        this.other = other;
+    public Message setOther(Object... other) {
+        this.other = Arrays.copyOf(other, other.length);
         return this;
     }
 }

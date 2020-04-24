@@ -16,6 +16,7 @@ import me.beastman3226.bc.event.business.BusinessCreatedEvent;
 import me.beastman3226.bc.event.business.BusinessFiredEmployeeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Message;
 import me.beastman3226.bc.util.Scheduler;
 
 public class BusinessCommand extends ICommand {
@@ -36,7 +37,8 @@ public class BusinessCommand extends ICommand {
             String businessName = this.parseArgs(args);
             int id = BusinessManager.getNewID(businessName);
             if (id == -1) {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "That name is too similar to another business's name.");
+                Message message = new Message("errors.name_too_similar").setRecipient(playerSender);
+                message.sendMessage();
                 return;
             }
             Business b = BusinessManager.createBusiness(
@@ -44,7 +46,8 @@ public class BusinessCommand extends ICommand {
             BusinessCreatedEvent event = new BusinessCreatedEvent(b);
             Bukkit.getPluginManager().callEvent(event);
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "You already own a business!");
+            Message message = new Message("errors.already_own_business").setRecipient(playerSender).setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+            message.sendMessage();
         }
     }
 
@@ -58,7 +61,8 @@ public class BusinessCommand extends ICommand {
                 event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             } else {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "You are not an owner!");
+                Message message = new Message("errors.not_an_owner").setRecipient(playerSender).setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                message.sendMessage();
             }
         } else {
             if (args.length < 1) {
@@ -88,7 +92,8 @@ public class BusinessCommand extends ICommand {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 if (args[0].matches("[^0-9.0-9]")) {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
+                    Message message = new Message("errors.not_a_number").setRecipient(playerSender);
+                    message.sendMessage();
                 } else {
                     Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
@@ -97,7 +102,8 @@ public class BusinessCommand extends ICommand {
                     Bukkit.getPluginManager().callEvent(event);
                 }
             } else {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to execute this command.");
+                Message message = new Message("errors.not_an_owner").setRecipient(playerSender).setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                message.sendMessage();
             }
         } else {
             if (args.length == 1) {
@@ -121,12 +127,9 @@ public class BusinessCommand extends ICommand {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
-                if (args.length > 1) {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "You only need to provide the amount.");
-                    return;
-                }
                 if (args[0].matches("[^0-9.0-9]")) {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number");
+                    Message message = new Message("errors.not_a_number").setRecipient(playerSender);
+                    message.sendMessage();
                 } else {
                     Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
@@ -135,7 +138,8 @@ public class BusinessCommand extends ICommand {
                     Bukkit.getPluginManager().callEvent(event);
                 }
             } else {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to execute this command.");
+                Message message = new Message("errors.not_an_owner").setRecipient(playerSender).setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                message.sendMessage();
             }
         } else {
             if (args.length == 1) {
@@ -160,10 +164,11 @@ public class BusinessCommand extends ICommand {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner(playerSender.getUniqueId())) {
                 Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
-                sender.sendMessage(BusinessCore.NOMINAL_PREFIX + BusinessCore.getInstance().getEconomy().format(b.getBalance()));
-
+                Message message = new Message("business.balance").setRecipient(playerSender).setBusiness(b);
+                message.sendMessage();
             } else {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must be an owner to execute this command.");
+                Message message = new Message("errors.not_an_owner").setRecipient(playerSender).setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                message.sendMessage();
             }
         } else {
             if (args.length == 0) {
@@ -184,17 +189,11 @@ public class BusinessCommand extends ICommand {
             Player playerSender = (Player) sender;
             if (BusinessManager.isOwner((playerSender.getUniqueId()))) {
                 Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
-                String header = String.format(ChatColor.DARK_GREEN + "|%5s|%30s|%13s|", "ID", "Business Name",
-                        "Balance");
-                String info = String.format(ChatColor.GREEN + "|%5d|%30s|%13.2f|", b.getID(), b.getName(),
-                        b.getBalance());
-                String splitter = ChatColor.DARK_GREEN + "==========================================";
-                String employees = ChatColor.GREEN + Arrays.toString(b.getEmployees().toArray());
-                sender.sendMessage(new String[] { header, info, splitter, employees });
-
+                Message message = new Message("business.info").setRecipient(playerSender).setBusiness(b);
+                message.sendMessage();
             } else if (args.length == 0) {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX
-                        + "If you are looking for a list of businesses try /business list [sort] [page]");
+                Message message = new Message("errors.try_list").setRecipient(playerSender);
+                message.sendMessage();
             }
         } else {
             if (args.length == 0) {
@@ -225,8 +224,10 @@ public class BusinessCommand extends ICommand {
         if (args.length > 1) {
             if (!args[1].matches("[^0-9]+"))
                 page = Integer.parseInt(args[1]);
-            else
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "The page number needs to be a number.");
+            else {
+                Message message = new Message("errors.not_a_number").setRecipient((Player) sender);
+                message.sendMessage();
+            }
         }
         if (page > 1) {
             fromIndex = page <= pagesOutOf ? page * 5 : pagesOutOf * 5;
@@ -235,38 +236,36 @@ public class BusinessCommand extends ICommand {
         switch (args[0].toLowerCase()) {
             case "id":
                 Business[] businesses = BusinessManager.sortById().subList(fromIndex, toIndex >=  BusinessManager.getBusinessList().size() ? BusinessManager.getBusinessList().size()- 1 : toIndex).toArray(new Business[0]);
-                sender.sendMessage(ChatColor.DARK_GREEN + "|=========Businesses by ID==========|");
+                Message header = new Message("business.list.by_id.header").setRecipient((Player) sender);
+                header.sendMessage();
                 for (Business b : businesses) {
-                    String message = String.format(ChatColor.GREEN + "[%d] " + ChatColor.WHITE + "%s", b.getID(),
-                            b.getName());
-                    sender.sendMessage(message);
+                    Message listItem = new Message("business.list.by_id.format").setRecipient((Player) sender).setBusiness(b);
+                    listItem.sendMessage();
                 }
-
-                sender.sendMessage(
-                        ChatColor.DARK_GREEN + "|=========Page [" + page + " of " + pagesOutOf + "] ==========|");
+                Message footer = new Message("business.list.by_id.footer").setRecipient((Player) sender).setOther(page, pagesOutOf);
+                footer.sendMessage();
                 break;
             case "balance":
                 businesses = BusinessManager.sortByBalance().subList(fromIndex, toIndex).toArray(new Business[0]);
-                sender.sendMessage(ChatColor.DARK_GREEN + "|=========Top Performing Businesses==========|");
+                header = new Message("business.list.by_balance.header").setRecipient((Player) sender);
+                header.sendMessage();
                 for (Business b : businesses) {
-                    String message = String.format(ChatColor.GREEN + "[%10d] [%12.2lf] " + ChatColor.WHITE + " %s",
-                            b.getID(), b.getBalance(), b.getName());
-                    sender.sendMessage(message);
+                    Message listItem = new Message("business.list.by_balance.format").setRecipient((Player) sender).setBusiness(b);
+                    listItem.sendMessage();
                 }
-                sender.sendMessage(
-                        ChatColor.DARK_GREEN + "|=========Page [" + page + " of " + pagesOutOf + "] ==========|");
+                footer = new Message("business.list.by_balance.footer").setRecipient((Player) sender).setOther(page, pagesOutOf);
+                footer.sendMessage();
                 break;
             case "name":
                 businesses = BusinessManager.sortByName().subList(fromIndex, toIndex).toArray(new Business[0]);
-                sender.sendMessage(ChatColor.DARK_GREEN + "|=========Businesses by ID==========|");
+                header = new Message("business.list.by_name.header").setRecipient((Player) sender);
+                header.sendMessage();
                 for (Business b : businesses) {
-                    String message = String.format(ChatColor.GREEN + "[%d] " + ChatColor.WHITE + "%s", b.getID(),
-                            b.getName());
-                    sender.sendMessage(message);
+                    Message listItem = new Message("business.list.by_name.format").setRecipient((Player) sender).setBusiness(b);
+                    listItem.sendMessage();
                 }
-
-                sender.sendMessage(
-                        ChatColor.DARK_GREEN + "|=========Page [" + page + " of " + pagesOutOf + "] ==========|");
+                footer = new Message("business.list.by_name.footer").setRecipient((Player) sender).setOther(page, pagesOutOf);
+                footer.sendMessage();
                 break;
             default:
                 sender.sendMessage(
@@ -291,19 +290,20 @@ public class BusinessCommand extends ICommand {
                 }
             }
             if (player == null && !args[0].toLowerCase().equals("list")) {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "Could not find the specified player.");
+                Message message = new Message("errors.no_player").setRecipient(playerSender);
+                message.sendMessage();
                 return;
             }
             switch (args[0].toLowerCase()) {
                 case "hire":
                     if (EmployeeManager.isEmployee(player.getUniqueId()) || BusinessManager.isOwner(((Player) sender).getUniqueId().toString())) {
-                        sender.sendMessage(
-                                BusinessCore.ERROR_PREFIX + "That player is already an employee of a business.");
+                        Message message = new Message("errors.already_a_worker").setRecipient(playerSender);
+                        message.sendMessage();
                     } else {
-                        sender.sendMessage(BusinessCore.OTHER_PREFIX + "An offer to join your business has been sent.");
-                        player.sendMessage(String.format("%sYou have been offered a job at %s by %s",
-                                BusinessCore.OTHER_PREFIX,
-                                b.getName(), sender.getName()));
+                        Message offerSent = new Message("business.employee.hire.sent_offer").setCause(player).setRecipient(playerSender);
+                        offerSent.sendMessage();
+                        Message offerReceived = new Message("business.employee.hire.sent_offer").setCause(playerSender).setRecipient(player).setBusiness(b);
+                        offerReceived.sendMessage();
                         EmployeeManager.getPendingPlayers().put(player,
                                 b.getID());
                         Scheduler.runAcceptance();
@@ -315,8 +315,8 @@ public class BusinessCommand extends ICommand {
                         BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, emp);
                         Bukkit.getPluginManager().callEvent(event);
                     } else {
-                        sender.sendMessage(
-                                String.format("%sThat player is not one of your employees.", BusinessCore.ERROR_PREFIX));
+                        Message message = new Message("errors.not_business_employee").setRecipient(playerSender).setBusiness(b);
+                        message.sendMessage();
                     }
                     break;
                 case "list":
