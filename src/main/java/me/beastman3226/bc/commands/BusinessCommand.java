@@ -195,8 +195,10 @@ public class BusinessCommand extends ICommand {
     public void info(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner((playerSender.getUniqueId()))) {
+            if (BusinessManager.isOwner((playerSender.getUniqueId())) || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
                 Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
+                if(b == null)
+                    b = EmployeeManager.getEmployee(playerSender.getUniqueId()).getBusiness();
                 Message message = new Message("business.info").setRecipient(playerSender).setBusiness(b);
                 message.sendMessage();
             } else if (args.length == 0) {
@@ -319,7 +321,7 @@ public class BusinessCommand extends ICommand {
             switch (args[0].toLowerCase()) {
                 case "hire":
                     if (EmployeeManager.isEmployee(player.getUniqueId())
-                            || BusinessManager.isOwner(((Player) sender).getUniqueId().toString())) {
+                            || BusinessManager.isOwner(player.getUniqueId())) {
                         Message message = new Message("errors.already_a_worker").setRecipient(playerSender);
                         message.sendMessage();
                     } else {

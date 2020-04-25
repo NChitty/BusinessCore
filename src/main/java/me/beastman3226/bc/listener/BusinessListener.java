@@ -77,8 +77,10 @@ public class BusinessListener implements Listener {
             Message message = new Message("business.close", e.getSource()).setRecipient(b.getOwner()).setBusiness(e.getBusiness());
             message.sendMessage();
         }
-        Message message = new Message("business.close", e.getSource()).setBusiness(e.getBusiness());
-        message.sendMessage();
+        if(!e.getSource().equals(b.getOwner())) {
+            Message message = new Message("business.close", e.getSource()).setBusiness(e.getBusiness());
+            message.sendMessage();
+        }
         BusinessManager.closeBusiness(e.getBusiness());
     }
 
@@ -91,12 +93,12 @@ public class BusinessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
+        Message message = new Message("business.employee.fire", e.getBusiness().getOwner(), e.getBusiness()).setCause(Bukkit.getPlayer(e.getEmployee().getUniqueId()));
+        message.sendMessage();
         EmployeeManager.getEmployeeList().remove(e.getEmployee());
         e.getBusiness().removeEmployee(e.getEmployee());
         BusinessCore.getInstance().getEmployeeFileManager()
                 .edit(new FileData().add(e.getEmployee().getName() + "", null));
-        Message message = new Message("business.fire", e.getBusiness().getOwner(), e.getBusiness()).setCause(Bukkit.getPlayer(e.getEmployee().getUniqueId()));
-        message.sendMessage();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -104,11 +106,11 @@ public class BusinessListener implements Listener {
         Player owner = e.getBusiness().getOwner();
         Player employee = Bukkit.getPlayer(e.getEmployee().getUniqueId());
         if (owner.isOnline()) {
-            Message message = new Message("business.offer_accepted_owner", owner, e.getBusiness()).setCause(employee).setEmployee(e.getEmployee());
+            Message message = new Message("business.employee.hire.offer_accepted_owner", owner, e.getBusiness()).setCause(employee).setEmployee(e.getEmployee());
             message.sendMessage();
         }
         if (employee.isOnline()) {
-            Message message = new Message("business.offer_accepted_employee", employee, e.getBusiness()).setCause(owner).setEmployee(e.getEmployee());
+            Message message = new Message("business.employee.hire.offer_accepted_employee", employee, e.getBusiness()).setCause(owner).setEmployee(e.getEmployee());
             message.sendMessage();
         }
         e.getBusiness().addEmployee(e.getEmployee());

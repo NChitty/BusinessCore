@@ -87,48 +87,17 @@ public class Message {
     public Message(String path, CommandSender sender) {
         initMessage();
         this.path = path;
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             this.recipient = (Player) sender;
         } else {
             this.console = true;
         }
     }
 
-    private String parsePlayerTags(String string) {
-        Matcher match = Pattern.compile("<[a-zA-Z0-9_]+>").matcher(string);
-        StringBuilder sb = new StringBuilder();
-        int lastIndex = 0;
-        while (match.find()) {
-            if (match.start() != 0)
-                sb.append(string.substring(lastIndex, match.start()));
-            lastIndex = match.end();
-            if (match.group().equals("<player_cause>"))
-                if(cause != null)
-                    sb.append(cause.getName());
-            else if (match.group().equals("<player_recipient>"))
-                if(recipient != null)
-                    sb.append(recipient.getName());
-            else if (match.group().contains("prefix")) {
-                String name = match.group().split("_")[1].replaceAll(">", "");
-                sb.append(getPrefix(name));
-            } else if (match.group().contains("current_page"))
-                sb.append(other[0]);
-            else if (match.group().contains("total_pages"))
-                sb.append(other[1]);
-            else if (match.group().equals("<br>")) {
-                sb.append("\n");
-            } else {
-                sb.append(match.group());
-            }
-        }
-        sb.append(string, lastIndex, string.length());
-        return sb.toString();
-    }
-
     public void sendMessage() {
         List<TextComponent> message = getMessage();
         if (!console || recipient != null) {
-            if(recipient.isOnline())
+            if (recipient.isOnline())
                 recipient.spigot().sendMessage(message.toArray(new BaseComponent[] {}));
         } else {
             Bukkit.getConsoleSender().spigot().sendMessage(message.toArray(new BaseComponent[] {}));
@@ -152,8 +121,6 @@ public class Message {
             message = parseEmployeeTags(message);
         if (job != null)
             message = parseJobTags(message);
-
-        BusinessCore.getInstance().getLogger().info(message);
         Matcher matcher = Pattern.compile("(<[a-zA-Z_]+>|<[a-zA-Z0-9_]+:[^>]*>)").matcher(message);
         TextComponentBuilder compBuilder = new TextComponentBuilder();
         int lastIndex = 0;
@@ -178,9 +145,9 @@ public class Message {
                     if (matcher.group().contains("economy_plugin_format")) {
                         Economy eco = BusinessCore.getInstance().getEconomy();
                         double d = Double.parseDouble(matcher.group().substring(matcher.group().indexOf(":") + 1,
-                                matcher.group().length() - 1));
+                                matcher.group().lastIndexOf(">")));
                         curStr.append(eco.format(d));
-                    } else {
+                    } else if(matcher.group().contains("tooltip") || matcher.group().contains("link") || matcher.group().contains("command")){
                         Object event = parseEvent(matcher.group());
                         if (event != null) {
                             if (event instanceof HoverEvent)
@@ -216,6 +183,39 @@ public class Message {
         }
     }
 
+    private String parsePlayerTags(String string) {
+        Matcher match = Pattern.compile("(<[a-zA-Z0-9_]+>)").matcher(string);
+        StringBuilder sb = new StringBuilder();
+        int lastIndex = 0;
+        while (match.find()) {
+            if (match.start() != 0)
+                sb.append(string.substring(lastIndex, match.start()));
+            lastIndex = match.end();
+            if (match.group().equals("<player_cause>")) {
+                if (cause != null) {
+                    sb.append(cause.getName());
+                }
+            } else if (match.group().equals("<player_recipient>")) {
+                if (recipient != null) {
+                    sb.append(recipient.getName());
+                }
+            } else if (match.group().contains("prefix")) {
+                String name = match.group().split("_")[1].replaceAll(">", "");
+                sb.append(getPrefix(name));
+            } else if (match.group().contains("current_page"))
+                sb.append(other[0]);
+            else if (match.group().contains("total_pages"))
+                sb.append(other[1]);
+            else if (match.group().equals("<br>")) {
+                sb.append("\n");
+            } else {
+                sb.append(match.group());
+            }
+        }
+        sb.append(string, lastIndex, string.length());
+        return sb.toString();
+    }
+
     private String parseBusinessTags(String string) {
         Matcher matcher = Pattern.compile("(<business_[a-zA-Z0-9_]+>)").matcher(string);
         StringBuilder sb = new StringBuilder();
@@ -224,9 +224,9 @@ public class Message {
         while (matcher.find()) {
             if (matcher.start() != 0) {
                 sb.append(string.substring(lastIndex, matcher.start()));
-                if (matcher.group().equals("<business_balance_change_amount>"))
+                if (matcher.group().equals("<business_balance_change_amount>")) {
                     sb.append(other[0].toString());
-                else {
+                } else {
                     for (Method m : Business.class.getMethods()) {
                         if (m.isAnnotationPresent(PlaceholderPattern.class)) {
                             if (matcher.group().equals(m.getAnnotation(PlaceholderPattern.class).pattern())) {
@@ -235,7 +235,6 @@ public class Message {
                                 } catch (IllegalAccessException | IllegalArgumentException
                                         | InvocationTargetException e) {
                                     sb.append(matcher.group());
-                                    e.printStackTrace();
                                 }
                             }
                         }
@@ -271,9 +270,7 @@ public class Message {
                 }
             }
             lastIndex = matcher.end();
-
         }
-
         sb.append(string, lastIndex, string.length());
         return sb.toString();
     }
@@ -333,8 +330,10 @@ public class Message {
 
     public Message setRecipient(Player recipient) {
         this.recipient = recipient;
-        this.business = BusinessManager.getBusiness(recipient.getUniqueId());
-        this.employee = EmployeeManager.getEmployee(recipient.getUniqueId());
+        if (this.business == null)
+            this.business = BusinessManager.getBusiness(recipient.getUniqueId());
+        if (this.employee == null)
+            this.employee = EmployeeManager.getEmployee(recipient.getUniqueId());
         return this;
     }
 

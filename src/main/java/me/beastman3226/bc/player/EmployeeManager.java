@@ -141,14 +141,14 @@ public class EmployeeManager {
     }
 
     public static boolean isEmployee(UUID uuid) {
-        return isEmployee(getEmployee(uuid));
+        return getEmployee(uuid) != null;
     }
 
     public static boolean isEmployee(int id) {
-        return isEmployee(getEmployee(id));
+        return  getEmployee(id) != null;
     }
 
     public static boolean isEmployee(String name) {
-        return isEmployee(getEmployee(name));
+        return  getEmployee(name) != null;
     }
 }

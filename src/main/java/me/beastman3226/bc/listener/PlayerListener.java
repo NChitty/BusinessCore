@@ -24,7 +24,8 @@ public class PlayerListener implements Listener {
         if (Scheduler.playerMilli.containsKey(e.getPlayer()) && e.getMessage().contains("yes")) {
             if (Scheduler.playerMilli.get(e.getPlayer()) >= (System.currentTimeMillis() - 10000)) {
                 Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
-                Employee newEmployee = new Employee(e.getPlayer().getUniqueId(), b.getID());
+                Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer(), b.getID());
+                e.setCancelled(true);
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, newEmployee);
                 Bukkit.getScheduler().runTask(BusinessCore.getInstance(), () -> Bukkit.getPluginManager().callEvent(event));
                 Scheduler.playerMilli.remove(e.getPlayer());

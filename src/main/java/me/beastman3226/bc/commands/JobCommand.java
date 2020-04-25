@@ -15,6 +15,7 @@ import me.beastman3226.bc.event.job.JobCreatedEvent;
 import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Message;
 import net.md_5.bungee.api.ChatColor;
 
 public class JobCommand extends ICommand {
@@ -34,7 +35,7 @@ public class JobCommand extends ICommand {
         if (!args[0].matches("([^0-9.0-9])")) {
             pay = Double.parseDouble(args[0]);
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "The amount must be a number.");
+            new Message("errors.not_a_number", sender).sendMessage();
             return;
         }
         String description = this.parseArgs(Arrays.copyOfRange(args, 1, args.length));
@@ -48,7 +49,7 @@ public class JobCommand extends ICommand {
         if (!args[0].matches("[^0-9]")) {
             id = Integer.parseInt(args[0]);
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "The id must be a number.");
+            new Message("errors.not_a_number", sender).sendMessage();
             return;
         }
         Player playerSender = (Player) sender;
@@ -119,7 +120,7 @@ public class JobCommand extends ICommand {
         if (!args[0].matches("[^0-9]")) {
             id = Integer.parseInt(args[0]);
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "The id must be a number.");
+            new Message("errors.not_a_number", sender).sendMessage();
             return;
         }
         Job j = JobManager.getJob(id);
@@ -163,7 +164,7 @@ public class JobCommand extends ICommand {
         if (!args[0].matches("[^0-9]"))
             id = Integer.parseInt(args[0]);
         else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "The id must be a number");
+            new Message("errors.not_a_number", sender).sendMessage();
             return;
         }
         Job j = JobManager.getJob(id);
@@ -188,7 +189,7 @@ public class JobCommand extends ICommand {
             if (!args[0].matches("[^0-9]"))
                 id = Integer.parseInt(args[0]);
             else {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "The id must be a number.");
+                new Message("errors.not_a_number", sender).sendMessage();
                 return;
             }
             j = JobManager.getJob(id);
