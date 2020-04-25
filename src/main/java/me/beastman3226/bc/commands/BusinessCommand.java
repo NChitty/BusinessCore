@@ -280,7 +280,7 @@ public class BusinessCommand extends ICommand {
                 footer.sendMessage();
                 break;
             default:
-                sender.sendMessage("/business list [<\"id\"|\"balance\"|\"name\">] [<page>]");
+                new Message("errors.usage", sender).setOther("/business list [<\"id\"|\"balance\"|\"name\">] [<page>]").sendMessage();
                 break;
         }
     }
@@ -357,7 +357,7 @@ public class BusinessCommand extends ICommand {
                     footer.sendMessage();
                     break;
                 default:
-                    sender.sendMessage("Try \"hire\",\"fire\", or \"list\"");
+                    new Message("errors.usage", sender).setOther("Try \"hire\",\"fire\", or \"list\"").sendMessage();
                     break;
             }
         } else {

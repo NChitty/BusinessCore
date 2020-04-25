@@ -97,6 +97,7 @@ public class BusinessManager {
         int pos = 1;
         for (char c : name.toCharArray()) {
             if (Character.isLetter(c)) {
+                c = Character.toLowerCase(c);
                 id += ((c - 'a' + 1) * (c - 'a' + 1)) * (pos++);
             } else if (Character.isDigit(c)) {
                 continue;

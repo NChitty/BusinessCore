@@ -89,9 +89,10 @@ public class JobCommand extends ICommand {
             if (toIndex >= jobs.length)
                 while (toIndex >= jobs.length)
                     toIndex--;
+            new Message("job.list.header", sender).sendMessage();
             for (int i = fromIndex; i <= toIndex; i++)
-                sender.sendMessage(ChatColor.GRAY + "[" + ChatColor.AQUA + jobs[i].getID() + ChatColor.GRAY + "] "+ ChatColor.WHITE + jobs[i].getDescription());
-            sender.sendMessage(ChatColor.DARK_AQUA + "Page " + page + "/" + (int) (jobs.length/(float) 5 + .5));
+                new Message("job.list.format", sender).setJob(jobs[i]).sendMessage();
+            new Message("job.list.footer", sender).setOther(page, (int) (jobs.length / (float) 5 + .5));
         } else if (args[0].equalsIgnoreCase("open")) {
             jobs = JobManager.getOpenJobs();
             if (page * 5 > jobs.length) {
@@ -103,13 +104,12 @@ public class JobCommand extends ICommand {
             if (toIndex >= jobs.length)
                 while (toIndex >= jobs.length)
                     toIndex--;
-            StringBuilder sb = new StringBuilder();
+            new Message("job.list.header", sender).sendMessage();
             for (int i = fromIndex; i <= toIndex; i++)
-                sb.append(ChatColor.GRAY + "[" + ChatColor.AQUA + jobs[i].getID() + ChatColor.GRAY + "] "
-                        + ChatColor.WHITE + jobs[i].getDescription().replace("|","") + "|");
-            sender.sendMessage(sb.toString().split("|"));
+                new Message("job.list.format", sender).setJob(jobs[i]).sendMessage();
+            new Message("job.list.footer", sender).setOther(page, (int) (jobs.length / (float) 5 + .5));
         } else {
-            sender.sendMessage("/job list [\"mine\"|\"open\"] [page number @Optional]");
+            new Message("errors.usage", sender).setOther("/job list [\"mine\"|\"open\"] [page number @Optional]").sendMessage();
         }
     }
 
@@ -157,7 +157,7 @@ public class JobCommand extends ICommand {
             return;
         }
         Job j = JobManager.getJob(id);
-        if(j != null) {
+        if (j != null) {
             new Message("job.current", sender).setJob(j).sendMessage();
         } else {
             new Message("errors.job_not_found", sender).sendMessage();

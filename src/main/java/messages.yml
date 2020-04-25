@@ -29,7 +29,8 @@ prefixes:
   working: '<gray>[<green>BusinessCore<gray>]<reset>'
 errors:
   player_only: '<prefix_error> Only players may use this command'
-  no_permission: '<prefix_error> You do not have the permission to run this command'
+  no_permission: '<prefix_error> You do not have <permission_node> in order to run this command'
+  usage: '<prefix_error> <usage>'
   name_too_similar: '<prefix_error> That name is too similar to another business.'
   already_own_business: '<prefix_error> You already own a business'
   not_an_owner: '<prefix_error> You do not own a business'

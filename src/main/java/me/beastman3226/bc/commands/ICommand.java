@@ -38,7 +38,7 @@ public abstract class ICommand implements CommandExecutor {
                     if (subcommand.isAnnotationPresent(Subcommand.class)) {
                         Subcommand info = subcommand.getAnnotation(Subcommand.class);
                         if (!sender.hasPermission(info.permission())) {
-                            new Message("errors.no_permission", sender).sendMessage();
+                            new Message("errors.no_permission", sender).setOther(info.permission()).sendMessage();
                             return true;
                         }
                         if (!info.consoleUse() && !(sender instanceof Player)) {
@@ -46,7 +46,7 @@ public abstract class ICommand implements CommandExecutor {
                             return true;
                         }
                         if (args.length - 1 < info.minArgs()) {
-                            sender.sendMessage(info.usage());
+                            new Message("errors.usage", sender).setOther(info.usage()).sendMessage();
                             return true;
                         }
                         subcommand.invoke(invokeInstance.get(subcommand.getDeclaringClass()), sender, Arrays.copyOfRange(args, 1, args.length));

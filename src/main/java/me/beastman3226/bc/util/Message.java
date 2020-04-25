@@ -210,13 +210,15 @@ public class Message {
                 sb.append(other[otherIndex++]);
             else if (match.group().equals("<br>")) {
                 sb.append("\n");
-            } else {
+            } else if (!isChatColor(match.group())){
                 try {
                     sb.append(other[otherIndex++]);
                 } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
                     otherIndex = 0;
                     sb.append(match.group());
                 }
+            } else {
+                sb.append(match.group());
             }
         }
         sb.append(string, lastIndex, string.length());
@@ -313,6 +315,15 @@ public class Message {
 
     private String getPrefix(String name) {
         return messages.getString("prefixes." + name);
+    }
+
+    private boolean isChatColor(String group) {
+        String sub = group.substring(1, group.length()-1).toUpperCase();
+        try {
+            return ChatColor.valueOf(sub) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public Message setPath(String path) {
