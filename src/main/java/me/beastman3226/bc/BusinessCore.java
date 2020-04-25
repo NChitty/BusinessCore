@@ -2,7 +2,6 @@ package me.beastman3226.bc;
 
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;

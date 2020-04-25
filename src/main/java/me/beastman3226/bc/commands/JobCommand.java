@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.job.JobClaimedEvent;
 import me.beastman3226.bc.event.job.JobCompletedEvent;
@@ -16,7 +15,6 @@ import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.EmployeeManager;
 import me.beastman3226.bc.util.Message;
-import net.md_5.bungee.api.ChatColor;
 
 public class JobCommand extends ICommand {
 
