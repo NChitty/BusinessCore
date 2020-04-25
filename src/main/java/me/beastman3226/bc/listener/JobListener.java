@@ -17,6 +17,7 @@ import me.beastman3226.bc.job.Job;
 import me.beastman3226.bc.job.JobManager;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Message;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class JobListener implements Listener {
@@ -25,56 +26,56 @@ public class JobListener implements Listener {
     public void onCreated(JobCreatedEvent e) {
         Player player = Bukkit.getPlayer(e.getUUID());
         EconomyResponse er = BusinessCore.getInstance().getEconomy().withdrawPlayer(player, e.getPayment());
-        if(er.transactionSuccess()) {
-            player.sendMessage(BusinessCore.OTHER_PREFIX + "Withdrew " + BusinessCore.getInstance().getEconomy().format(e.getPayment()) + " for job creation.");
+        if (er.transactionSuccess()) {
             Job newJob = JobManager.createJob(e.getDescription(), e.getLocation(), e.getPayment(), e.getUUID());
-            player.sendMessage(BusinessCore.WORKING_PREFIX + "Successfully created Job #" + newJob.getID());
+            new Message("job.open.money_front_success", player, newJob).sendMessage();
+            new Message("job.open.successful_creation", player, newJob).sendMessage();
         } else {
-            player.sendMessage(BusinessCore.ERROR_PREFIX + "You have to front the cost of the job to ensure you can pay for it later.");
+            new Message("job.open.money_front_fail", player).setOther(e.getPayment());
             e.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClaim(JobClaimedEvent e) {
-        if(JobManager.claimJob(e.getJob(), e.getClaimingPlayer())) {
-            if(BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId()))
-                e.getClaimingPlayer().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully claimed Job #" + e.getID() + " for " + BusinessManager.getBusiness(e.getClaimingPlayer().getUniqueId()).getName());
-            else {
+        if (JobManager.claimJob(e.getJob(), e.getClaimingPlayer())) {
+            if (BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId())) {
+                Business b = BusinessManager.getBusiness(e.getClaimingPlayer().getUniqueId());
+                new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setBusiness(b).sendMessage();
+                ;
+            } else {
                 Employee emp = EmployeeManager.getEmployee(e.getClaimingPlayer().getUniqueId());
-                e.getClaimingPlayer().sendMessage(BusinessCore.NOMINAL_PREFIX + "Successfully claimed Job #" + e.getID() + " for " + emp.getBusiness().getName());
+                new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setEmployee(emp)
+                        .setBusiness(emp.getBusiness()).sendMessage();
                 emp.startJob(e.getID());
             }
         } else {
-            e.getClaimingPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Claiming job failed.");
+            new Message("job.claim.fail", e.getClaimingPlayer(), e.getJob()).sendMessage();
             e.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCompleted(JobCompletedEvent e) {
-        if(JobManager.completeJob(e.getJob())) {
-            Player worker = e.getJob().getWorker();
-            Player player = (Player) e.getJob().getPlayer();
-            if(worker.isOnline())
-                worker.sendMessage(BusinessCore.WORKING_PREFIX + "Job #" + e.getJob().getID() + " has been completed, " + BusinessCore.getInstance().getEconomy().format(e.getJob().getPayment()) + " is being deposited into the business account.");
-            if(player.isOnline())
-                player.sendMessage(BusinessCore.WORKING_PREFIX + "You have marked " + e.getJob().getID() + " as complete.");
-            if(EmployeeManager.isEmployee(worker.getUniqueId())) {
-                Business b = EmployeeManager.getEmployee(worker.getUniqueId()).getBusiness();
+        Player worker = e.getJob().getWorker();
+        Player player = (Player) e.getJob().getPlayer();
+        if (JobManager.completeJob(e.getJob())) {
+            Business b = EmployeeManager.isEmployee(worker.getUniqueId())
+                    ? EmployeeManager.getEmployee(worker.getUniqueId()).getBusiness()
+                    : BusinessManager.getBusiness(worker.getUniqueId());
+            if (player.isOnline())
+                new Message("job.complete.to_player", player, e.getJob()).setBusiness(b).sendMessage();
+            if (EmployeeManager.isEmployee(worker.getUniqueId())) {
                 EmployeeManager.getEmployee(b, worker.getUniqueId()).completeJob();
-                BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, e.getJob().getPayment());
-                Bukkit.getPluginManager().callEvent(event);
-            } else {
-                Business b = BusinessManager.getBusiness(worker.getUniqueId());
-                BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, e.getJob().getPayment());
-                Bukkit.getPluginManager().callEvent(event);
             }
+            if (worker.isOnline())
+                new Message("job.complete.to_worker", worker, e.getJob()).setCause(player).setBusiness(b).sendMessage();
+            BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, e.getJob().getPayment());
+            Bukkit.getPluginManager().callEvent(event);
         } else {
-           ((Player) e.getJob().getPlayer()).sendMessage(BusinessCore.ERROR_PREFIX + "An error has occurred completing the job.");
-           e.setCancelled(true);
+            new Message("job.complete.error", player, e.getJob()).sendMessage();
+            e.setCancelled(true);
         }
     }
 
-    
 }

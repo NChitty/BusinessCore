@@ -128,7 +128,7 @@ public class Message {
         while (matcher.find()) {
             if (matcher.start() != 0) {
                 curStr.append(message, lastIndex, matcher.start());
-                TextComponent current = new TextComponent(curStr.toString());
+                TextComponent current = new TextComponent(TextComponent.fromLegacyText(curStr.toString()));
                 compBuilder.add(current);
                 curStr.delete(0, curStr.length());
             }
@@ -147,7 +147,8 @@ public class Message {
                         double d = Double.parseDouble(matcher.group().substring(matcher.group().indexOf(":") + 1,
                                 matcher.group().lastIndexOf(">")));
                         curStr.append(eco.format(d));
-                    } else if(matcher.group().contains("tooltip") || matcher.group().contains("link") || matcher.group().contains("command")){
+                    } else if (matcher.group().contains("tooltip") || matcher.group().contains("link")
+                            || matcher.group().contains("command")) {
                         Object event = parseEvent(matcher.group());
                         if (event != null) {
                             if (event instanceof HoverEvent)
@@ -161,16 +162,16 @@ public class Message {
         }
         if (lastIndex < message.length()) {
             curStr.append(message, lastIndex, message.length());
-            TextComponent current = new TextComponent(TextComponent.fromLegacyText(curStr.toString()));
-            compBuilder.add(current);
         }
-
+        TextComponent current = new TextComponent(TextComponent.fromLegacyText(curStr.toString()));
+        compBuilder.add(current);
+        Bukkit.getConsoleSender().spigot().sendMessage(compBuilder.getComponents().toArray(new BaseComponent[] {}));
         return compBuilder.getComponents();
     }
 
     private Object parseEvent(String group) {
         String attribute = group.split(":")[0].substring(1);
-        String value = group.split(":")[1].substring(1, group.split(":")[1].length() - 1);
+        String value = group.split(":")[1].substring(0, group.lastIndexOf(">"));
         switch (attribute) {
             case "tooltip":
                 return new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(value));
@@ -187,6 +188,7 @@ public class Message {
         Matcher match = Pattern.compile("(<[a-zA-Z0-9_]+>)").matcher(string);
         StringBuilder sb = new StringBuilder();
         int lastIndex = 0;
+        int otherIndex = 0;
         while (match.find()) {
             if (match.start() != 0)
                 sb.append(string.substring(lastIndex, match.start()));
@@ -203,13 +205,18 @@ public class Message {
                 String name = match.group().split("_")[1].replaceAll(">", "");
                 sb.append(getPrefix(name));
             } else if (match.group().contains("current_page"))
-                sb.append(other[0]);
+                sb.append(other[otherIndex++]);
             else if (match.group().contains("total_pages"))
-                sb.append(other[1]);
+                sb.append(other[otherIndex++]);
             else if (match.group().equals("<br>")) {
                 sb.append("\n");
             } else {
-                sb.append(match.group());
+                try {
+                    sb.append(other[otherIndex++]);
+                } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+                    otherIndex = 0;
+                    sb.append(match.group());
+                }
             }
         }
         sb.append(string, lastIndex, string.length());

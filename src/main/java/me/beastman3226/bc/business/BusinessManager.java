@@ -87,7 +87,7 @@ public class BusinessManager {
      */
     public static Business getBusiness(UUID uuid) {
         for (Business b : businessList)
-            if (b.getOwner().getUniqueId().equals(uuid))
+            if (b.getOwnerUUID().equals(uuid.toString()))
                 return b;
         return null;
     }
@@ -130,7 +130,7 @@ public class BusinessManager {
 
     public static boolean isOwner(UUID uniqueId) {
 		for(Business b : businessList) {
-            if(b.getOwner().getUniqueId().equals(uniqueId))
+            if(b.getOwnerUUID().equals(uniqueId.toString()))
                 return true;
         }
         return false;

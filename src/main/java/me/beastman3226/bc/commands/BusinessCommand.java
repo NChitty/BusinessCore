@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.beastman3226.bc.BusinessCore;
 import me.beastman3226.bc.business.Business;
 import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessBalanceChangeEvent;
@@ -65,7 +64,7 @@ public class BusinessCommand extends ICommand {
             }
         } else {
             if (args.length < 1) {
-                sender.sendMessage(BusinessCore.ERROR_PREFIX + "/business close <id|owner name>");
+                sender.sendMessage("/business close <id|owner name>");
             } else {
                 int id = -1;
                 if (!args[0].matches("[^0-9]+")) {
@@ -80,7 +79,7 @@ public class BusinessCommand extends ICommand {
                         error.sendMessage();
                     }
                 } else {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "/business close <id>");
+                    sender.sendMessage("/business close <id>");
                 }
             }
         }
@@ -281,8 +280,7 @@ public class BusinessCommand extends ICommand {
                 footer.sendMessage();
                 break;
             default:
-                sender.sendMessage(
-                        BusinessCore.ERROR_PREFIX + "/business list [<\"id\"|\"balance\"|\"name\">] [<page>]");
+                sender.sendMessage("/business list [<\"id\"|\"balance\"|\"name\">] [<page>]");
                 break;
         }
     }
@@ -332,7 +330,7 @@ public class BusinessCommand extends ICommand {
                                 .setRecipient(player).setBusiness(b);
                         offerReceived.sendMessage();
                         EmployeeManager.getPendingPlayers().put(player, b.getID());
-                        Scheduler.runAcceptance();
+                        Scheduler.runAcceptance(playerSender);
                     }
                     break;
                 case "fire":
@@ -359,7 +357,7 @@ public class BusinessCommand extends ICommand {
                     footer.sendMessage();
                     break;
                 default:
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "Try \"hire\",\"fire\", or \"list\"");
+                    sender.sendMessage("Try \"hire\",\"fire\", or \"list\"");
                     break;
             }
         } else {

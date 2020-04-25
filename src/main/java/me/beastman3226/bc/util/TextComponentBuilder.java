@@ -13,11 +13,10 @@ public class TextComponentBuilder {
     private final List<TextComponent> components = new ArrayList<>();
     private ClickEvent nextClickEvent;
     private HoverEvent nextHoverEvent;
-    private ChatColor color = ChatColor.WHITE;
+    private ArrayList<ChatColor> colors = new ArrayList<>();
 
     TextComponentBuilder()
     {
-
     }
 
     List<TextComponent> getComponents()
@@ -31,8 +30,33 @@ public class TextComponentBuilder {
             component.setClickEvent(this.getNextClickEvent());
         if (getNextHoverEvent() != null)
             component.setHoverEvent(this.getNextHoverEvent());
-        component.setColor(color);
+        this.setColorFormatting(component);
         this.components.add(component);
+    }
+
+    private void setColorFormatting(TextComponent component) {
+        for(ChatColor format : this.colors) {
+            switch(format) {
+                case STRIKETHROUGH:
+                    component.setStrikethrough(true);
+                    break;
+                case UNDERLINE:
+                    component.setUnderlined(true);
+                    break;
+                case ITALIC:
+                    component.setItalic(true);
+                    break;
+                case BOLD:
+                    component.setBold(true);
+                    break;
+                case MAGIC:
+                    component.setObfuscated(true);
+                    break;
+                default:
+                    component.setColor(format);
+                    break;
+            }
+        }
     }
 
     void add(TextComponentBuilder builder)
@@ -66,7 +90,12 @@ public class TextComponentBuilder {
     }
 
     void setColor(ChatColor chatColor) {
-        this.color = chatColor;
+        if(chatColor == null) {
+            this.colors.clear();
+            this.colors.add(ChatColor.WHITE);
+        } else {
+            this.colors.add(chatColor);
+        }
     }
 
 }

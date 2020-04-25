@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.util.Message;
 
 public abstract class ICommand implements CommandExecutor {
 
@@ -37,18 +38,15 @@ public abstract class ICommand implements CommandExecutor {
                     if (subcommand.isAnnotationPresent(Subcommand.class)) {
                         Subcommand info = subcommand.getAnnotation(Subcommand.class);
                         if (!sender.hasPermission(info.permission())) {
-                            sender.sendMessage(
-                                    BusinessCore.ERROR_PREFIX + "You must have the permission "
-                                            + info.permission() + " to execute this command.");
+                            new Message("errors.no_permission", sender).sendMessage();
                             return true;
                         }
                         if (!info.consoleUse() && !(sender instanceof Player)) {
-                            sender.sendMessage(BusinessCore.ERROR_PREFIX + "Only players may use this command!");
+                            new Message("errors.player_only", sender).sendMessage();
                             return true;
                         }
                         if (args.length - 1 < info.minArgs()) {
-                            sender.sendMessage(
-                                    BusinessCore.ERROR_PREFIX + info.usage());
+                            sender.sendMessage(info.usage());
                             return true;
                         }
                         subcommand.invoke(invokeInstance.get(subcommand.getDeclaringClass()), sender, Arrays.copyOfRange(args, 1, args.length));
@@ -61,8 +59,7 @@ public abstract class ICommand implements CommandExecutor {
                 }
             } else {
                 if (!sender.hasPermission(permission)) {
-                    sender.sendMessage(BusinessCore.ERROR_PREFIX + "You must have the permission "
-                            + permission + " to execute this command.");
+                    new Message("errors.no_permission", sender).sendMessage();
                     return true;
                 } else {
                     execute(sender);

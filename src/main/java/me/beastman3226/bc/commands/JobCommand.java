@@ -55,19 +55,18 @@ public class JobCommand extends ICommand {
         Player playerSender = (Player) sender;
         Job j = JobManager.getJob(id);
         if (j == null) {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "That id does not exist.");
+            new Message("errors.job_not_found", sender).sendMessage();
             return;
         }
         if (j.getPlayer().getUniqueId().equals(playerSender.getUniqueId())) {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "You cannot claim a job you created.");
+            new Message("errors.self_created", sender).sendMessage();
             return;
         } else if (BusinessManager.isOwner(playerSender.getUniqueId())
                 || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
             JobClaimedEvent event = new JobClaimedEvent(j, playerSender);
             Bukkit.getPluginManager().callEvent(event);
         } else {
-            sender.sendMessage(
-                    BusinessCore.ERROR_PREFIX + "You cannot claim a job if you are not a part of a business.");
+            new Message("errors.not_an_employee", sender).sendMessage();
         }
     }
 
@@ -110,7 +109,7 @@ public class JobCommand extends ICommand {
                         + ChatColor.WHITE + jobs[i].getDescription().replace("|","") + "|");
             sender.sendMessage(sb.toString().split("|"));
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "/job list [\"mine\"|\"open\"] [page number @Optional]");
+            sender.sendMessage("/job list [\"mine\"|\"open\"] [page number @Optional]");
         }
     }
 
@@ -125,7 +124,7 @@ public class JobCommand extends ICommand {
         }
         Job j = JobManager.getJob(id);
         if (j == null) {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "That id does not exist.");
+            new Message("errors.job_not_found", sender).sendMessage();
             return;
         }
         Player playerSender = (Player) sender;
@@ -133,8 +132,7 @@ public class JobCommand extends ICommand {
             JobCompletedEvent event = new JobCompletedEvent(j);
             Bukkit.getPluginManager().callEvent(event);
         } else {
-            sender.sendMessage(
-                    BusinessCore.ERROR_PREFIX + "You need to be the player you created the job to say it is complete.");
+            new Message("errors.incorrect_player", sender).sendMessage();
         }
     }
 
@@ -143,18 +141,9 @@ public class JobCommand extends ICommand {
         Player playerSender = (Player) sender;
         if (JobManager.hasClaimedJob(playerSender.getUniqueId())) {
             Job j = JobManager.getClaimedJob(playerSender.getUniqueId());
-            String[] messages = new String[] {
-                    ChatColor.RED + "(=================[" + ChatColor.DARK_RED + j.getID() + ChatColor.RED
-                            + "]=================)",
-                    ChatColor.DARK_RED + "[Created by] " + ChatColor.RED + j.getPlayer().getName(),
-                    ChatColor.DARK_RED + "[Description] " + ChatColor.RED + j.getDescription(),
-                    ChatColor.DARK_RED + "[Location]" + ChatColor.RED + j.getLocation().getWorld().getName() + " "
-                            + j.getLocation().getX() + "," + j.getLocation().getY() + "," + j.getLocation().getY(),
-                    ChatColor.DARK_RED + "[Payment]" + ChatColor.RED
-                            + BusinessCore.getInstance().getEconomy().format(j.getPayment())};
-            sender.sendMessage(messages);
+            new Message("job.current", sender).setJob(j).sendMessage();
         } else {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "You haven't claimed any jobs.");
+            new Message("errors.no_claimed_jobs", sender).sendMessage();
         }
     }
 
@@ -168,16 +157,11 @@ public class JobCommand extends ICommand {
             return;
         }
         Job j = JobManager.getJob(id);
-        String[] messages = new String[] {
-                ChatColor.RED + "(=================[" + ChatColor.DARK_RED + j.getID() + ChatColor.RED
-                        + "]=================)",
-                ChatColor.DARK_RED + "[Created by] " + ChatColor.RED + j.getPlayer().getName(),
-                ChatColor.DARK_RED + "[Description] " + ChatColor.RED + j.getDescription(),
-                ChatColor.DARK_RED + "[Location]" + ChatColor.RED + j.getLocation().getWorld().getName() + " "
-                        + j.getLocation().getX() + "," + j.getLocation().getY() + "," + j.getLocation().getY(),
-                ChatColor.DARK_RED + "[Payment]" + ChatColor.RED
-                        + BusinessCore.getInstance().getEconomy().format(j.getPayment()) };
-        sender.sendMessage(messages);
+        if(j != null) {
+            new Message("job.current", sender).setJob(j).sendMessage();
+        } else {
+            new Message("errors.job_not_found", sender).sendMessage();
+        }
     }
 
     @Subcommand(consoleUse = false, permission = "business.job.tp", usage = "/job tp [id @Optional]")
@@ -197,7 +181,7 @@ public class JobCommand extends ICommand {
         if (j == null)
             j = JobManager.getClaimedJob(playerSender.getUniqueId());
         if (j == null) {
-            sender.sendMessage(BusinessCore.ERROR_PREFIX + "Could not find a valid job to tp to.");
+            new Message("errors.job_not_found", sender).sendMessage();
             return;
         }
         playerSender.teleport(j.getLocation(), TeleportCause.COMMAND);

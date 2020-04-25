@@ -26,10 +26,6 @@ import net.milkbowl.vault.economy.Economy;
  */
 public class BusinessCore extends JavaPlugin {
 
-    public static final String ERROR_PREFIX = ChatColor.GRAY + "[" + ChatColor.RED + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-    public static final String NOMINAL_PREFIX = ChatColor.GRAY + "[" + ChatColor.AQUA + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-    public static final String WORKING_PREFIX = ChatColor.GRAY + "[" + ChatColor.GREEN + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
-    public static final String OTHER_PREFIX = ChatColor.GRAY + "[" + ChatColor.GOLD + "BusinessCore" + ChatColor.GRAY + "]:" + ChatColor.WHITE + " ";
     private static BusinessCore instance;
     private Economy eco;
     private Chat chat;

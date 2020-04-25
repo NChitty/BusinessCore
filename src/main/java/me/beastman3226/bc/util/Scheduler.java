@@ -1,7 +1,7 @@
 package me.beastman3226.bc.util;
 
 import java.util.HashMap;
-import me.beastman3226.bc.BusinessCore;
+import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.player.EmployeeManager;
 import org.bukkit.entity.Player;
 
@@ -13,10 +13,11 @@ public class Scheduler {
 
     public static HashMap<Player, Long> playerMilli = new HashMap<>();
 
-    public static void runAcceptance() {
+    public static void runAcceptance(Player sender) {
         for (Player player : EmployeeManager.getPendingPlayers().keySet()) {
             if (player != null && player.isOnline()) {
-                player.sendMessage(BusinessCore.NOMINAL_PREFIX + "Say 'yes' in chat within 10 seconds to accept your current job offer.");
+                Message message = new Message("business.employee.hire.offer", player, BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(player))).setCause(sender);
+                message.sendMessage();
                 playerMilli.put(player, System.currentTimeMillis());
             }
         }

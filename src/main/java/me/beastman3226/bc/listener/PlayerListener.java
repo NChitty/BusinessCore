@@ -6,6 +6,7 @@ import me.beastman3226.bc.business.BusinessManager;
 import me.beastman3226.bc.event.business.BusinessHiredEmployeeEvent;
 import me.beastman3226.bc.player.Employee;
 import me.beastman3226.bc.player.EmployeeManager;
+import me.beastman3226.bc.util.Message;
 import me.beastman3226.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -22,15 +23,16 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         if (Scheduler.playerMilli.containsKey(e.getPlayer()) && e.getMessage().contains("yes")) {
+            Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
             if (Scheduler.playerMilli.get(e.getPlayer()) >= (System.currentTimeMillis() - 10000)) {
-                Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
                 Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer(), b.getID());
                 e.setCancelled(true);
                 BusinessHiredEmployeeEvent event = new BusinessHiredEmployeeEvent(b, newEmployee);
                 Bukkit.getScheduler().runTask(BusinessCore.getInstance(), () -> Bukkit.getPluginManager().callEvent(event));
                 Scheduler.playerMilli.remove(e.getPlayer());
             } else {
-                e.getPlayer().sendMessage(BusinessCore.ERROR_PREFIX + "Timed out.");
+                Message message = new Message("errors.timeout", e.getPlayer(), b);
+                message.sendMessage();
                 Scheduler.playerMilli.remove(e.getPlayer());
             }
         }
