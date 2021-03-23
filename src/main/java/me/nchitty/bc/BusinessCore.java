@@ -36,64 +36,59 @@ public class BusinessCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        //get a static instance to the plugin
         instance = this;
+
+        //Load Vault hooks
         this.getLogger().info("Loaded Economy: " + setupEconomy());
         this.getLogger().info("Loaded Chat: " + setupChat());
+
+        //Get the config
         this.saveDefaultConfig();
+
+        //Load data from files
         businessFileManager = new FileManager("business.yml");
         employeeFileManager = new FileManager("employee.yml");
         jobFileManager = new FileManager("job.yml");
-        registerListeners();
-        registerCommands();
+
+        //Register listeners
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new BusinessListener(), this);
+        getServer().getPluginManager().registerEvents(new JobListener(), this);
+
+        //Create Commands
+        new BusinessCommand();
+        new JobCommand();
+
         //settings and configs
         settings = new Settings(this.getConfig());
-        if(settings.verboseLogging()) {
-            getLogger().info("(================Business Core Settings================)");
-            getLogger().info("Businesses:");
-            getLogger().info("\tRequire Payment: " + settings.isPayRequiredBusiness());
-            getLogger().info("\tRequired Payment: " + settings.getPayRequiredBusiness());
-            getLogger().info("\tStarting Balance: " + settings.getStartingBusinessBalance());
-            getLogger().info("Jobs:");
-            getLogger().info("\tRequire Payment: " + settings.isPayRequiredJob());
-            getLogger().info("\tRequired Payment: " + settings.getPayRequiredJob());
-            getLogger().info("\tMinimum Payment: " + settings.getMinimumJobPayment());
-        }
+        settings.info();
+
+        //Load all the data into memory
         this.getLogger().info("Loading businesses...");
         BusinessManager.createBusinesses();
         this.getLogger().info("Loading employees...");
         EmployeeManager.loadEmployees();
         this.getLogger().info("Loading jobs...");
         JobManager.loadJobs();
+
+        //Finalize
         getLogger().info("Do /businesscore for information about this plugin");
     }
 
     @Override
     public void onDisable() {
+        //Save all data
         this.getLogger().info("Saving businesses...");
         BusinessManager.saveBusinesses();
         this.getLogger().info("Saving employees...");
         EmployeeManager.saveEmployees();
         this.getLogger().info("Saving jobs...");
         JobManager.saveJobs();
+
+        //Ensure the config is finished
         this.reloadConfig();
         this.saveConfig();
-    }
-
-    /**
-     * A method to condense the clutter inside the onEnable method.
-     */    
-    public void registerListeners() {
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new BusinessListener(), this);
-        getServer().getPluginManager().registerEvents(new JobListener(), this);
-    }
-
-    /**
-     * Method to avoid clutter inside onEnable for commands.
-     */
-    public void registerCommands() {
-        new BusinessCommand();
-        new JobCommand();
     }
 
     public boolean setupEconomy() {
