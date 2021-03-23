@@ -4,18 +4,17 @@ import java.util.Arrays;
 
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.job.Job;
-import me.nchitty.bc.job.JobManager;
+import me.nchitty.bc.job.Job.JobManager;
 import me.nchitty.bc.util.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import me.nchitty.bc.business.Business.BusinessManager;
 import me.nchitty.bc.event.job.JobClaimedEvent;
 import me.nchitty.bc.event.job.JobCompletedEvent;
 import me.nchitty.bc.event.job.JobCreatedEvent;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 
 public class JobCommand extends ICommand {
 
@@ -57,11 +56,11 @@ public class JobCommand extends ICommand {
             new Message("errors.job_not_found", sender).sendMessage();
             return;
         }
-        if (j.getPlayer().getUniqueId().equals(playerSender.getUniqueId())) {
+        if (j.isCreator(playerSender)) {
             new Message("errors.self_created", sender).sendMessage();
             return;
-        } else if (Business.BusinessManager.isOwner(playerSender.getUniqueId())
-                || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
+        } else if (Business.BusinessManager.isOwner(playerSender)
+                || EmployeeManager.isEmployee(playerSender)) {
             JobClaimedEvent event = new JobClaimedEvent(j, playerSender);
             Bukkit.getPluginManager().callEvent(event);
         } else {
@@ -71,6 +70,7 @@ public class JobCommand extends ICommand {
 
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.job.list", usage = "/job list [mine|open] [page number @Optional]")
     public void list(CommandSender sender, String[] args) {
+        //TODO pagination
         Job[] jobs;
         int page = 1;
         if (args.length > 1) {
@@ -127,7 +127,7 @@ public class JobCommand extends ICommand {
             return;
         }
         Player playerSender = (Player) sender;
-        if (j.getPlayer().getUniqueId().equals(playerSender.getUniqueId())) {
+        if (j.isCreator(playerSender)) {
             JobCompletedEvent event = new JobCompletedEvent(j);
             Bukkit.getPluginManager().callEvent(event);
         } else {
@@ -138,8 +138,8 @@ public class JobCommand extends ICommand {
     @Subcommand(consoleUse = false, permission = "businesscore.job.current", usage = "/job current")
     public void current(CommandSender sender, String[] args) {
         Player playerSender = (Player) sender;
-        if (JobManager.hasClaimedJob(playerSender.getUniqueId())) {
-            Job j = JobManager.getClaimedJob(playerSender.getUniqueId());
+        if (JobManager.hasClaimedJob(playerSender)) {
+            Job j = JobManager.getClaimedJob(playerSender);
             new Message("job.current", sender).setJob(j).sendMessage();
         } else {
             new Message("errors.no_claimed_jobs", sender).sendMessage();
@@ -178,7 +178,7 @@ public class JobCommand extends ICommand {
             j = JobManager.getJob(id);
         }
         if (j == null)
-            j = JobManager.getClaimedJob(playerSender.getUniqueId());
+            j = JobManager.getClaimedJob(playerSender);
         if (j == null) {
             new Message("errors.job_not_found", sender).sendMessage();
             return;
