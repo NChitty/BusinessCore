@@ -2,7 +2,7 @@ package me.nchitty.bc.listener;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.job.Job;
-import me.nchitty.bc.job.JobManager;
+import me.nchitty.bc.job.Job.JobManager;
 import me.nchitty.bc.util.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ import me.nchitty.bc.event.job.JobClaimedEvent;
 import me.nchitty.bc.event.job.JobCompletedEvent;
 import me.nchitty.bc.event.job.JobCreatedEvent;
 import me.nchitty.bc.player.Employee;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class JobListener implements Listener {
@@ -38,16 +38,25 @@ public class JobListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClaim(JobClaimedEvent e) {
         if (JobManager.claimJob(e.getJob(), e.getClaimingPlayer())) {
-            if (Business.BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId())) {
-                Business b = Business.BusinessManager.getBusiness(e.getClaimingPlayer().getUniqueId());
-                new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setBusiness(b).sendMessage();
-                ;
-            } else {
-                Employee emp = EmployeeManager.getEmployee(e.getClaimingPlayer().getUniqueId());
-                new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setEmployee(emp)
-                        .setBusiness(emp.getBusiness()).sendMessage();
-                emp.startJob(e.getID());
+
+            Business b = null;
+            Employee emp = null;
+
+            if (Business.BusinessManager.isOwner(e.getClaimingPlayer()))
+                b = Business.BusinessManager.getBusiness(e.getClaimingPlayer());
+            else {
+                emp = EmployeeManager.getEmployee(e.getClaimingPlayer());
+                b = emp.getBusiness();
             }
+
+            if(b == null) {
+                e.setCancelled(true);
+                return;
+            }
+
+            new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setBusiness(b).sendMessage();
+            if(emp != null) emp.startJob(e.getID());
+
         } else {
             new Message("job.claim.fail", e.getClaimingPlayer(), e.getJob()).sendMessage();
             e.setCancelled(true);
@@ -57,18 +66,21 @@ public class JobListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCompleted(JobCompletedEvent e) {
         Player worker = e.getJob().getWorker();
-        Player player = (Player) e.getJob().getPlayer();
+        Player player = (Player) e.getJob().getCreator();
         if (JobManager.completeJob(e.getJob())) {
             Business b = EmployeeManager.isEmployee(worker.getUniqueId())
                     ? EmployeeManager.getEmployee(worker.getUniqueId()).getBusiness()
                     : Business.BusinessManager.getBusiness(worker.getUniqueId());
+
             if (player.isOnline())
                 new Message("job.complete.to_player", player, e.getJob()).setBusiness(b).sendMessage();
-            if (EmployeeManager.isEmployee(worker.getUniqueId())) {
+
+            if (EmployeeManager.isEmployee(worker.getUniqueId()))
                 EmployeeManager.getEmployee(b, worker.getUniqueId()).completeJob();
-            }
+
             if (worker.isOnline())
                 new Message("job.complete.to_worker", worker, e.getJob()).setCause(player).setBusiness(b).sendMessage();
+
             BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, e.getJob().getPayment());
             Bukkit.getPluginManager().callEvent(event);
         } else {
