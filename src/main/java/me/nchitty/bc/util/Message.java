@@ -18,7 +18,7 @@ import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.job.Job;
 import me.nchitty.bc.player.Employee;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;

@@ -1,7 +1,7 @@
 package me.nchitty.bc.event.job;
 
 import me.nchitty.bc.job.Job;
-import me.nchitty.bc.job.JobManager;
+import me.nchitty.bc.job.Job.JobManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

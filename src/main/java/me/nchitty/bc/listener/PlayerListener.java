@@ -4,7 +4,7 @@ import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.event.business.BusinessHiredEmployeeEvent;
 import me.nchitty.bc.player.Employee;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import me.nchitty.bc.util.Message;
 import me.nchitty.bc.util.Scheduler;
 import org.bukkit.Bukkit;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.data.file.FileManager;
-import me.nchitty.bc.job.JobManager;
+import me.nchitty.bc.job.Job.JobManager;
 import me.nchitty.bc.util.Settings;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -15,7 +15,7 @@ import me.nchitty.bc.commands.JobCommand;
 import me.nchitty.bc.listener.BusinessListener;
 import me.nchitty.bc.listener.JobListener;
 import me.nchitty.bc.listener.PlayerListener;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 

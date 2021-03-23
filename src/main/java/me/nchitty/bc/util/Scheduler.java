@@ -3,7 +3,7 @@ package me.nchitty.bc.util;
 import java.util.HashMap;
 
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import org.bukkit.entity.Player;
 
 /**
