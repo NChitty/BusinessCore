@@ -188,11 +188,21 @@ public class Business {
         
         /**
          * 
-         * @param owner Name of owner
+         * @param owner The player object of owner
          * @return 
          */
-        public Builder owner(String owner) {
-            this.ownerUUID = owner;
+        public Builder owner(Player owner) {
+            this.ownerUUID = owner.getUniqueId().toString();
+            return this;
+        }
+
+        /**
+         *
+         * @param ownerUUID The uuid stored
+         * @return
+         */
+        public Builder owner(String ownerUUID) {
+            this.ownerUUID = ownerUUID;
             return this;
         }
 
@@ -218,7 +228,9 @@ public class Business {
 
         public Business build() {
             return new Business(this);
-        }  
+        }
+
+
     }
 
     public static class BusinessManager {
@@ -228,6 +240,7 @@ public class Business {
          * Creates all businesses from file.
          */
         public static void createBusinesses() {
+            // TODO: Abstract out this method
             BusinessCore.getInstance().getBusinessFileManager().reload();
             FileConfiguration businessYml = BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration();
             int id;
@@ -244,6 +257,7 @@ public class Business {
         }
 
         public static void saveBusinesses() {
+            // TODO: Abstract out this method
             FileManager fm = BusinessCore.getInstance().getBusinessFileManager();
             for(Business b : businessList) {
                 fm.edit(new FileData()
@@ -286,8 +300,7 @@ public class Business {
         }
 
         /**
-         * Finds a business based on the name of the current owner, 100% match is not
-         * guaranteed (ownership change)
+         * Finds a business based on the name of the current owner
          *
          * @param uuid UUID of the owner
          * @return The business
@@ -297,6 +310,16 @@ public class Business {
                 if (b.getOwnerUUID().equals(uuid.toString()))
                     return b;
             return null;
+        }
+
+        /**
+         * Finds a business based on the player object
+         *
+         * @param playerSender Player object
+         * @return the business owned by the player
+         */
+        public static Business getBusiness(Player playerSender) {
+            return getBusiness(playerSender.getUniqueId());
         }
 
         public static int getNewID(String name) {
@@ -329,12 +352,14 @@ public class Business {
          * Checks if the player is an owner via a null check using the getBusiness(name)
          * method
          *
-         * @param name The name of the player
+         * @param uuid The name of the player
          * @return True if name has a business, false if not.
          */
         public static boolean isOwner(String uuid) {
             return isOwner(UUID.fromString(uuid));
         }
+
+        public static boolean isOwner(Player playerSender) { return isOwner(playerSender.getUniqueId()); }
 
         public static boolean isOwner(UUID uniqueId) {
             for(Business b : businessList) {
@@ -368,5 +393,7 @@ public class Business {
             businessList.sort((Business b1, Business b2) -> b1.getName().compareTo(b2.getName()));
             return businessList;
         }
+
+
     }
 }
