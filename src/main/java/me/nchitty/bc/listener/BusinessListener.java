@@ -8,12 +8,13 @@ import me.nchitty.bc.event.business.BusinessClosedEvent;
 import me.nchitty.bc.event.business.BusinessCreatedEvent;
 import me.nchitty.bc.event.business.BusinessFiredEmployeeEvent;
 import me.nchitty.bc.event.business.BusinessHiredEmployeeEvent;
-import me.nchitty.bc.player.EmployeeManager;
+import me.nchitty.bc.player.Employee.EmployeeManager;
 import me.nchitty.bc.util.Message;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,37 +28,13 @@ public class BusinessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
+
         Economy eco = BusinessCore.getInstance().getEconomy();
-        if (e.getSource() != null) {
-            if (e.isWithdrawal()) {
-                if (!e.isOverdraft()) {
-                    if (e.getSource() instanceof Player) {
-                        EconomyResponse er = eco.depositPlayer((Player) e.getSource(), e.getAbsoluteAmount());
-                        if (!er.transactionSuccess()) {
-                            e.setCancelled(true);
-                            return;
-                        }
-                    }
-                    Message message = new Message("business.withdraw.success", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
-                    message.sendMessage();
-                    e.getBusiness().withdraw(e.getAbsoluteAmount());
-                } else {
-                    Message message = new Message("business.withdraw.overdraft", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
-                    message.sendMessage();
-                }
-            } else {
-                if (e.getSource() instanceof Player) {
-                    EconomyResponse er = eco.withdrawPlayer((Player) e.getSource(), e.getAmount());
-                    if (!er.transactionSuccess()) {
-                        e.setCancelled(true);
-                        return;
-                    }
-                }
-                Message message = new Message("business.deposit", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
-                message.sendMessage();
-                e.getBusiness().deposit(e.getAbsoluteAmount());
-            }
-        } else {
+        EconomyResponse er = null;
+
+        if (e.getSource() == null) throw new NullPointerException();
+
+        if(e.getSource() instanceof ConsoleCommandSender) {
             if(e.isWithdrawal()) {
                 if(e.isOverdraft())
                     e.setCancelled(true);
@@ -66,6 +43,34 @@ public class BusinessListener implements Listener {
             } else {
                 e.getBusiness().deposit(e.getAbsoluteAmount());
             }
+            // TODO if online send owner message
+            return;
+        } else if (e.getSource() instanceof Player) {
+            if (e.isWithdrawal()) {
+                if (e.isOverdraft()) {
+                    Message message = new Message("business.withdraw.overdraft", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                    message.sendMessage();
+                    return;
+                }
+
+                er = eco.depositPlayer((Player) e.getSource(), e.getAbsoluteAmount());
+
+                if(er.transactionSuccess()) {
+                    Message message = new Message("business.withdraw.success", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                    message.sendMessage();
+                    e.getBusiness().withdraw(e.getAbsoluteAmount());
+                    return;
+                }
+            } else {
+                er = eco.withdrawPlayer((Player) e.getSource(), e.getAmount());
+                if (er.transactionSuccess()) {
+                    Message message = new Message("business.deposit", e.getSource()).setBusiness(e.getBusiness()).setOther(e.getAbsoluteAmount());
+                    message.sendMessage();
+                    e.getBusiness().deposit(e.getAbsoluteAmount());
+                    return;
+                }
+            }
+            e.setCancelled(true);
         }
     }
 
@@ -73,11 +78,11 @@ public class BusinessListener implements Listener {
     public void onClosed(BusinessClosedEvent e) {
         Business b = e.getBusiness();
         if (b.getOwner().isOnline()) {
-            Message message = new Message("business.close", e.getSource()).setRecipient(b.getOwner()).setBusiness(e.getBusiness());
+            Message message = new Message("business.close", e.getSource()).setRecipient(b.getOwner()).setBusiness(b);
             message.sendMessage();
         }
         if(!e.getSource().equals(b.getOwner())) {
-            Message message = new Message("business.close", e.getSource()).setBusiness(e.getBusiness());
+            Message message = new Message("business.close", e.getSource()).setBusiness(b);
             message.sendMessage();
         }
         Business.BusinessManager.closeBusiness(e.getBusiness());
@@ -92,7 +97,8 @@ public class BusinessListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onFire(BusinessFiredEmployeeEvent e) {
-        Message message = new Message("business.employee.fire", e.getBusiness().getOwner(), e.getBusiness()).setCause(Bukkit.getPlayer(e.getEmployee().getUniqueId()));
+        Business b = e.getBusiness();
+        Message message = new Message("business.employee.fire", b.getOwner(), b).setCause(Bukkit.getPlayer(e.getEmployee().getUniqueId()));
         message.sendMessage();
         EmployeeManager.getEmployeeList().remove(e.getEmployee());
         e.getBusiness().removeEmployee(e.getEmployee());
@@ -104,12 +110,13 @@ public class BusinessListener implements Listener {
     public void onHire(BusinessHiredEmployeeEvent e) {
         Player owner = e.getBusiness().getOwner();
         Player employee = Bukkit.getPlayer(e.getEmployee().getUniqueId());
+        Business b = e.getBusiness();
         if (owner.isOnline()) {
-            Message message = new Message("business.employee.hire.offer_accepted_owner", owner, e.getBusiness()).setCause(employee).setEmployee(e.getEmployee());
+            Message message = new Message("business.employee.hire.offer_accepted_owner", owner, b).setCause(employee).setEmployee(e.getEmployee());
             message.sendMessage();
         }
         if (employee.isOnline()) {
-            Message message = new Message("business.employee.hire.offer_accepted_employee", employee, e.getBusiness()).setCause(owner).setEmployee(e.getEmployee());
+            Message message = new Message("business.employee.hire.offer_accepted_employee", employee, b).setCause(owner).setEmployee(e.getEmployee());
             message.sendMessage();
         }
         e.getBusiness().addEmployee(e.getEmployee());
