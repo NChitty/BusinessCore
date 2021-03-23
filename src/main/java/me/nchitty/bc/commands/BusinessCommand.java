@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
+import me.nchitty.bc.business.Business.BusinessManager;
 import me.nchitty.bc.event.business.BusinessBalanceChangeEvent;
 import me.nchitty.bc.event.business.BusinessClosedEvent;
 import me.nchitty.bc.event.business.BusinessCreatedEvent;
@@ -30,21 +30,21 @@ public class BusinessCommand extends ICommand {
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.start", usage = "/business start [name]")
     public void start(CommandSender sender, String[] args) {
         Player playerSender = (Player) sender;
-        if (!BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+        if (!Business.BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
             String businessName = this.parseArgs(args);
-            int id = BusinessManager.getNewID(businessName);
+            int id = Business.BusinessManager.getNewID(businessName);
             if (id == -1) {
                 Message message = new Message("errors.name_too_similar").setRecipient(playerSender);
                 message.sendMessage();
                 return;
             }
-            Business b = BusinessManager.createBusiness(
+            Business b = Business.BusinessManager.createBusiness(
                     new Business.Builder(id).name(businessName).owner(playerSender.getUniqueId().toString()));
             BusinessCreatedEvent event = new BusinessCreatedEvent(b);
             Bukkit.getPluginManager().callEvent(event);
         } else {
             Message message = new Message("errors.already_own_business").setRecipient(playerSender)
-                    .setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                    .setBusiness(Business.BusinessManager.getBusiness(playerSender.getUniqueId()));
             message.sendMessage();
         }
     }
@@ -53,9 +53,9 @@ public class BusinessCommand extends ICommand {
     public void close(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+            if (Business.BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 BusinessClosedEvent event = new BusinessClosedEvent(
-                        BusinessManager.getBusiness(playerSender.getUniqueId()));
+                        Business.BusinessManager.getBusiness(playerSender.getUniqueId()));
                 event.setSource(sender);
                 Bukkit.getPluginManager().callEvent(event);
             } else {
@@ -69,8 +69,8 @@ public class BusinessCommand extends ICommand {
                 int id = -1;
                 if (!args[0].matches("[^0-9]+")) {
                     id = Integer.parseInt(args[0]);
-                    if (BusinessManager.isID(id)) {
-                        Business b = BusinessManager.getBusiness(id);
+                    if (Business.BusinessManager.isID(id)) {
+                        Business b = Business.BusinessManager.getBusiness(id);
                         BusinessClosedEvent event = new BusinessClosedEvent(b);
                         event.setSource(sender);
                         Bukkit.getPluginManager().callEvent(event);
@@ -89,12 +89,12 @@ public class BusinessCommand extends ICommand {
     public void withdraw(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+            if (Business.BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 if (args[0].matches("[^0-9.0-9]")) {
                     Message message = new Message("errors.not_a_number").setRecipient(playerSender);
                     message.sendMessage();
                 } else {
-                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
+                    Business b = Business.BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -amount);
                     event.setSource(sender);
@@ -102,7 +102,7 @@ public class BusinessCommand extends ICommand {
                 }
             } else {
                 Message message = new Message("errors.not_an_owner").setRecipient(playerSender)
-                        .setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                        .setBusiness(Business.BusinessManager.getBusiness(playerSender.getUniqueId()));
                 message.sendMessage();
             }
         } else {
@@ -114,7 +114,7 @@ public class BusinessCommand extends ICommand {
                 error.sendMessage();
             } else {
                 int id = Integer.parseInt(args[0]);
-                Business b = BusinessManager.getBusiness(id);
+                Business b = Business.BusinessManager.getBusiness(id);
                 double amount = Double.parseDouble(args[1]);
                 BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, -amount);
                 event.setSource(sender);
@@ -127,12 +127,12 @@ public class BusinessCommand extends ICommand {
     public void deposit(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
+            if (Business.BusinessManager.isOwner(playerSender.getUniqueId().toString())) {
                 if (args[0].matches("[^0-9.0-9]")) {
                     Message message = new Message("errors.not_a_number").setRecipient(playerSender);
                     message.sendMessage();
                 } else {
-                    Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
+                    Business b = Business.BusinessManager.getBusiness(playerSender.getUniqueId());
                     double amount = Double.parseDouble(args[0]);
                     BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
                     event.setSource(sender);
@@ -140,7 +140,7 @@ public class BusinessCommand extends ICommand {
                 }
             } else {
                 Message message = new Message("errors.not_an_owner").setRecipient(playerSender)
-                        .setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                        .setBusiness(Business.BusinessManager.getBusiness(playerSender.getUniqueId()));
                 message.sendMessage();
             }
         } else {
@@ -152,7 +152,7 @@ public class BusinessCommand extends ICommand {
                 error.sendMessage();
             } else {
                 int id = Integer.parseInt(args[0]);
-                Business b = BusinessManager.getBusiness(id);
+                Business b = Business.BusinessManager.getBusiness(id);
                 double amount = Double.parseDouble(args[1]);
                 BusinessBalanceChangeEvent event = new BusinessBalanceChangeEvent(b, amount);
                 event.setSource(sender);
@@ -165,13 +165,13 @@ public class BusinessCommand extends ICommand {
     public void balance(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner(playerSender.getUniqueId())) {
-                Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
+            if (Business.BusinessManager.isOwner(playerSender.getUniqueId())) {
+                Business b = Business.BusinessManager.getBusiness((playerSender.getUniqueId()));
                 Message message = new Message("business.balance").setRecipient(playerSender).setBusiness(b);
                 message.sendMessage();
             } else {
                 Message message = new Message("errors.not_an_owner").setRecipient(playerSender)
-                        .setBusiness(BusinessManager.getBusiness(playerSender.getUniqueId()));
+                        .setBusiness(Business.BusinessManager.getBusiness(playerSender.getUniqueId()));
                 message.sendMessage();
             }
         } else {
@@ -183,7 +183,7 @@ public class BusinessCommand extends ICommand {
                 error.sendMessage();
             } else {
                 int id = Integer.parseInt(args[0]);
-                Business b = BusinessManager.getBusiness(id);
+                Business b = Business.BusinessManager.getBusiness(id);
                 Message balance = new Message("business.balance", true, null, null).setBusiness(b);
                 balance.sendMessage();
             }
@@ -194,8 +194,8 @@ public class BusinessCommand extends ICommand {
     public void info(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player playerSender = (Player) sender;
-            if (BusinessManager.isOwner((playerSender.getUniqueId())) || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
-                Business b = BusinessManager.getBusiness((playerSender.getUniqueId()));
+            if (Business.BusinessManager.isOwner((playerSender.getUniqueId())) || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
+                Business b = Business.BusinessManager.getBusiness((playerSender.getUniqueId()));
                 if(b == null)
                     b = EmployeeManager.getEmployee(playerSender.getUniqueId()).getBusiness();
                 Message message = new Message("business.info").setRecipient(playerSender).setBusiness(b);
@@ -213,7 +213,7 @@ public class BusinessCommand extends ICommand {
                 error.sendMessage();
             } else {
                 int id = Integer.parseInt(args[0]);
-                Business b = BusinessManager.getBusiness(id);
+                Business b = Business.BusinessManager.getBusiness(id);
                 Message message = new Message("business.info", true, null, null).setBusiness(b);
                 message.sendMessage();
             }
@@ -223,7 +223,7 @@ public class BusinessCommand extends ICommand {
     @Subcommand(minArgs = 1, permission = "businesscore.business.list", usage = "/business list [<\"id\"|\"balance\"|\"name\">] [<page>]")
     public void list(CommandSender sender, String[] args) {
         int page = 1;
-        int pagesOutOf = BusinessManager.getBusinessList().size() / 5;
+        int pagesOutOf = Business.BusinessManager.getBusinessList().size() / 5;
         if (args.length > 1) {
             if (!args[1].matches("[^0-9]"))
                 page = Integer.parseInt(args[1]);
@@ -232,14 +232,14 @@ public class BusinessCommand extends ICommand {
             page--;
         int fromIndex = page == 1 ? 0 : page * 5;
         int toIndex = fromIndex + 4;
-        while (toIndex >= BusinessManager.getBusinessList().size())
+        while (toIndex >= Business.BusinessManager.getBusinessList().size())
             toIndex--;
         switch (args[0].toLowerCase()) {
             case "id":
-                Business[] businesses = BusinessManager.sortById()
+                Business[] businesses = Business.BusinessManager.sortById()
                         .subList(fromIndex,
-                                toIndex >= BusinessManager.getBusinessList().size()
-                                        ? BusinessManager.getBusinessList().size() - 1
+                                toIndex >= Business.BusinessManager.getBusinessList().size()
+                                        ? Business.BusinessManager.getBusinessList().size() - 1
                                         : toIndex)
                         .toArray(new Business[0]);
                 Message header = new Message("business.list.by_id.header", sender);
@@ -254,7 +254,7 @@ public class BusinessCommand extends ICommand {
                 footer.sendMessage();
                 break;
             case "balance":
-                businesses = BusinessManager.sortByBalance().subList(fromIndex, toIndex).toArray(new Business[0]);
+                businesses = Business.BusinessManager.sortByBalance().subList(fromIndex, toIndex).toArray(new Business[0]);
                 header = new Message("business.list.by_balance.header", sender);
                 header.sendMessage();
                 for (Business b : businesses) {
@@ -267,7 +267,7 @@ public class BusinessCommand extends ICommand {
                 footer.sendMessage();
                 break;
             case "name":
-                businesses = BusinessManager.sortByName().subList(fromIndex, toIndex).toArray(new Business[0]);
+                businesses = Business.BusinessManager.sortByName().subList(fromIndex, toIndex).toArray(new Business[0]);
                 header = new Message("business.list.by_name.header", sender);
                 header.sendMessage();
                 for (Business b : businesses) {
@@ -288,8 +288,8 @@ public class BusinessCommand extends ICommand {
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.employee", usage = "/business employee [hire|fire|list] [id|player name]")
     public void employee(CommandSender sender, String[] args) {
         Player playerSender = (Player) sender;
-        if (BusinessManager.isOwner(playerSender.getUniqueId())) {
-            Business b = BusinessManager.getBusiness(playerSender.getUniqueId());
+        if (Business.BusinessManager.isOwner(playerSender.getUniqueId())) {
+            Business b = Business.BusinessManager.getBusiness(playerSender.getUniqueId());
             Player player = null;
             int page = 1;
             int pagesOutOf = b.getEmployees().size() / 5;
@@ -319,7 +319,7 @@ public class BusinessCommand extends ICommand {
             switch (args[0].toLowerCase()) {
                 case "hire":
                     if (EmployeeManager.isEmployee(player.getUniqueId())
-                            || BusinessManager.isOwner(player.getUniqueId())) {
+                            || Business.BusinessManager.isOwner(player.getUniqueId())) {
                         Message message = new Message("errors.already_a_worker").setRecipient(playerSender);
                         message.sendMessage();
                     } else {

@@ -1,7 +1,6 @@
 package me.nchitty.bc.event.business;
 
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -19,7 +18,7 @@ public abstract class BusinessEvent extends Event implements Cancellable{
 
     public BusinessEvent(int id) {
         this.businessID = id;
-        business = BusinessManager.getBusiness(id);
+        business = Business.BusinessManager.getBusiness(id);
     }
 
     public BusinessEvent(Business business) {

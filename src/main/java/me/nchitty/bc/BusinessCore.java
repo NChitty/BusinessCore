@@ -2,6 +2,7 @@ package me.nchitty.bc;
 
 import java.util.HashMap;
 
+import me.nchitty.bc.business.Business;
 import me.nchitty.bc.data.file.FileManager;
 import me.nchitty.bc.job.JobManager;
 import me.nchitty.bc.util.Settings;
@@ -9,7 +10,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.commands.BusinessCommand;
 import me.nchitty.bc.commands.JobCommand;
 import me.nchitty.bc.listener.BusinessListener;
@@ -66,7 +66,7 @@ public class BusinessCore extends JavaPlugin {
 
         //Load all the data into memory
         this.getLogger().info("Loading businesses...");
-        BusinessManager.createBusinesses();
+        Business.BusinessManager.createBusinesses();
         this.getLogger().info("Loading employees...");
         EmployeeManager.loadEmployees();
         this.getLogger().info("Loading jobs...");
@@ -80,7 +80,7 @@ public class BusinessCore extends JavaPlugin {
     public void onDisable() {
         //Save all data
         this.getLogger().info("Saving businesses...");
-        BusinessManager.saveBusinesses();
+        Business.BusinessManager.saveBusinesses();
         this.getLogger().info("Saving employees...");
         EmployeeManager.saveEmployees();
         this.getLogger().info("Saving jobs...");

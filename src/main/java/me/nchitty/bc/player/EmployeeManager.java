@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.data.file.FileData;
 import me.nchitty.bc.data.file.FileManager;
 
@@ -32,7 +31,7 @@ public class EmployeeManager {
             int jID = employeeYml.getInt(key + ".job");
             Employee e = new Employee(uuid, id).setBusiness(bID).setCompletedJobs(completed).startJob(jID);
             employeeList.add(e);
-            BusinessManager.getBusiness(e.getBusiness().getID()).addEmployee(e);
+            Business.BusinessManager.getBusiness(e.getBusiness().getID()).addEmployee(e);
         }
 
     }
@@ -92,15 +91,15 @@ public class EmployeeManager {
     }
 
     public static Employee getEmployee(int bid, UUID uuid) {
-        return getEmployee(BusinessManager.getBusiness(bid), uuid);
+        return getEmployee(Business.BusinessManager.getBusiness(bid), uuid);
     }
 
     public static Employee getEmployee(int bid, int id) {
-        return getEmployee(BusinessManager.getBusiness(bid), id);
+        return getEmployee(Business.BusinessManager.getBusiness(bid), id);
     }
 
     public static Employee getEmployee(int bid, String name) {
-        return getEmployee(BusinessManager.getBusiness(bid), name);
+        return getEmployee(Business.BusinessManager.getBusiness(bid), name);
     }
 
     public static Employee getEmployee(UUID uuid) {

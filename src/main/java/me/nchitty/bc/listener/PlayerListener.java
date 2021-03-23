@@ -2,7 +2,6 @@ package me.nchitty.bc.listener;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.event.business.BusinessHiredEmployeeEvent;
 import me.nchitty.bc.player.Employee;
 import me.nchitty.bc.player.EmployeeManager;
@@ -23,7 +22,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         if (Scheduler.playerMilli.containsKey(e.getPlayer()) && e.getMessage().contains("yes")) {
-            Business b = BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
+            Business b = Business.BusinessManager.getBusiness(EmployeeManager.getPendingPlayers().get(e.getPlayer()));
             if (Scheduler.playerMilli.get(e.getPlayer()) >= (System.currentTimeMillis() - 10000)) {
                 Employee newEmployee = EmployeeManager.addEmployee(e.getPlayer(), b.getID());
                 e.setCancelled(true);
@@ -43,8 +42,8 @@ public class PlayerListener implements Listener {
         /*Player player = e.getPlayer();
         String prefix = "";
         if (Information.prefix) {
-            if (BusinessManager.isOwner(player.getName())) {
-                prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
+            if (Business.BusinessManager.isOwner(player.getName())) {
+                prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.owner") + Business.BusinessManager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
             } else if (Manager.isManager(player.getName()) && BusinessCore.Information.managers) {
                 prefix = ChatColor.GRAY + "[" + Information.config.getString("prefixes.colorcodes.manager") + Manager.getBusiness(player.getName()).getName() + ChatColor.GRAY + "]";
             } else if (EmployeeManager.isEmployee(player.getName())) {
@@ -61,8 +60,8 @@ public class PlayerListener implements Listener {
                     Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix));
                 }
             }
-        } else if(Information.chat.getPlayerPrefix(player).contains(BusinessManager.getBusiness(player.getName()).getName())){
-            prefix = Information.chat.getPlayerPrefix(player).replace("[" + BusinessManager.getBusiness(player.getName()).getName() + "]", "");
+        } else if(Information.chat.getPlayerPrefix(player).contains(Business.BusinessManager.getBusiness(player.getName()).getName())){
+            prefix = Information.chat.getPlayerPrefix(player).replace("[" + Business.BusinessManager.getBusiness(player.getName()).getName() + "]", "");
            Information.chat.setPlayerPrefix(player, ChatColor.translateAlternateColorCodes('&', prefix));
         }*/
     }

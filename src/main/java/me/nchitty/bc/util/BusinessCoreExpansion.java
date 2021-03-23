@@ -1,6 +1,6 @@
 package me.nchitty.bc.util;
 
-import me.nchitty.bc.business.BusinessManager;
+import me.nchitty.bc.business.Business;
 import me.nchitty.bc.player.EmployeeManager;
 import org.bukkit.entity.Player;
 
@@ -29,14 +29,14 @@ public class BusinessCoreExpansion extends PlaceholderExpansion {
             case "business_name":
                 if (EmployeeManager.isEmployee(player.getUniqueId()))
                     return EmployeeManager.getEmployee(player.getUniqueId()).getBusiness().getName();
-                else if (BusinessManager.isOwner(player.getUniqueId()))
-                    return BusinessManager.getBusiness(player.getUniqueId()).getName();
+                else if (Business.BusinessManager.isOwner(player.getUniqueId()))
+                    return Business.BusinessManager.getBusiness(player.getUniqueId()).getName();
                 break;
             case "business_balance":
                 if (EmployeeManager.isEmployee(player.getUniqueId()))
                     return EmployeeManager.getEmployee(player.getUniqueId()).getBusiness().getBalance() + "";
-                else if (BusinessManager.isOwner(player.getUniqueId()))
-                    return BusinessManager.getBusiness(player.getUniqueId()).getBalance() + "";
+                else if (Business.BusinessManager.isOwner(player.getUniqueId()))
+                    return Business.BusinessManager.getBusiness(player.getUniqueId()).getBalance() + "";
         }
         return null;
     }

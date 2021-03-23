@@ -2,6 +2,7 @@ package me.nchitty.bc.commands;
 
 import java.util.Arrays;
 
+import me.nchitty.bc.business.Business;
 import me.nchitty.bc.job.Job;
 import me.nchitty.bc.job.JobManager;
 import me.nchitty.bc.util.Message;
@@ -10,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import me.nchitty.bc.business.BusinessManager;
+import me.nchitty.bc.business.Business.BusinessManager;
 import me.nchitty.bc.event.job.JobClaimedEvent;
 import me.nchitty.bc.event.job.JobCompletedEvent;
 import me.nchitty.bc.event.job.JobCreatedEvent;
@@ -59,7 +60,7 @@ public class JobCommand extends ICommand {
         if (j.getPlayer().getUniqueId().equals(playerSender.getUniqueId())) {
             new Message("errors.self_created", sender).sendMessage();
             return;
-        } else if (BusinessManager.isOwner(playerSender.getUniqueId())
+        } else if (Business.BusinessManager.isOwner(playerSender.getUniqueId())
                 || EmployeeManager.isEmployee(playerSender.getUniqueId())) {
             JobClaimedEvent event = new JobClaimedEvent(j, playerSender);
             Bukkit.getPluginManager().callEvent(event);

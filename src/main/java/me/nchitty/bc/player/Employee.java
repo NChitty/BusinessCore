@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.data.file.FileData;
 import org.bukkit.Bukkit;
 
@@ -41,7 +40,7 @@ public class Employee {
 
     @PlaceholderPattern(pattern = "<employee_business>")
     public Business getBusiness() {
-        return BusinessManager.getBusiness(this.business);
+        return Business.BusinessManager.getBusiness(this.business);
     }
 
     public UUID getUniqueId() {
@@ -54,12 +53,12 @@ public class Employee {
     }
 
     public Employee setBusiness(int id) {
-        this.business = BusinessManager.getBusiness(id).getID();
+        this.business = Business.BusinessManager.getBusiness(id).getID();
         return this;
     }
 
     public Employee setBusiness(UUID owner) {
-        this.business = BusinessManager.getBusiness(owner).getID();
+        this.business = Business.BusinessManager.getBusiness(owner).getID();
         return this;
     }
 

@@ -11,7 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.event.business.BusinessBalanceChangeEvent;
 import me.nchitty.bc.event.job.JobClaimedEvent;
 import me.nchitty.bc.event.job.JobCompletedEvent;
@@ -39,8 +38,8 @@ public class JobListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onClaim(JobClaimedEvent e) {
         if (JobManager.claimJob(e.getJob(), e.getClaimingPlayer())) {
-            if (BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId())) {
-                Business b = BusinessManager.getBusiness(e.getClaimingPlayer().getUniqueId());
+            if (Business.BusinessManager.isOwner(e.getClaimingPlayer().getUniqueId())) {
+                Business b = Business.BusinessManager.getBusiness(e.getClaimingPlayer().getUniqueId());
                 new Message("job.claim.success", e.getClaimingPlayer(), e.getJob()).setBusiness(b).sendMessage();
                 ;
             } else {
@@ -62,7 +61,7 @@ public class JobListener implements Listener {
         if (JobManager.completeJob(e.getJob())) {
             Business b = EmployeeManager.isEmployee(worker.getUniqueId())
                     ? EmployeeManager.getEmployee(worker.getUniqueId()).getBusiness()
-                    : BusinessManager.getBusiness(worker.getUniqueId());
+                    : Business.BusinessManager.getBusiness(worker.getUniqueId());
             if (player.isOnline())
                 new Message("job.complete.to_player", player, e.getJob()).setBusiness(b).sendMessage();
             if (EmployeeManager.isEmployee(worker.getUniqueId())) {

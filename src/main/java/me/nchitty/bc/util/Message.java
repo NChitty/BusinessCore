@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.job.Job;
 import me.nchitty.bc.player.Employee;
 import me.nchitty.bc.player.EmployeeManager;
@@ -349,7 +348,7 @@ public class Message {
     public Message setRecipient(Player recipient) {
         this.recipient = recipient;
         if (this.business == null)
-            this.business = BusinessManager.getBusiness(recipient.getUniqueId());
+            this.business = Business.BusinessManager.getBusiness(recipient.getUniqueId());
         if (this.employee == null)
             this.employee = EmployeeManager.getEmployee(recipient.getUniqueId());
         return this;
@@ -358,7 +357,7 @@ public class Message {
     public Message setCause(Player cause) {
         this.cause = cause;
         if (this.business == null)
-            this.business = BusinessManager.getBusiness(cause.getUniqueId());
+            this.business = Business.BusinessManager.getBusiness(cause.getUniqueId());
         if (this.employee == null)
             this.employee = EmployeeManager.getEmployee(cause.getUniqueId());
         return this;

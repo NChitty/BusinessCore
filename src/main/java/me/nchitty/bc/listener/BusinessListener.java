@@ -2,7 +2,6 @@ package me.nchitty.bc.listener;
 
 import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 import me.nchitty.bc.data.file.FileData;
 import me.nchitty.bc.event.business.BusinessBalanceChangeEvent;
 import me.nchitty.bc.event.business.BusinessClosedEvent;
@@ -81,7 +80,7 @@ public class BusinessListener implements Listener {
             Message message = new Message("business.close", e.getSource()).setBusiness(e.getBusiness());
             message.sendMessage();
         }
-        BusinessManager.closeBusiness(e.getBusiness());
+        Business.BusinessManager.closeBusiness(e.getBusiness());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

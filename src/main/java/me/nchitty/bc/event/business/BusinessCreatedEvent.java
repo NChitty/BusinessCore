@@ -1,7 +1,6 @@
 package me.nchitty.bc.event.business;
 
 import me.nchitty.bc.business.Business;
-import me.nchitty.bc.business.BusinessManager;
 
 /**
  *
@@ -21,7 +20,7 @@ public class BusinessCreatedEvent extends BusinessEvent {
     public void setCancelled(boolean vln) {
         if(vln == true) {
             super.cancelled = true;
-            BusinessManager.closeBusiness(super.business);
+            Business.BusinessManager.closeBusiness(super.business);
         } else {
             super.cancelled = vln;
         }
