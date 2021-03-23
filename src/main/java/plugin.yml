@@ -1,7 +1,7 @@
 name: BusinessCore
 version: 1.1.0-Beta
 author: Desireaux
-main: me.beastman3226.bc.BusinessCore
+main: me.nchitty.bc.BusinessCore
 depend: [Vault, PlaceholderAPI]
 commands:
   business:
