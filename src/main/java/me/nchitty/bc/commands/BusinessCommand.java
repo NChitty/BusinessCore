@@ -1,6 +1,7 @@
 package me.nchitty.bc.commands;
 
 import me.nchitty.bc.util.Message;
+import me.nchitty.bc.util.Paginator;
 import me.nchitty.bc.util.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -233,63 +234,32 @@ public class BusinessCommand extends ICommand {
 
     @Subcommand(minArgs = 1, permission = "businesscore.business.list", usage = "/business list [<\"id\"|\"balance\"|\"name\">] [<page>]")
     public void list(CommandSender sender, String[] args) {
-        // TODO: Pagination
         int page = 1;
-        int pagesOutOf = Business.BusinessManager.getBusinessList().size() / 5;
         if (args.length > 1) {
             if (!args[1].matches("[^0-9]"))
                 page = Integer.parseInt(args[1]);
         }
-        while (page > pagesOutOf && page > 0)
-            page--;
-        int fromIndex = page == 1 ? 0 : page * 5;
-        int toIndex = fromIndex + 4;
-        while (toIndex >= Business.BusinessManager.getBusinessList().size())
-            toIndex--;
         switch (args[0].toLowerCase()) {
             case "id":
-                Business[] businesses = Business.BusinessManager.sortById()
-                        .subList(fromIndex,
-                                toIndex >= Business.BusinessManager.getBusinessList().size()
-                                        ? Business.BusinessManager.getBusinessList().size() - 1
-                                        : toIndex)
-                        .toArray(new Business[0]);
-                Message header = new Message("business.list.by_id.header", sender);
-                header.sendMessage();
-                for (Business b : businesses) {
-                    Message listItem = new Message("business.list.by_id.format", sender)
-                            .setBusiness(b);
-                    listItem.sendMessage();
-                }
-                Message footer = new Message("business.list.by_id.footer", sender).setOther(page,
-                        pagesOutOf);
-                footer.sendMessage();
+
+                new Paginator<Business>("business.list.by_id", Business.BusinessManager.sortById(), sender)
+                        .page(page)
+                        .forEach(Message::sendMessage);
+
                 break;
             case "balance":
-                businesses = Business.BusinessManager.sortByBalance().subList(fromIndex, toIndex).toArray(new Business[0]);
-                header = new Message("business.list.by_balance.header", sender);
-                header.sendMessage();
-                for (Business b : businesses) {
-                    Message listItem = new Message("business.list.by_balance.format", sender)
-                            .setBusiness(b);
-                    listItem.sendMessage();
-                }
-                footer = new Message("business.list.by_balance.footer", sender).setOther(page,
-                        pagesOutOf);
-                footer.sendMessage();
+
+                new Paginator<Business>("business.list.by_balance", Business.BusinessManager.sortByBalance(), sender)
+                        .page(page)
+                        .forEach(Message::sendMessage);
+
                 break;
             case "name":
-                businesses = Business.BusinessManager.sortByName().subList(fromIndex, toIndex).toArray(new Business[0]);
-                header = new Message("business.list.by_name.header", sender);
-                header.sendMessage();
-                for (Business b : businesses) {
-                    Message listItem = new Message("business.list.by_name.format", sender)
-                            .setBusiness(b);
-                    listItem.sendMessage();
-                }
-                footer = new Message("business.list.by_name.footer", sender).setOther(page,
-                        pagesOutOf);
-                footer.sendMessage();
+
+                new Paginator<Business>("business.list.by_name", Business.BusinessManager.sortByName(), sender)
+                        .page(page)
+                        .forEach(Message::sendMessage);
+
                 break;
             default:
                 new Message("errors.usage", sender).setOther("/business list [<\"id\"|\"balance\"|\"name\">] [<page>]").sendMessage();
@@ -332,17 +302,15 @@ public class BusinessCommand extends ICommand {
                     }
                     break;
                 case "list":
-                    // TODO: Pagination
-                    Message header = new Message("business.employee.list.header").setRecipient(playerSender);
-                    header.sendMessage();
-                    for (Employee e : b.getEmployees()) {
-                        Message listItem = new Message("business.employee.list.format").setRecipient((Player) sender)
-                                .setBusiness(b).setEmployee(e);
-                        listItem.sendMessage();
-                    }
-                    Message footer = new Message("business.employee.list.footer").setRecipient((Player) sender)
-                            .setOther(page, pagesOutOf);
-                    footer.sendMessage();
+                    int page = 1;
+                    if(args.length > 1)
+                        if (!args[1].matches("[^0-9]"))
+                            page = Integer.parseInt(args[1]);
+
+                    new Paginator<Employee>("business.employee.list", b.getEmployees(), sender)
+                        .page(page)
+                        .forEach(Message::sendMessage);
+
                     break;
                 default:
                     new Message("errors.usage", sender).setOther("Try \"hire\",\"fire\", or \"list\"").sendMessage();

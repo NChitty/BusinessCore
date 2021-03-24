@@ -1,11 +1,14 @@
 package me.nchitty.bc.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.job.Job;
 import me.nchitty.bc.job.Job.JobManager;
 import me.nchitty.bc.util.Message;
+import me.nchitty.bc.util.Paginator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,9 +26,7 @@ public class JobCommand extends ICommand {
     }
 
     @Override
-    public void execute(CommandSender sender) {
-        // TODO Auto-generated method stub
-    }
+    public void execute(CommandSender sender) {}
 
     @Subcommand(consoleUse = false, minArgs = 2, permission = "businesscore.job.request", usage = "/job open [payment] [description]")
     public void open(CommandSender sender, String[] args) {
@@ -70,43 +71,24 @@ public class JobCommand extends ICommand {
 
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.job.list", usage = "/job list [mine|open] [page number @Optional]")
     public void list(CommandSender sender, String[] args) {
-        //TODO pagination
-        Job[] jobs;
         int page = 1;
-        if (args.length > 1) {
+        if (args.length > 1)
             if (!args[1].matches("[^0-9]"))
                 page = Integer.parseInt(args[1]);
-        }
-        if (args[0].equalsIgnoreCase("mine")) {
-            jobs = JobManager.getPlayerJobs((Player) sender);
-            if (page * 5 > jobs.length) {
-                while (page * 5 > jobs.length && page > 0)
-                    page--;
-            }
-            int fromIndex = page == 1 ? 0 : page * 5;
-            int toIndex = fromIndex + 4;
-            if (toIndex >= jobs.length)
-                while (toIndex >= jobs.length)
-                    toIndex--;
-            new Message("job.list.header", sender).sendMessage();
-            for (int i = fromIndex; i <= toIndex; i++)
-                new Message("job.list.format", sender).setJob(jobs[i]).sendMessage();
-            new Message("job.list.footer", sender).setOther(page, (int) (jobs.length / (float) 5 + .5));
+        if (args[0].equalsIgnoreCase("mine") && sender instanceof Player) {
+
+            List<Job> jobs = Arrays.asList(JobManager.getPlayerJobs((Player) sender));
+            new Paginator<Job>("job.list", jobs, sender)
+                    .page(page)
+                    .forEach(Message::sendMessage);
+
         } else if (args[0].equalsIgnoreCase("open")) {
-            jobs = JobManager.getOpenJobs();
-            if (page * 5 > jobs.length) {
-                while (page * 5 > jobs.length && page > 0)
-                    page--;
-            }
-            int fromIndex = page == 1 ? 0 : page * 5;
-            int toIndex = fromIndex + 4;
-            if (toIndex >= jobs.length)
-                while (toIndex >= jobs.length)
-                    toIndex--;
-            new Message("job.list.header", sender).sendMessage();
-            for (int i = fromIndex; i <= toIndex; i++)
-                new Message("job.list.format", sender).setJob(jobs[i]).sendMessage();
-            new Message("job.list.footer", sender).setOther(page, (int) (jobs.length / (float) 5 + .5));
+
+            List<Job> jobs = Arrays.asList(JobManager.getOpenJobs());
+            new Paginator<Job>("job.list", jobs, sender)
+                    .page(page)
+                    .forEach(Message::sendMessage);
+
         } else {
             new Message("errors.usage", sender).setOther("/job list [\"mine\"|\"open\"] [page number @Optional]").sendMessage();
         }

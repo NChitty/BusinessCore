@@ -54,38 +54,30 @@ public class Message {
         this.path = path;
     }
 
-    public Message(String path, Player recipient, Business b) {
-        initMessage();
-        this.path = path;
-        this.recipient = recipient;
+    public Message(String path, CommandSender recipient, Business b) {
+        this(path, recipient);
         this.business = b;
     }
 
-    public Message(String path, Player recipient, Employee e) {
-        initMessage();
-        this.path = path;
-        this.recipient = recipient;
+    public Message(String path, CommandSender recipient, Employee e) {
+        this(path, recipient);
         this.employee = e;
     }
 
-    public Message(String path, Player recipient, Job j) {
-        initMessage();
-        this.path = path;
-        this.recipient = recipient;
+    public Message(String path, CommandSender recipient, Job j) {
+        this(path, recipient);
         this.job = j;
     }
 
     public Message(String path, boolean console, Player recipient, Player cause) {
-        initMessage();
-        this.path = path;
+        this(path);
         this.console = console;
         this.recipient = recipient;
         this.cause = cause;
     }
 
     public Message(String path, CommandSender sender) {
-        initMessage();
-        this.path = path;
+        this(path);
         if (sender instanceof Player) {
             this.recipient = (Player) sender;
         } else {
