@@ -17,13 +17,13 @@ import me.nchitty.bc.player.Employee;
 import me.nchitty.bc.player.Employee.EmployeeManager;
 import me.nchitty.bc.util.PlaceholderPattern;
 
-public class Business {
+public class Business extends Object {
 
     private final int id;
     private String name;
     private String ownerUUID;
     private double balance;
-    private HashSet<Employee> employees = new HashSet<Employee>();
+    private ArrayList<Employee> employees = new ArrayList<>();
     
     
     private Business(Builder build) {
@@ -54,7 +54,7 @@ public class Business {
         return this.balance;
     }
 
-    public HashSet<Employee> getEmployees() {
+    public ArrayList<Employee> getEmployees() {
         return this.employees;
     }
 
