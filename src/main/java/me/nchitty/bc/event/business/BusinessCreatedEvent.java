@@ -18,11 +18,11 @@ public class BusinessCreatedEvent extends BusinessEvent {
 
     @Override
     public void setCancelled(boolean vln) {
-        if(vln == true) {
+        if(vln) {
             super.cancelled = true;
             Business.BusinessManager.closeBusiness(super.business);
         } else {
-            super.cancelled = vln;
+            super.cancelled = false;
         }
     }
 }

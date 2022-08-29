@@ -2,7 +2,6 @@ package me.nchitty.bc.event.business;
 
 import me.nchitty.bc.business.Business;
 import me.nchitty.bc.player.Employee;
-import me.nchitty.bc.player.EmployeeManager;
 
 /**
  *
@@ -19,7 +18,7 @@ public class BusinessFiredEmployeeEvent extends BusinessEvent {
 
     public BusinessFiredEmployeeEvent(int b, int e) {
         super(b);
-        this.employee = EmployeeManager.getEmployee(e);
+        this.employee = Employee.EmployeeManager.getEmployee(e);
     }
 
     public Employee getEmployee() {
@@ -27,7 +26,7 @@ public class BusinessFiredEmployeeEvent extends BusinessEvent {
     }
 
     public void setEmployee(int e) {
-        this.employee = EmployeeManager.getEmployee(e);
+        this.employee = Employee.EmployeeManager.getEmployee(e);
     }
 
     public void setEmployee(Employee e) {

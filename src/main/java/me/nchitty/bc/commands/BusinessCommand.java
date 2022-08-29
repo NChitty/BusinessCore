@@ -1,5 +1,6 @@
 package me.nchitty.bc.commands;
 
+import me.nchitty.bc.BusinessCore;
 import me.nchitty.bc.util.Message;
 import me.nchitty.bc.util.Paginator;
 import me.nchitty.bc.util.Scheduler;
@@ -17,15 +18,24 @@ import me.nchitty.bc.event.business.BusinessFiredEmployeeEvent;
 import me.nchitty.bc.player.Employee;
 import me.nchitty.bc.player.Employee.EmployeeManager;
 
-public class BusinessCommand extends ICommand {
+public class BusinessCommand extends AbstractCommand {
 
-    public BusinessCommand() {
-        super("business", "businesscore.business", true);
+    private BusinessCommand() {
+        super(BusinessCore.getInstance(), "business", "businesscore.business", true);
+    }
+
+    public static AbstractCommand getInstance() {
+        return instance == null ? instance = new BusinessCommand() : instance;
     }
 
     @Override
-    public void execute(CommandSender sender) {
+    public AbstractCommand getImplementation() {
+        return getInstance();
+    }
 
+    @Override
+    public boolean execute(CommandSender sender) {
+        return true;
     }
 
     @Subcommand(consoleUse = false, minArgs = 1, permission = "businesscore.business.start", usage = "/business start [name]")
@@ -209,7 +219,7 @@ public class BusinessCommand extends ICommand {
             Player playerSender = (Player) sender;
             b = Business.BusinessManager.getBusiness(playerSender);
             b = b == null ? EmployeeManager.getEmployee(playerSender).getBusiness() : b;
-            if (b != null){
+            if (b != null) {
                 Message message = new Message("business.info").setRecipient(playerSender).setBusiness(b);
                 message.sendMessage();
             } else if (args.length == 0) {
@@ -272,23 +282,31 @@ public class BusinessCommand extends ICommand {
         Player playerSender = (Player) sender;
         Business b = null;
         if ((b = Business.BusinessManager.getBusiness(playerSender)) != null) {
-            // TODO: Get player logic
+            Player player = null;
+            if(args.length > 1) {
+                player = Bukkit.getPlayer(args[1]);
+            }
+            if(player == null) {
+                Message message = new Message("errors.no_player").setRecipient(playerSender);
+                message.sendMessage();
+                return;
+            }
             switch (args[0].toLowerCase()) {
                 case "hire":
-                    if (EmployeeManager.isEmployee(player)
+                    if (EmployeeManager.isEmployee(playerSender)
                             || Business.BusinessManager.isOwner(player)) {
-                        Message message = new Message("errors.already_a_worker").setRecipient(playerSender);
+                        Message message = new Message("errors.already_a_worker").setRecipient(player);
                         message.sendMessage();
-                    } else {
-                        Message offerSent = new Message("business.employee.hire.sent_offer").setCause(player)
-                                .setRecipient(playerSender);
-                        offerSent.sendMessage();
-                        Message offerReceived = new Message("business.employee.hire.offer").setCause(playerSender)
-                                .setRecipient(player).setBusiness(b);
-                        offerReceived.sendMessage();
-                        EmployeeManager.getPendingPlayers().put(player, b.getID());
-                        Scheduler.runAcceptance(playerSender);
+                        return;
                     }
+                    Message offerSent = new Message("business.employee.hire.sent_offer").setCause(player)
+                            .setRecipient(player);
+                    offerSent.sendMessage();
+                    Message offerReceived = new Message("business.employee.hire.offer").setCause(player)
+                            .setRecipient(player).setBusiness(b);
+                    offerReceived.sendMessage();
+                    EmployeeManager.getPendingPlayers().put(player, b.getID());
+                    Scheduler.runAcceptance(player);
                     break;
                 case "fire":
                     if (EmployeeManager.isEmployeeFor(b, player)) {
@@ -296,20 +314,25 @@ public class BusinessCommand extends ICommand {
                         BusinessFiredEmployeeEvent event = new BusinessFiredEmployeeEvent(b, emp);
                         Bukkit.getPluginManager().callEvent(event);
                     } else {
-                        Message message = new Message("errors.not_business_employee").setRecipient(playerSender)
+                        Message message = new Message("errors.not_business_employee").setRecipient(player)
                                 .setBusiness(b);
                         message.sendMessage();
                     }
                     break;
                 case "list":
                     int page = 1;
-                    if(args.length > 1)
-                        if (!args[1].matches("[^0-9]"))
-                            page = Integer.parseInt(args[1]);
+
+                    if (args.length > 1) {
+                        if (!args[1].matches("[0-9]+")) {
+                            Message message = new Message("errors.not_a_number").setRecipient(playerSender);
+                            message.sendMessage();
+                        }
+                        page = Integer.parseInt(args[1]);
+                    }
 
                     new Paginator<Employee>("business.employee.list", b.getEmployees(), sender)
-                        .page(page)
-                        .forEach(Message::sendMessage);
+                            .page(page)
+                            .forEach(Message::sendMessage);
 
                     break;
                 default:
@@ -320,12 +343,14 @@ public class BusinessCommand extends ICommand {
             Message message = new Message("errors.not_an_owner").setRecipient(playerSender);
             message.sendMessage();
         }
+
     }
 
     @Subcommand
     public void help(CommandSender sender, String[] args) {
+        String[] helpPage;
         if (sender instanceof Player) {
-            String[] helpPage = {
+            helpPage = new String[]{
                     ChatColor.BLUE + "/business start [name]: " + ChatColor.AQUA
                             + "Starts a business with the specified name and you as the owner.",
                     ChatColor.BLUE + "/business withdraw [amount]: " + ChatColor.AQUA
@@ -344,10 +369,9 @@ public class BusinessCommand extends ICommand {
                     ChatColor.BLUE + "/business info: " + ChatColor.AQUA
                             + "Get general information about your business.",
                     ChatColor.BLUE + "/business list [\"balance\"|\"id\"|\"name\"] [page #]: " + ChatColor.AQUA
-                            + "Lists businesses sorted by the various methods." };
-            sender.sendMessage(helpPage);
+                            + "Lists businesses sorted by the various methods."};
         } else {
-            String[] helpPage = {
+            helpPage = new String[]{
                     ChatColor.BLUE + "/business withdraw <id> <amount>: " + ChatColor.AQUA
                             + "Withdraws the specified amount from the business specified by id.",
                     ChatColor.BLUE + "/business deposit <id> <amount>: " + ChatColor.AQUA
@@ -357,9 +381,9 @@ public class BusinessCommand extends ICommand {
                     ChatColor.BLUE + "/business info <id>: " + ChatColor.AQUA
                             + "Get general information about your business.",
                     ChatColor.BLUE + "/business list [\"balance\"|\"id\"|\"name\"] [page #]: " + ChatColor.AQUA
-                            + "Lists businesses sorted by the various methods." };
-            sender.sendMessage(helpPage);
+                            + "Lists businesses sorted by the various methods."};
         }
+        sender.sendMessage(helpPage);
     }
 
 }

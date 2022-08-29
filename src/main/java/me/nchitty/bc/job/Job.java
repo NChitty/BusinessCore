@@ -1,6 +1,7 @@
 package me.nchitty.bc.job;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
 import me.nchitty.bc.BusinessCore;
@@ -23,10 +24,10 @@ import me.nchitty.bc.util.PlaceholderPattern;
 public class Job {
 
     private final int id;
-    private UUID creator;
-    private String description;
-    private Location loc;
-    private double pay;
+    private final UUID creator;
+    private final String description;
+    private final Location loc;
+    private final double pay;
     private Player worker;
     private boolean claimed = false;
 
@@ -36,7 +37,7 @@ public class Job {
      * @param id The id
      * @param description the description of the job
      * @param loc location that the job was started
-     * @param pay Payment that a business will recieve if it completed
+     * @param pay Payment that a business will receive if it completed
      */
     public Job(int id, UUID uuid, String description, Location loc, double pay) {
         this.id = id;
@@ -51,8 +52,8 @@ public class Job {
      * @param id id of the job
      * @param uuid uuid of player who created the job
      * @param description description of the job
-     * @param loc 
-     * @param pay
+     * @param loc location in world
+     * @param pay the pay
      * @param uniqueId uuid of player who is working the job
      */
     public Job(int id, UUID uuid, String description, Location loc, double pay, UUID uniqueId) {
@@ -80,7 +81,7 @@ public class Job {
 
     @PlaceholderPattern(pattern = "<job_location>")
     public String getLocationToString() {
-        return this.loc.getWorld().getName() + " " + this.loc.getX() + ", " + this.loc.getY() + ", " + this.loc.getZ();
+        return Objects.requireNonNull(this.loc.getWorld()).getName() + " " + this.loc.getX() + ", " + this.loc.getY() + ", " + this.loc.getZ();
     }
 
     @PlaceholderPattern(pattern = "<job_payment>")
@@ -121,11 +122,9 @@ public class Job {
 
     public boolean isCreator(Player playerSender) { return this.creator.equals(playerSender.getUniqueId()); }
 
-    public boolean isCreator(UUID uuid) { return this.creator.equals(uuid); }
-
     public static class JobManager {
 
-        private static HashSet<Job> jobList = new HashSet<Job>();
+        private static final HashSet<Job> jobList = new HashSet<>();
 
         public static Job getJob(int i) {
             for (Job j : jobList)
@@ -189,6 +188,7 @@ public class Job {
 
         public static boolean completeJob(Job job) {
             if(job.isClaimed()) {
+                assert BusinessCore.getInstance() != null;
                 BusinessCore.getInstance().getJobFileManager().edit(new FileData().add(job.getID() + "", null));
                 jobList.remove(job);
                 return true;
@@ -197,15 +197,17 @@ public class Job {
         }
 
         public static void loadJobs() {
+            assert BusinessCore.getInstance() != null;
             FileConfiguration jobYml = BusinessCore.getInstance().getJobFileManager().getFileConfiguration();
             for (String string : jobYml.getKeys(false)) {
-                Job j = null;
+                Job j;
                 int id = Integer.parseInt(string);
                 String description = jobYml.getString(id + ".description");
-                World world = Bukkit.getWorld(jobYml.getString(id + ".world"));
+                World world = Bukkit.getWorld(Objects.requireNonNull(jobYml.getString(id + ".world")));
                 double x = 0, y = 0, z = 0;
                 try {
                     String location = jobYml.getString(id + ".location");
+                    assert location != null;
                     String[] s = location.split(",");
                     x = Double.parseDouble(s[0]);
                     y = Double.parseDouble(s[1]);
@@ -214,7 +216,7 @@ public class Job {
                 }
                 Location loc = new Location(world, x, y, z);
                 double pay = jobYml.getDouble(id + ".payment");
-                UUID issuer = UUID.fromString(jobYml.getString(id + ".issuer"));
+                UUID issuer = UUID.fromString(Objects.requireNonNull(jobYml.getString(id + ".issuer")));
                 String worker = jobYml.getString(id + ".worker");
                 if(worker == null  || worker.isEmpty())
                     j = new Job(id, issuer, description, loc, pay);
@@ -225,6 +227,7 @@ public class Job {
         }
 
         public static void saveJobs() {
+            assert BusinessCore.getInstance() != null;
             FileManager fm = BusinessCore.getInstance().getJobFileManager();
             for(Job newJob : jobList) {
                 Location location = newJob.getLocation();
@@ -232,10 +235,11 @@ public class Job {
                 UUID worker = null;
                 if(newJob.getWorker() != null)
                     worker = newJob.getWorker().getUniqueId();
+                assert worker != null;
                 fm.edit(new FileData()
                         .add(newJob.getID() + ".description", newJob.getDescription())
                         .add(newJob.getID() + ".location", xyz)
-                        .add(newJob.getID() + ".world", location.getWorld().getName())
+                        .add(newJob.getID() + ".world", Objects.requireNonNull(location.getWorld()).getName())
                         .add(newJob.getID() + ".issuer", newJob.getCreator().getUniqueId().toString())
                         .add(newJob.getID() + ".payment", newJob.getPayment())
                         .add(newJob.getID() + ".worker", worker.toString()));

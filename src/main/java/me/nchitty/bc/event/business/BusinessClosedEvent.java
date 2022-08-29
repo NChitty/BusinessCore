@@ -14,7 +14,6 @@ public class BusinessClosedEvent extends BusinessEvent {
         super(id);
     }
 
-
     public BusinessClosedEvent(Business business) {
         super(business);
     }

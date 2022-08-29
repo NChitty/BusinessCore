@@ -29,8 +29,9 @@ public class BusinessListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBalanceChange(BusinessBalanceChangeEvent e) {
 
+        assert BusinessCore.getInstance() != null;
         Economy eco = BusinessCore.getInstance().getEconomy();
-        EconomyResponse er = null;
+        EconomyResponse er;
 
         if (e.getSource() == null) throw new NullPointerException();
 
@@ -43,8 +44,10 @@ public class BusinessListener implements Listener {
             } else {
                 e.getBusiness().deposit(e.getAbsoluteAmount());
             }
-            // TODO if online send owner message
-            return;
+            Player owner = e.getBusiness().getOwner();
+            if(owner.isOnline()) {
+                new Message("business.balance").setRecipient(owner).setBusiness(e.getBusiness()).setOther(e.getFinalAmount()).sendMessage();
+            }
         } else if (e.getSource() instanceof Player) {
             if (e.isWithdrawal()) {
                 if (e.isOverdraft()) {

@@ -15,7 +15,7 @@
 # player cause: <player_cause>
 
 #Links, tooltips, commands, etc:
-# Create a tooltip with <tooltip:message>hoverable text<reset>
+# Create a tooltip with <tooltip:message> hover-able text<reset>
 # Create a link with <link:url>text to make hyperlink<reset>
 # Run a command with <command:/[command here] [args]>text to make command<reset>
 # You can use <br> to separate lines in a message, alternatively make them a list
@@ -87,7 +87,7 @@ business:
     hire:
       sent_offer: '<prefix_working> An offer to join your business has been sent to <player_cause>'
       offer: '<prefix_action> <player_cause> has offered you a position at <dark_aqua><business_name><reset><br>Type yes to accept the offer.'
-      offer_accepted_owner: '<prefix_action> <player_cause> has accepted your offer to join <busines_name>'
+      offer_accepted_owner: '<prefix_action> <player_cause> has accepted your offer to join <business_name>'
       offer_accepted_employee: '<prefix_action> You are now an employee of <business_name>' 
     fire: '<prefix_action> You fired <player_cause> from <business_name>' 
 #Employee Formatting:

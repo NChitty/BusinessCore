@@ -22,11 +22,6 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
         this.change = change;
     }
 
-    public BusinessBalanceChangeEvent(int id, double change) {
-        super(id);
-        this.change = change;
-    }
-
     public void setSource(CommandSender source) {
         this.source = source;
     }
@@ -45,7 +40,7 @@ public class BusinessBalanceChangeEvent extends BusinessEvent {
 
     /**
      * Checks to see if the
-     * @return
+     * @return True if the change is a withdrawal
      */
     public boolean isWithdrawal() {
         return (this.change < 0);

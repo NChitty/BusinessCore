@@ -5,6 +5,7 @@ import me.nchitty.bc.job.Job.JobManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -14,8 +15,8 @@ public class JobEvent extends Event implements Cancellable{
 
     protected static final HandlerList handlers = new HandlerList();
     protected boolean cancelled;
-    private Job job;
-    private int id;
+    private final Job job;
+    private final int id;
 
     public JobEvent(int i) {
         id = i;
@@ -37,7 +38,7 @@ public class JobEvent extends Event implements Cancellable{
     }
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

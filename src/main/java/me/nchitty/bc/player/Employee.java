@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
  */
 public class Employee {
 
-    private String employeeName;
+    private final String employeeName;
     private final UUID uniqueId;
     private final int id;
     private int business;
@@ -101,8 +101,8 @@ public class Employee {
 
     public static class EmployeeManager {
 
-        private static HashMap<Player, Integer> pending = new HashMap<>(50);
-        private static HashSet<Employee> employeeList = new HashSet<>();
+        private static final HashMap<Player, Integer> pending = new HashMap<>(50);
+        private static final HashSet<Employee> employeeList = new HashSet<>();
 
         public static void loadEmployees() {
             FileConfiguration employeeYml = BusinessCore.getInstance().getEmployeeFileManager().getFileConfiguration();
@@ -211,16 +211,10 @@ public class Employee {
         }
 
         public static boolean isEmployeeFor(Business b, UUID uuid) {
-            return getEmployee(b, uuid) != null;
+            return getEmployee(b, uuid).getBusiness().equals(b);
         }
 
-        public static boolean isEmployeeFor(Business b, int id) {
-            return getEmployee(b, id) != null;
-        }
-
-        public static boolean isEmployeeFor(Business b, String name) {
-            return getEmployee(b, name) != null;
-        }
+        public static boolean isEmployeeFor(Business b, Player playerSender) { return isEmployeeFor(b, playerSender.getUniqueId()); }
 
         public static boolean isEmployee(Employee e) {
             return employeeList.contains(e);
@@ -239,6 +233,7 @@ public class Employee {
         }
 
         public static boolean isEmployee(Player playerSender) { return isEmployee(playerSender.getUniqueId());  }
+
 
 
     }

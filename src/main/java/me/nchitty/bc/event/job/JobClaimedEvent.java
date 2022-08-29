@@ -14,11 +14,6 @@ public class JobClaimedEvent extends JobEvent {
 
     Player claimingPlayer;
 
-    public JobClaimedEvent(int id, UUID uniqueId) {
-        super(id);
-        this.claimingPlayer = Bukkit.getPlayer(uniqueId);
-    }
-
     public JobClaimedEvent(Job j, Player player) {
         super(j);
         this.claimingPlayer = player;

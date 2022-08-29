@@ -3,6 +3,7 @@ package me.nchitty.bc;
 import java.util.HashMap;
 
 import me.nchitty.bc.business.Business;
+import me.nchitty.bc.commands.JobCommand;
 import me.nchitty.bc.data.file.FileManager;
 import me.nchitty.bc.job.Job.JobManager;
 import me.nchitty.bc.util.Settings;
@@ -11,7 +12,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.nchitty.bc.commands.BusinessCommand;
-import me.nchitty.bc.commands.JobCommand;
 import me.nchitty.bc.listener.BusinessListener;
 import me.nchitty.bc.listener.JobListener;
 import me.nchitty.bc.listener.PlayerListener;
@@ -30,8 +30,6 @@ public class BusinessCore extends JavaPlugin {
     private Chat chat;
     private FileManager businessFileManager, jobFileManager, employeeFileManager;
     private Settings settings;
-
-    HashMap<String, String> hm = new HashMap<String, String>();
 
 
     @Override
@@ -57,8 +55,8 @@ public class BusinessCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JobListener(), this);
 
         //Create Commands
-        new BusinessCommand();
-        new JobCommand();
+        BusinessCommand.getInstance();
+        JobCommand.getInstance();
 
         //settings and configs
         settings = new Settings(this.getConfig());
@@ -97,10 +95,10 @@ public class BusinessCore extends JavaPlugin {
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = null;
-        rsp = (RegisteredServiceProvider<Economy>) this.getServer().getServicesManager().getRegistration(Economy.class);
+        rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             this.getLogger().severe("Economy plugin not detected");
-            rsp = (RegisteredServiceProvider<Economy>) this.getServer().getServicesManager().getRegistration(Economy.class);
+            rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         }
         if (rsp == null) {
             return false;
@@ -128,6 +126,8 @@ public class BusinessCore extends JavaPlugin {
     public Economy getEconomy() {
 		return this.eco;
     }
+
+    public Chat getChar() { return this.chat; }
 
     public FileManager getBusinessFileManager() {
         return this.businessFileManager;

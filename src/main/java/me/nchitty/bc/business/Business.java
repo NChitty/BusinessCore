@@ -2,7 +2,6 @@ package me.nchitty.bc.business;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -17,13 +16,13 @@ import me.nchitty.bc.player.Employee;
 import me.nchitty.bc.player.Employee.EmployeeManager;
 import me.nchitty.bc.util.PlaceholderPattern;
 
-public class Business extends Object {
+public class Business {
 
     private final int id;
     private String name;
     private String ownerUUID;
     private double balance;
-    private ArrayList<Employee> employees = new ArrayList<>();
+    private final ArrayList<Employee> employees = new ArrayList<>();
     
     
     private Business(Builder build) {
@@ -71,7 +70,7 @@ public class Business extends Object {
     public String getEmployeesById() {
         StringBuilder sb = new StringBuilder("[");
         for(Employee e : employees) {
-            sb.append("," + e.getID());
+            sb.append(",").append(e.getID());
         }
         sb.append("]");
         return sb.toString().replaceFirst(",", "");
@@ -81,7 +80,7 @@ public class Business extends Object {
     public String getEmployeesByName() {
         StringBuilder sb = new StringBuilder("[");
         for(Employee e : employees) {
-            sb.append("," + e.getName());
+            sb.append(",").append(e.getName());
         }
         sb.append("]");
         return sb.toString().replaceFirst(",", "");
@@ -104,18 +103,13 @@ public class Business extends Object {
 
     public Business deposit(double amount) {
         this.balance = this.balance + amount;
+        assert BusinessCore.getInstance() != null;
         BusinessCore.getInstance().getLogger().log(Level.INFO, "Depositing " + amount + " into " + this.getName());
         return this;
     }
 
     public Business withdraw(double amount) {
         this.balance = this.balance - amount;
-        return this;
-    }
-
-
-    public Business setEmployees(Employee[] e) {
-        this.employees.addAll(Arrays.asList(e));
         return this;
     }
 
@@ -240,7 +234,6 @@ public class Business extends Object {
          * Creates all businesses from file.
          */
         public static void createBusinesses() {
-            // TODO: Abstract out this method
             BusinessCore.getInstance().getBusinessFileManager().reload();
             FileConfiguration businessYml = BusinessCore.getInstance().getBusinessFileManager().getFileConfiguration();
             int id;
@@ -257,7 +250,6 @@ public class Business extends Object {
         }
 
         public static void saveBusinesses() {
-            // TODO: Abstract out this method
             FileManager fm = BusinessCore.getInstance().getBusinessFileManager();
             for(Business b : businessList) {
                 fm.edit(new FileData()
@@ -355,6 +347,7 @@ public class Business extends Object {
          * @param uuid The name of the player
          * @return True if name has a business, false if not.
          */
+        @Deprecated
         public static boolean isOwner(String uuid) {
             return isOwner(UUID.fromString(uuid));
         }
