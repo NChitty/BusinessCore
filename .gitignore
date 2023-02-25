@@ -12,5 +12,7 @@
 .project
 src/test/java/me/beastman3226/AppTest.java
 /classes/
-.idea/
-BusinessCore.iml
+
+# IntelliJ #
+*.iml
+/.idea/
