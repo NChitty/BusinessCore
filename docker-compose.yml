@@ -9,6 +9,7 @@ services:
     environment:
       EULA: "TRUE"
       JVM_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5001"
+      SPIGET_RESOURCES: 34315,75669,6245
       TYPE: "SPIGOT"
       VERSION: "${SPIGOT_VERSION}"
     volumes:
