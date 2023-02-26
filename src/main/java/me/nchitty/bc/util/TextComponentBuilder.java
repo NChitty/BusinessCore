@@ -8,6 +8,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.md_5.bungee.api.ChatColor.*;
+
 public class TextComponentBuilder {
     
     private final List<TextComponent> components = new ArrayList<>();
@@ -36,25 +38,18 @@ public class TextComponentBuilder {
 
     private void setColorFormatting(TextComponent component) {
         for(ChatColor format : this.colors) {
-            switch(format) {
-                case STRIKETHROUGH:
-                    component.setStrikethrough(true);
-                    break;
-                case UNDERLINE:
-                    component.setUnderlined(true);
-                    break;
-                case ITALIC:
-                    component.setItalic(true);
-                    break;
-                case BOLD:
-                    component.setBold(true);
-                    break;
-                case MAGIC:
-                    component.setObfuscated(true);
-                    break;
-                default:
-                    component.setColor(format);
-                    break;
+            if (format.equals(STRIKETHROUGH)) {
+                component.setStrikethrough(true);
+            } else if (format.equals(UNDERLINE)) {
+                component.setUnderlined(true);
+            } else if (format.equals(ITALIC)) {
+                component.setItalic(true);
+            } else if (format.equals(BOLD)) {
+                component.setBold(true);
+            } else if (format.equals(MAGIC)) {
+                component.setObfuscated(true);
+            } else {
+                component.setColor(format);
             }
         }
     }

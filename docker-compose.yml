@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  mc-server:
+    image: itzg/minecraft-server:latest
+    ports:
+      - 25565:25565
+      - 5001:5001
+    environment:
+      EULA: "TRUE"
+      JVM_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5001"
+      SPIGET_RESOURCES: 34315,75669,6245
+      TYPE: "SPIGOT"
+      VERSION: "${SPIGOT_VERSION}"
+    volumes:
+    - ~/dev-mc-server:/data
+    - ./plugins:/data/plugins
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
