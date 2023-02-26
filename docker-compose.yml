@@ -10,7 +10,7 @@ services:
       EULA: "TRUE"
       JVM_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5001"
       TYPE: "SPIGOT"
-      VERSION: "1.19.3"
+      VERSION: "${SPIGOT_VERSION}"
     volumes:
     - ~/dev-mc-server:/data
     - ./plugins:/data/plugins
