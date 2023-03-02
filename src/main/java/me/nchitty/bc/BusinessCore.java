@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.hibernate.SessionFactory;
 
 import java.util.List;
 
@@ -25,12 +26,15 @@ import java.util.List;
  */
 public class BusinessCore extends JavaPlugin {
 
-  private static BusinessCore instance;
-  private BukkitCommandManager commandManager;
-  private Economy eco;
-  private Chat chat;
-  private FileManager businessFileManager, jobFileManager, employeeFileManager;
-  private Settings settings;
+  private static BusinessCore        instance;
+  private        PaperCommandManager commandManager;
+  private        SessionFactory      sessionFactory;
+  private        Economy             eco;
+  private        Chat                chat;
+  private        FileManager         businessFileManager;
+  private        FileManager         jobFileManager;
+  private        FileManager         employeeFileManager;
+  private        Settings            settings;
 
 
   @Override
@@ -102,9 +106,11 @@ public class BusinessCore extends JavaPlugin {
             return (ConsoleCommandSender) context.getSender();
           }
           throw new InvalidCommandArgument("You are not a console.");
-        });
+        }
+    );
 
-    commandManager.getCommandContexts().registerIssuerAwareContext(Business.class, Business.BusinessManager.getContextResolver());
+    commandManager.getCommandContexts()
+        .registerIssuerAwareContext(Business.class, Business.BusinessManager.getContextResolver());
 
     // Register command completions
     // Register command conditions
@@ -124,7 +130,14 @@ public class BusinessCore extends JavaPlugin {
     // Default exception handler
     commandManager.setDefaultExceptionHandler(new ExceptionHandler() {
       @Override
-      public boolean execute(BaseCommand command, RegisteredCommand registeredCommand, CommandIssuer sender, List<String> args, Throwable t) {
+      public boolean execute(
+          BaseCommand command,
+          RegisteredCommand registeredCommand,
+          CommandIssuer sender,
+          List<String> args,
+          Throwable t
+      )
+      {
         getLogger().warning("An error occurred.");
         return false;
       }
@@ -190,8 +203,11 @@ public class BusinessCore extends JavaPlugin {
   }
 
   public static BusinessCore getInstance() {
-    if (instance == null)
-      return null;
+    if (instance == null) { return null; }
     return instance;
+  }
+
+  public SessionFactory getSessionFactory() {
+    return this.sessionFactory;
   }
 }

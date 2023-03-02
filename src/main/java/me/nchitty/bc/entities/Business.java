@@ -21,6 +21,12 @@ public class Business {
   @OneToMany(targetEntity = Employee.class)
   private List<Employee> employees;
 
+  public Business(Player owner, String name) {
+    this.owner = owner;
+    this.name = name;
+    this.balance = BigDecimal.ZERO;
+  }
+
   public void setId(Long id) { this.id = id; }
 
   @Id
